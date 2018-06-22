@@ -1,5 +1,5 @@
 # SWC
-The project requires IntelliJ IDEA. It was tested on 2017 Ultimate Edition
+The project requires IntelliJ IDEA. It was tested on 2017 Ultimate Edition<br>
 Import project to IDEA by selecting File->New Project from Version control
 Install Maven locally
 Install JDK 1.8

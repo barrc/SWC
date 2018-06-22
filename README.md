@@ -6,4 +6,4 @@
 <li>Run Maven tasks Clean, Compile, Install. This will create .war in target directory<br>
 <li>Unzip k:\swc\swcalculator_home.zip to local C:\swcalculator_home<br>
 <li>Copy .war to Tomcat\webapps <br>
-<li>Ctart UI by running npm start in Front-end<br>
+<li>Start UI by running npm start in Front-end<br>

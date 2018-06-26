@@ -7,5 +7,19 @@ npm-debug.log
 .sonarlint
 .scannerwork
 
+#COMMON SERVER SIDE IGNORE
+swcalculator-server/target/
+
+
 #INTELIJ
-swcalculator-server/target
+swcalculator-server/.idea/
+swcalculator-server/.idea/workspace.xml
+
+#netbeans
+swcalculator-server/nbproject/private/
+swcalculator-server/build/
+swcalculator-server/nbbuild/
+swcalculator-server/dist/
+swcalculator-server/nbdist/
+swcalculator-server/.nb-gradle/
+swcalculator-server/nb-configuration.xml

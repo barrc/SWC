@@ -34,11 +34,17 @@ public class BlsCenterModel extends BaseModel {
     private String blsFuelsUtilitiesID;
     private String selectString;
 
+    public double c0_intercept;
+    public double c1_readyMix;
+    public double c2_tractorShovel;
+    public double c3_energy;
+    public double c4_fuelUtils;
+
     /*
     @Override
     public int compareTo(BlsCenterModel o) {
         // usually toString should not be used,
-        // instead one of the attributes or more in a comparator chain        
+        // instead one of the attributes or more in a comparator chain
         //return toString().compareTo(o.toString());int compareQuantity = ((Fruit) compareFruit).getQuantity();
         double compareDistToCurrentPoint = ((BlsCenterModel) o).getDistToCurrentPoint();
 
@@ -181,6 +187,7 @@ public class BlsCenterModel extends BaseModel {
         this.blsFuelsUtilitiesID = blsFuelsUtilitiesID;
     }
 
+
     public String getSelectString() {
         return selectString;
     }
@@ -189,4 +196,48 @@ public class BlsCenterModel extends BaseModel {
         this.selectString = selectString;
     }
 
+    @JsonProperty("c0_intercept")
+    public Double getC0_intercept() {
+        return c0_intercept;
+    }
+
+    public void setC0_intercept(Double c0_intercept) {
+        this.c0_intercept = c0_intercept;
+    }
+
+    @JsonProperty("c1_readyMix")
+    public Double getC1_readyMix() {
+        return c1_readyMix;
+    }
+
+    public void setC1_readyMix(Double c1_readyMix) {
+        this.c1_readyMix = c1_readyMix;
+    }
+
+    @JsonProperty("c2_tractorShovel")
+    public Double getC2_tractorShovel() {
+        return c2_tractorShovel;
+    }
+
+    public void setC2_tractorShovel(Double c2_tractorShovel) {
+        this.c2_tractorShovel = c2_tractorShovel;
+    }
+
+    @JsonProperty("c3_energy")
+    public Double getC3_energy() {
+        return c3_energy;
+    }
+
+    public void setC3_energy(Double c3_energy) {
+        this.c3_energy = c3_energy;
+    }
+
+    @JsonProperty("c4_fuelUtils")
+    public Double getC4_fuelUtils(){
+        return c4_fuelUtils;
+    }
+
+    public void setC4_fuelUtils(Double c4_fuelUtils) {
+        this.c4_fuelUtils = c4_fuelUtils;
+    }
 }

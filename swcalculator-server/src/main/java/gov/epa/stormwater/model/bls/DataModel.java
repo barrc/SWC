@@ -7,12 +7,14 @@ package gov.epa.stormwater.model.bls;
 
 import java.util.List;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  *
  * @author UYEN.TRAN
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)    //do not output null values
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DataModel {
 
     private String year;

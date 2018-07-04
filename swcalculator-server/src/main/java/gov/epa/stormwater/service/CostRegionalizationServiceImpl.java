@@ -60,7 +60,7 @@ public class CostRegionalizationServiceImpl implements CostRegionalizationServic
     private static final String REGISTRATION_KEY = "408c86477d784c4abf2b179a79d5e79f";
 
     //default National index computed for 2015 used as the basis for normalizing regional indexes
-    private static final Double DEFAULT_2015_NATIONAL_INDEX = 201.22;
+    private static final Double DEFAULT_2017_NATIONAL_INDEX = 208.09;
     //user is given the option to select the nearest 3 bls regions
     private static final int DCP = 2; //default number of decimal places to round 2
     //regionalization model coefficients - need to be updated periodically
@@ -314,19 +314,22 @@ public class CostRegionalizationServiceImpl implements CostRegionalizationServic
             }
         }
         //perform regionalization calcs
-        System.out.println("c0_intercept " + blsCity.c0_intercept);
+        // set default
+        blsCity.setRegionalFactor(DEFAULT_2017_NATIONAL_INDEX);
 
-        blsCity.setRegionalFactor(blsCity.c0_intercept
-                + (blsCity.c1_readyMix * blsVarDict.get(validSeriesIDs[0]))
-                + (blsCity.c2_tractorShovel * blsVarDict.get(validSeriesIDs[1]))
-                + (blsCity.c3_energy * blsVarDict.get(validSeriesIDs[2]))
-                + (blsCity.c4_fuelUtils * blsVarDict.get(validSeriesIDs[3])));
+        //calculate Dynamic National Index
+        if (blsCity.getBlsCity().equalsIgnoreCase("NATIONAL")) {
+            blsCity.setRegionalFactor(blsCity.c0_intercept
+                    + (blsCity.c1_readyMix * blsVarDict.get(validSeriesIDs[0]))
+                    + (blsCity.c2_tractorShovel * blsVarDict.get(validSeriesIDs[1]))
+                    + (blsCity.c3_energy * blsVarDict.get(validSeriesIDs[2]))
+                    + (blsCity.c4_fuelUtils * blsVarDict.get(validSeriesIDs[3])));
+        }
 
         BigDecimal bd = new BigDecimal(blsCity.getRegionalFactor() / blsCity.getRegModel2014Index());
         bd = bd.setScale(DCP, RoundingMode.HALF_UP);
         blsCity.setInflationFactor(bd.doubleValue());   //(Math.Round(BlsCity.regionalFactor / BlsCity.regModel2014Index, dcp);
-        bd = new BigDecimal(blsCity.getRegionalFactor() / DEFAULT_2015_NATIONAL_INDEX);
-        System.out.println("National Index " + blsCity.getRegionalFactor());
+        bd = new BigDecimal(blsCity.getRegionalFactor());
         bd = bd.setScale(DCP, RoundingMode.HALF_UP);
         blsCity.setRegionalFactor(bd.doubleValue()); //Math.Round(BlsCity.regionalFactor / default2015NationalIndex, DCP);        
         blsCity.setSelectString(blsCity.getBlsCity() + "(" + (int) Math.round(blsCity.getDistToCurrentPoint()) + " miles)" + blsCity.getRegionalFactor());   // = String.Format("{0} ({1:F0} miles) {2}", blsCity.blsCity, blsCity.distToCurrentPoint, blsCity.regionalFactor);

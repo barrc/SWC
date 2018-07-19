@@ -618,11 +618,11 @@ function loadXMLFile(e)
 
     map.entities.push(locationMarker);
 
-    soilDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-    costURLString = 'http://localhost:9999/swcalulator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     soilDataBoolean = false;
 
@@ -776,11 +776,11 @@ function initializeMap()
   map.entities.push(locationMarker);
   map.entities.push(siteRadiusPolygon);
 
-  soilDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/soils?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+  soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-  precipitationURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
+  precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
 
-  costURLString = 'http://localhost:9999/swcalulator-server/api/v1/costing?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
+  costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
 
   getPrecipitationData();
   getCostingRegionalization();
@@ -836,11 +836,11 @@ function moveLocationIcon(e)
     map.entities.push(locationMarker);
     map.entities.push(siteRadiusPolygon);
 
-    soilDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-    costURLString = 'http://localhost:9999/swcalulator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     soilDataBoolean = false;
 
@@ -918,11 +918,11 @@ function GeocodeCallback(result)
     map.entities.push(locationMarker);
     map.entities.push(siteRadiusPolygon);
 
-    soilDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-    costURLString = 'http://localhost:9999/swcalulator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     sessionStorage.location = $('#locationInput').val();
     sessionStorage.latitude = locationMarker.getLocation().latitude;
@@ -1420,9 +1420,9 @@ function getPrecipitationData()
 
         rainGageCount++;
 
-        rainfallDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations/download/precipData/' + response.precStations[0].stationId;
+        rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + response.precStations[0].stationId;
 
-        climateURLString = 'http://localhost:9999/swcalulator-server/api/v1/climate?year=2035&precStationID=' + response.precStations[0].stationId;
+        climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + response.precStations[0].stationId;
       }
 
       sessionStorage.setItem('rainGageName', rainGageArray[0].name);
@@ -1461,7 +1461,7 @@ function getPrecipitationData()
 
         weatherStationCount++;
 
-        weatherDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations/download/evapData/' + response.evapStations[0].stationId;
+        weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + response.evapStations[0].stationId;
 
       }
 
@@ -1634,9 +1634,9 @@ function selectRainGageMarker(e)
     sessionStorage.rainGageID = e.target.stationID;
     sessionStorage.rainGageName = e.target.name;
 
-    rainfallDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
+    rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
 
-    climateURLString = 'http://localhost:9999/swcalulator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     checkResultsGenerated();
   }
@@ -1684,7 +1684,7 @@ function selectWeatherStationMarker(e)
     sessionStorage.weatherStationID = e.target.stationID;
     sessionStorage.weatherStationName = e.target.name;
 
-    weatherDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
+    weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
 
     checkResultsGenerated();
   }
@@ -1741,11 +1741,11 @@ function selectSameStationMarker(e)
     sessionStorage.rainGageName = e.target.name;
     sessionStorage.weatherStationName = e.target.name;
 
-    rainfallDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
+    rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
 
-     weatherDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
+     weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
 
-    climateURLString = 'http://localhost:9999/swcalulator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     checkResultsGenerated();
   }
@@ -1761,7 +1761,7 @@ function downloadRainfallWeatherDataMobile()
     $.ajax(
     {
         type: 'GET',
-        url: 'http://localhost:9999/swcalulator-server/api/v1/email/precipData/' + sessionStorage.rainGageID + '/' + email,
+        url: 'http://localhost:9999/swcalculator-server/api/v1/email/precipData/' + sessionStorage.rainGageID + '/' + email,
         async: true,
         dataType: 'json',
         headers:
@@ -1782,7 +1782,7 @@ function downloadRainfallWeatherDataMobile()
     $.ajax(
     {
         type: 'GET',
-        url: 'http://localhost:9999/swcalulator-server/api/v1/email/evapData/' + sessionStorage.weatherStationID + '/' + email,
+        url: 'http://localhost:9999/swcalculator-server/api/v1/email/evapData/' + sessionStorage.weatherStationID + '/' + email,
         async: true,
         dataType: 'json',
         headers:
@@ -1802,7 +1802,7 @@ function saveSiteMobile()
     $.ajax(
     {
         type: 'POST',
-        url: 'http://localhost:9999/swcalulator-server/api/v1/email/emailXml/' + email + '?fileName=' + sessionStorage.siteName + '.xml',
+        url: 'http://localhost:9999/swcalculator-server/api/v1/email/emailXml/' + email + '?fileName=' + sessionStorage.siteName + '.xml',
         data: xmlSaveString,
         async: true,
         headers:
@@ -2066,7 +2066,7 @@ function getResults()
   $.ajax(
   {
     type: 'POST',
-    url: 'http://localhost:9999/swcalulator-server/api/v1/calculate/siteData',
+    url: 'http://localhost:9999/swcalculator-server/api/v1/calculate/siteData',
     async: true,
     contentType: 'application/xml',
     data: xmlString,
@@ -3918,11 +3918,11 @@ app.controller("navigationCtrl", function($scope, $location)
 
         map.entities.push(locationMarker);
 
-        soilDataURLString = 'http://localhost:9999/swcalulator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+        soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-        precipitationURLString = 'http://localhost:9999/swcalulator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+        precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-        costURLString = 'http://localhost:9999/swcalulator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+        costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
         soilDataBoolean = false;
 
@@ -4679,7 +4679,7 @@ app.controller('climatechangeCtrl', function($scope)
 
   $scope.getNearTermData = function()
   {
-    climateURLString = 'http://localhost:9999/swcalulator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     $('#percentageChangeHeader').html('Percentage Change in Monthly Rainfall for Near Term Projections');
     $('#maxRainfallHeader').html('Annual Max. Day Rainfall (inches) for Near Term Projections');
@@ -4693,7 +4693,7 @@ app.controller('climatechangeCtrl', function($scope)
 
   $scope.getFarTermData = function()
   {
-    climateURLString = 'http://localhost:9999/swcalulator-server/api/v1/climate?year=2060&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2060&precStationID=' + sessionStorage.rainGageID;
 
     $('#percentageChangeHeader').html('Percentage Change in Monthly Rainfall for Far Term Projections');
     $('#maxRainfallHeader').html('Annual Max. Day Rainfall (inches) for Far Term Projections');

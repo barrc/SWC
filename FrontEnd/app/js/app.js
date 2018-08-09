@@ -34,6 +34,10 @@ sessionStorage.setItem("yearsToAnalyze", 20);
 sessionStorage.setItem("eventThreshold", 0.10);
 sessionStorage.setItem("ignoreDays", false);
 sessionStorage.setItem('resultsPage', "summaryResults");
+sessionStorage.setItem("stationSelected", 'notSelected');
+sessionStorage.setItem("yearsToCalculate", 15);
+
+
 sessionStorage.setItem('resultsActive', false);
 sessionStorage.setItem('baselineActive', false);
 sessionStorage.setItem('printToPDF', false);
@@ -296,7 +300,7 @@ $(document).ready(function()
                 'background-color' : '#fff',
                 'z-index' : '1'
             });
-            
+
             if ((sessionStorage.modal == 'climateChange') || (sessionStorage.modal == 'results'))
             {
               $('#modal').css(
@@ -387,7 +391,6 @@ $(document).ready(function()
             });
         }
     });
-
     $.ajax(
       {
         type: 'GET',
@@ -404,9 +407,9 @@ $(document).ready(function()
     }
   document.getElementById("uploadFile").addEventListener("change", loadXMLFile, false);
 
-  var everythingLoaded = setInterval(function() 
+  var everythingLoaded = setInterval(function()
   {
-      if (/loaded|complete/.test(document.readyState)) 
+      if (/loaded|complete/.test(document.readyState))
       {
         clearInterval(everythingLoaded);
         pageLoaded();
@@ -414,8 +417,8 @@ $(document).ready(function()
   }, 10);
 
   $("#modal").draggable(
-  { 
-    containment: '#bingMap' 
+  {
+    containment: '#bingMap'
   });
 
   $('ul li.nav-item a').click(function() {
@@ -622,6 +625,7 @@ function loadXMLFile(e)
 
     precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
+
     costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     soilDataBoolean = false;
@@ -659,7 +663,7 @@ function loadXMLFile(e)
             customAreaXMLArray.push(microsoftMap);
         }
 
-        siteAreaPolygon = new Microsoft.Maps.Polygon(customAreaXMLArray, 
+        siteAreaPolygon = new Microsoft.Maps.Polygon(customAreaXMLArray,
         {
             strokeColor: '#ffb74d',
             fillColor: 'rgba(255, 183, 77, 0.6)',
@@ -740,7 +744,7 @@ function loadXMLFile(e)
 
 function initializeMap()
 {
-    map = new Microsoft.Maps.Map('#bingMap', 
+    map = new Microsoft.Maps.Map('#bingMap',
         {
               credentials: 'AlGvueuNZnD_urhJrwx4LVMS2ooL_rXC57QSlQ9hIsSJwpIXBgbx4Q6PLcCcx2Fp',
               center: new Microsoft.Maps.Location(40, -98.5),
@@ -751,7 +755,7 @@ function initializeMap()
 
   var center = map.getCenter();
 
-  var exteriorRing = 
+  var exteriorRing =
   [
     center,
     new Microsoft.Maps.Location(center.latitude, center.longitude),
@@ -766,7 +770,7 @@ function initializeMap()
     icon: 'images/mapMarker.png'
   });
 
-  siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing, 
+  siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
   {
     strokeColor: '#ffb74d',
     fillColor: 'rgba(255, 183, 77, 0.6)',
@@ -811,7 +815,7 @@ function moveLocationIcon(e)
     map.entities.remove(siteRadiusPolygon);
     map.entities.remove(siteAreaPolygon);
 
-    var exteriorRing = 
+    var exteriorRing =
     [
       center,
       new Microsoft.Maps.Location(center.latitude, center.longitude),
@@ -826,7 +830,7 @@ function moveLocationIcon(e)
       icon: 'images/mapMarker.png'
     });
 
-    siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing, 
+    siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
     {
       strokeColor: '#ffb74d',
       fillColor: 'rgba(255, 183, 77, 0.6)',
@@ -863,19 +867,19 @@ function MakeGeocodeRequest(credentials)
   CallRestService(geocodeRequest);
 }
 
-function GeocodeCallback(result) 
+function GeocodeCallback(result)
 {
   if (result &&
       result.resourceSets &&
       result.resourceSets.length > 0 &&
       result.resourceSets[0].resources &&
-      result.resourceSets[0].resources.length > 0) 
+      result.resourceSets[0].resources.length > 0)
   {
     var bbox = result.resourceSets[0].resources[0].bbox;
     var viewBoundaries = Microsoft.Maps.LocationRect.fromLocations(new Microsoft.Maps.Location(bbox[0], bbox[1]), new Microsoft.Maps.Location(bbox[2], bbox[3]));
-               
+
     map.setView(
-    { 
+    {
       bounds: viewBoundaries
     });
 
@@ -893,7 +897,7 @@ function GeocodeCallback(result)
     map.entities.remove(siteRadiusPolygon);
     map.entities.remove(siteAreaPolygon);
 
-    var exteriorRing = 
+    var exteriorRing =
     [
       center,
       new Microsoft.Maps.Location(center.latitude, center.longitude),
@@ -908,7 +912,7 @@ function GeocodeCallback(result)
       icon: 'images/mapMarker.png'
     });
 
-    siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing, 
+    siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
     {
       strokeColor: '#ffb74d',
       fillColor: 'rgba(255, 183, 77, 0.6)',
@@ -944,7 +948,7 @@ function GeocodeCallback(result)
    }
 }
 
-function CallRestService(request) 
+function CallRestService(request)
 {
   var script = document.createElement('script');
 
@@ -1009,7 +1013,7 @@ function drawCustomArea()
 
       siteAreaPointArray.push(location);
 
-      siteAreaMarker = new Microsoft.Maps.Pushpin(location, 
+      siteAreaMarker = new Microsoft.Maps.Pushpin(location,
       {
         icon: 'images/mapmarker2.png',
         draggable: false,
@@ -1038,12 +1042,12 @@ function drawCustomArea()
         if (e.targetType == 'pushpin')
         {
           selectedPin = e.target;
-        
+
           if (selectedPin.customid == 1)
           {
             siteAreaMarkerLocationArray.push(selectedPin.siteLocation);
 
-            siteAreaPolygon = new Microsoft.Maps.Polygon(siteAreaMarkerLocationArray, 
+            siteAreaPolygon = new Microsoft.Maps.Polygon(siteAreaMarkerLocationArray,
             {
               strokeColor: '#ffb74d',
               fillColor: 'rgba(255, 183, 77, 0.6)',
@@ -1179,19 +1183,19 @@ function getSoilData(page)
           if (page == 'soildrainage')
           {
             if (response[i].ksat <= 0.01)
-            { 
+            {
               soilDataFillColor = 'rgba(255, 235, 59, 0.6)';
             }
             if ((response[i].ksat > 0.01) && (response[i].ksat <= 0.1))
-            { 
+            {
               soilDataFillColor = 'rgba(255, 128, 171, 0.6)';
             }
             if ((response[i].ksat > 0.1) && (response[i].ksat <= 1))
-            { 
+            {
               soilDataFillColor = 'rgba(126, 87, 194, 0.6)';
             }
             if (response[i].ksat > 1)
-            { 
+            {
               soilDataFillColor= 'rgba(1, 87, 155, 0.6)';
             }
           }
@@ -1199,19 +1203,19 @@ function getSoilData(page)
           if (page == 'topography')
           {
             if (response[i].slope < 5.0)
-            { 
+            {
               soilDataFillColor = 'rgba(255, 235, 59, 0.6)';
             }
             if ((response[i].slope >= 5.0) && (response[i].slope < 10.0))
-            { 
+            {
               soilDataFillColor = 'rgba(255, 128, 171, 0.6)';
             }
             if ((response[i].slope >= 10.0) && (response[i].slope < 15.0))
-            { 
+            {
               soilDataFillColor = 'rgba(126, 87, 194, 0.6)';
             }
             if (response[i].slope >= 15.0)
-            { 
+            {
               soilDataFillColor= 'rgba(1, 87, 155, 0.6)';
             }
           }
@@ -1287,7 +1291,7 @@ function getSoilData(page)
               if (sessionStorage.modal == 'topography')
               {
                   if (e.target.slope < 5.0)
-                  { 
+                  {
                     $("#flatRadio").prop("checked", true);
 
                     sessionStorage.topography = 2;
@@ -1295,7 +1299,7 @@ function getSoilData(page)
                     checkResultsGenerated();
                   }
                   if ((e.target.slope >= 5.0) && (e.target.slope < 10.0))
-                  { 
+                  {
                     $("#moderatelyFlatRadio").prop("checked", true);
 
                     sessionStorage.topography = 5;
@@ -1303,7 +1307,7 @@ function getSoilData(page)
                     checkResultsGenerated();
                   }
                   if ((e.target.slope >= 10.0) && (e.target.slope < 15.0))
-                  { 
+                  {
                     $("#moderatelySteepRadio").prop("checked", true);
 
                     sessionStorage.topography = 10;
@@ -1311,7 +1315,7 @@ function getSoilData(page)
                     checkResultsGenerated();
                   }
                   if (e.target.slope >= 15.0)
-                  { 
+                  {
                     $("#steepRadio").prop("checked", true);
 
                     sessionStorage.topography = 15;
@@ -1387,6 +1391,7 @@ function getPrecipitationData()
       rainGageOptions = [];
       weatherStationOptions = [];
 
+
       for (var i = 0; i < response.precStations.length; i++)
       {
         var location = new Microsoft.Maps.Location(response.precStations[i].lat, response.precStations[i].longitude);
@@ -1410,7 +1415,7 @@ function getPrecipitationData()
         rainGageArray.push(rainGageMarker);
         rainGageOptions.push(
         {
-          'name': response.precStations[i].staNam, 
+          'name': response.precStations[i].staNam,
           'value': response.precStations[i].staNam,
           'stationID': response.precStations[i].stationId,
           'startDate': response.precStations[i].sdate,
@@ -1451,7 +1456,7 @@ function getPrecipitationData()
         weatherStationArray.push(weatherStationMarker);
         weatherStationOptions.push(
         {
-          'name': response.evapStations[i].staNam, 
+          'name': response.evapStations[i].staNam,
           'value': response.evapStations[i].staNam,
           'stationID': response.evapStations[i].stationId,
           'startDate': response.evapStations[i].sdate,
@@ -1857,7 +1862,7 @@ function getClimateChangeData()
 
       var scope = angular.element(document.getElementById("climateChangeCharts")).scope();
 
-      scope.$apply(function() 
+      scope.$apply(function()
       {
         scope.drawCharts();
       });
@@ -1921,7 +1926,7 @@ function calculateDesignStorm(category)
 
     if (parseInt($('#infiltrationBasinsBasinValue').val()) > lidDepth)
     {
-        lidDepth = parseInt($('#infiltrationBasinsBasinValue').val()); 
+        lidDepth = parseInt($('#infiltrationBasinsBasinValue').val());
     }
 
     if (netStormDepth >= lidDepth)
@@ -2043,7 +2048,7 @@ function getCostingRegionalization()
       {
         costOptions.push(
         {
-          'name': response[i].selectString.split(')')[0] + ')', 
+          'name': response[i].selectString.split(')')[0] + ')',
           'value': response[i].selectString.split(')')[0] + ')',
           'selectedValue' : count,
           'regionalFactor': response[i].regionalFactor
@@ -2070,6 +2075,7 @@ function getResults()
     async: true,
     contentType: 'application/xml',
     data: xmlString,
+    // error : onError,
     success: function(response)
     {
       $('#loadingDiv').fadeOut(400);
@@ -2638,7 +2644,9 @@ function getResults()
 
       for (var i = 0; i < response.runoffModel.runoffStats.length; i++)
       {
+
         summaryTableArray.push(response.runoffModel.runoffStats[i].toFixed(2));
+
       }
 
       for (var i = 0; i < response.runoffModel.rainRunoffList.length; i++)
@@ -2657,7 +2665,7 @@ function getResults()
           x: response.runoffModel.rainFreqList[i].x.toFixed(2),
           y: response.runoffModel.rainFreqList[i].y.toFixed(2)
         });
-      }  
+      }
 
       for (var i = 0; i < response.runoffModel.runoffFreqList.length; i++)
       {
@@ -2705,29 +2713,29 @@ function getResults()
 
       var scope = angular.element(document.getElementById("summaryResultsTable")).scope();
 
-      scope.$apply(function() 
+      scope.$apply(function()
       {
         scope.summaryResults = [
         {
-          "Name": 'Average Annual Rainfall (inches)',
+          "Name": 'Average Annual Rainfall (inches6)',
           "Current" : summaryTableArray[0],
           "Baseline" : summaryTableArrayBaseline[0]
-        }, 
+        },
         {
           "Name": 'Average Annual Runoff (inches)',
           "Current" : summaryTableArray[1],
           "Baseline" : summaryTableArrayBaseline[1]
-        }, 
+        },
         {
           "Name": 'Days per Year with Rainfall',
           "Current" : summaryTableArray[2],
           "Baseline" : summaryTableArrayBaseline[2]
-        }, 
+        },
         {
           "Name": 'Days per Year with Runoff',
           "Current" : summaryTableArray[3],
           "Baseline" : summaryTableArrayBaseline[3]
-        }, 
+        },
         {
           "Name": 'Percent of Wet Days Retained',
           "Current" : summaryTableArray[4],
@@ -2737,9 +2745,9 @@ function getResults()
           "Name": 'Smallest Rainfall w/ Runoff (inches)',
           "Current" : summaryTableArray[5],
           "Baseline" : summaryTableArrayBaseline[5]
-        }, 
+        },
         {
-          "Name": 'Largest Rainfall w/ Runoff (inches)',
+          "Name": 'Largest Rainfall w/o Runoff (inches)',
           "Current" : summaryTableArray[6],
           "Baseline" : summaryTableArrayBaseline[6]
         },
@@ -3067,15 +3075,32 @@ function getResults()
 
       sessionStorage.resultsActive = true;
       sessionStorage.printToPDF = true;
+    },
+    error : function (jqXHR, status, err) {
+    //  if(jqXHR.status == 500) {
+        $('#alertDiv').show();
+        $('#alertText').html('An error has occurred. Redirecting you to the home page');
+        $('#closeAlertButton').remove();
+        setTimeout(function(){
+          window.location.href = window.location.origin;
+      }, 3000);
+    //  }
+
     }
   });
+
 }
 
+function onError(){
+  $('#alertDiv').show();
+  $('#alertText').html('Error Occured');
+}
 function checkResultsGenerated()
 {
   if (sessionStorage.resultsActive == 'true')
   {
     $('#alertDiv').show();
+
     $('#alertText').html('Site data has changed - results need to be refreshed');
 
     $('#refreshResultsButton').prop('disabled', false);
@@ -3119,7 +3144,7 @@ app.config(function($routeProvider, $locationProvider)
         $('.navcontainer').hide();
       }
     }
-  }).when("/location", 
+  }).when("/location",
   {
     templateUrl: "modals/location.html",
     controller: "locationCtrl",
@@ -3186,7 +3211,7 @@ app.config(function($routeProvider, $locationProvider)
                 'background-color' : '#fff',
                 'z-index' : '1'
             });
-            
+
             $('#modal').css(
             {
               'position': 'absolute',
@@ -3226,7 +3251,7 @@ app.config(function($routeProvider, $locationProvider)
         $('.navcontainer').show();
       }
     }
-  }).when("/soiltype", 
+  }).when("/soiltype",
   {
     templateUrl: "modals/soiltype.html",
     controller: "soildataCtrl",
@@ -3276,28 +3301,28 @@ app.config(function($routeProvider, $locationProvider)
           for (var i = 0; i < soilDataPolygonsArray.length; i++)
           {
             if (soilDataPolygonsArray[i].soilGroup == 'A')
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 235, 59, 0.6)'
               });
             }
             if (soilDataPolygonsArray[i].soilGroup == 'B')
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 128, 171, 0.6)'
               });
             }
             if (soilDataPolygonsArray[i].soilGroup == 'C')
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(126, 87, 194, 0.6)'
               });
             }
             if (soilDataPolygonsArray[i].soilGroup == 'D')
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(1, 87, 155, 0.6)'
@@ -3307,7 +3332,7 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/soildrainage", 
+  }).when("/soildrainage",
   {
     templateUrl: "modals/soildrainage.html",
     controller: "soildataCtrl",
@@ -3357,28 +3382,28 @@ app.config(function($routeProvider, $locationProvider)
           for (var i = 0; i < soilDataPolygonsArray.length; i++)
           {
             if (soilDataPolygonsArray[i].ksat <= 0.01)
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 235, 59, 0.6)'
               });
             }
             if ((soilDataPolygonsArray[i].ksat > 0.01) && (soilDataPolygonsArray[i].ksat <= 0.1))
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 128, 171, 0.6)'
               });
             }
             if ((soilDataPolygonsArray[i].ksat > 0.1) && (soilDataPolygonsArray[i].ksat <= 1))
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(126, 87, 194, 0.6)'
               });
             }
             if (soilDataPolygonsArray[i].ksat > 1)
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(1, 87, 155, 0.6)'
@@ -3388,7 +3413,7 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/topography", 
+  }).when("/topography",
   {
     templateUrl: "modals/topography.html",
     controller: "soildataCtrl",
@@ -3438,28 +3463,28 @@ app.config(function($routeProvider, $locationProvider)
           for (var i = 0; i < soilDataPolygonsArray.length; i++)
           {
             if (soilDataPolygonsArray[i].slope < 5.0)
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 235, 59, 0.6)'
               });
             }
             if ((soilDataPolygonsArray[i].slope >= 5.0) && (soilDataPolygonsArray[i].slope < 10.0))
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 128, 171, 0.6)'
               });
             }
             if ((soilDataPolygonsArray[i].slope >= 10.0) && (soilDataPolygonsArray[i].slope < 15.0))
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(126, 87, 194, 0.6)'
               });
             }
             if (soilDataPolygonsArray[i].slope >= 15.0)
-            { 
+            {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(1, 87, 155, 0.6)'
@@ -3469,7 +3494,7 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/precipitation", 
+  }).when("/precipitation",
   {
     templateUrl: "modals/precipitation.html",
     controller: "precipitationCtrl",
@@ -3515,7 +3540,7 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/climatechange", 
+  }).when("/climatechange",
   {
     templateUrl: "modals/climatechange.html",
     controller: "climatechangeCtrl",
@@ -3550,7 +3575,7 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/landcover", 
+  }).when("/landcover",
   {
     templateUrl: "modals/landcover.html",
     controller: "landcoverCtrl",
@@ -3597,7 +3622,7 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/lidcontrols", 
+  }).when("/lidcontrols",
   {
     templateUrl: "modals/lidcontrols.html",
     controller: "lidcontrolsCtrl",
@@ -3638,7 +3663,7 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/projectcost", 
+  }).when("/projectcost",
   {
     templateUrl: "modals/projectcost.html",
     controller: "projectcostCtrl",
@@ -3679,7 +3704,7 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/results", 
+  }).when("/results",
   {
     templateUrl: "modals/results.html",
     controller: "resultsCtrl",
@@ -3689,7 +3714,7 @@ app.config(function($routeProvider, $locationProvider)
       {
         sessionStorage.modal = 'results';
         Microsoft.Maps.Events.removeHandler(siteLocationHandler);
-        
+
         if ($(window).width() > 1025)
         {
             $('#modal').css(
@@ -3752,7 +3777,7 @@ app.controller("navigationCtrl", function($scope, $location)
             customAreaLongitudeArray.push(siteAreaMarkerLocationArray[i].longitude);
         }
 
-        xmlSaveString = 
+        xmlSaveString =
           '<?xml version="1.0" encoding="UTF-8" ?>' + '\n' +
           '<siteData>' + '\n' +
           '<version>1.1</version>' + '\n' +
@@ -3761,7 +3786,7 @@ app.controller("navigationCtrl", function($scope, $location)
           '<siteLocationName>' + sessionStorage.location + '</siteLocationName>' + '\n' +
           '<siteArea>' + sessionStorage.acres + '</siteArea>' + '\n' +
           '<customAreaLatitude>' + customAreaLatitudeArray + '</customAreaLatitude>' + '\n' +
-          '<customAreaLongitude>' + customAreaLongitudeArray + '</customAreaLongitude>' + '\n' +  
+          '<customAreaLongitude>' + customAreaLongitudeArray + '</customAreaLongitude>' + '\n' +
           '<hydSoilGroup>' + sessionStorage.soilType+ '</hydSoilGroup>' + '\n' +
           '<hydConductivity>' + sessionStorage.soilDrainage + '</hydConductivity>' + '\n' +
           '<surfaceSlope>' + sessionStorage.topography + '</surfaceSlope>' + '\n' +
@@ -4012,7 +4037,7 @@ app.controller("locationCtrl", function($scope)
 
       if ($('#acreInput').val() == '')
       {
-        $('#acreInput').val(0); 
+        $('#acreInput').val(0);
       }
     }
 
@@ -4214,6 +4239,7 @@ app.controller('precipitationCtrl', function($scope)
 
   $scope.rainGageSelect = sessionStorage.rainGageName;
   $scope.rainStartDate = $scope.rainGageNames[0].startDate;
+  //-----------Rain End Date
   $scope.rainEndDate = $scope.rainGageNames[0].endDate;
   $scope.rainRainfall= $scope.rainGageNames[0].rainfall;
 
@@ -4276,6 +4302,24 @@ app.controller('precipitationCtrl', function($scope)
         $scope.rainStartDate = rainGageArray[i].startDate;
         $scope.rainEndDate = rainGageArray[i].endDate;
         $scope.rainRainfall= rainGageArray[i].rainfall;
+
+
+
+sessionStorage.stationSelected = 'selected';
+
+        var sYear = parseInt(new Date(rainGageArray[i].startDate).getFullYear());
+        var eYear= parseInt(new Date(rainGageArray[i].endDate).getFullYear());
+        var tYear = eYear - sYear + 1;
+        if ( tYear < parseInt(sessionStorage.yearsToAnalyze) ){
+          sessionStorage.setItem('yearsActualDifference', tYear);
+          sessionStorage.yearsToCalculate = tYear;
+        }
+        else {
+          sessionStorage.setItem('yearsActualDifference', tYear);
+          sessionStorage.yearsToCalculate = sessionStorage.yearsToAnalyze;
+        }
+
+
       }
     }
 
@@ -4403,6 +4447,19 @@ app.controller('precipitationCtrl', function($scope)
     $scope.rainStartDate = $scope.rainGageNames[id].startDate;
     $scope.rainEndDate = $scope.rainGageNames[id].endDate;
     $scope.rainRainfall = $scope.rainGageNames[id].rainfall;
+
+    sessionStorage.stationSelected = 'selected';
+    var sYear = parseInt(new Date($scope.rainGageNames[id].startDate).getFullYear());
+    var eYear= parseInt(new Date($scope.rainGageNames[id].endDate).getFullYear());
+    var tYear = eYear - sYear + 1;
+    if ( tYear < parseInt(sessionStorage.yearsToAnalyze) ){
+      sessionStorage.setItem('yearsActualDifference', tYear);
+    sessionStorage.yearsToCalculate = tYear;
+    }
+    else {
+      sessionStorage.setItem('yearsActualDifference', tYear);
+    sessionStorage.yearsToCalculate = sessionStorage.yearsToAnalyze;
+    }
   }
 
   $scope.selectWeatherStationIcon = function(id)
@@ -4425,7 +4482,7 @@ app.controller('precipitationCtrl', function($scope)
         window.open(rainfallDataURLString);
         window.open(weatherDataURLString);
     }
-  } 
+  }
 
   $scope.help = function()
   {
@@ -4473,14 +4530,14 @@ app.controller('climatechangeCtrl', function($scope)
   $scope.drawCharts = function()
   {
     $scope.label1 = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    $scope.series1 = ['Warm/Wet', 'Median', 'Hot/Dry'];
-    $scope.data1 = 
+    $scope.series1 = ['Hot/Dry', 'Median', 'Warm/Wet'];
+    $scope.data1 =
     [
       warmWetData,
       medianData,
       hotDryData
     ];
-    $scope.colors1 = 
+    $scope.colors1 =
     [
       {
         backgroundColor: '#7cb2ab',
@@ -4498,9 +4555,9 @@ app.controller('climatechangeCtrl', function($scope)
         fill: false
       }
     ];
-    $scope.data1Options = 
+    $scope.data1Options =
     {
-      scales: 
+      scales:
       {
         xAxes: [
         {
@@ -4524,9 +4581,9 @@ app.controller('climatechangeCtrl', function($scope)
         display: true
       }
     };
-    $scope.data1OptionsPDF = 
+    $scope.data1OptionsPDF =
     {
-      scales: 
+      scales:
       {
         xAxes: [
         {
@@ -4560,15 +4617,15 @@ app.controller('climatechangeCtrl', function($scope)
     };
 
     $scope.label2 = ["5", "10", "15", "30", "50", "100"];
-    $scope.series2 = ['Warm/Wet', 'Median', 'Hot/Dry', 'Historical'];
-    $scope.data2 = 
+    $scope.series2 = ['Hot/Dry', 'Median', 'Warm/Wet', 'Historical'];
+    $scope.data2 =
     [
       maxWarmWetData,
       maxMedianData,
       maxHotDryData,
       maxHistoricalData
     ];
-    $scope.colors2 = 
+    $scope.colors2 =
     [
       {
         backgroundColor: '#FFEB3B',
@@ -4591,9 +4648,9 @@ app.controller('climatechangeCtrl', function($scope)
         fill: false
       }
     ];
-    $scope.data2Options = 
+    $scope.data2Options =
     {
-      scales: 
+      scales:
       {
         xAxes: [
         {
@@ -4617,9 +4674,9 @@ app.controller('climatechangeCtrl', function($scope)
         display: true
       }
     };
-    $scope.data2OptionsPDF = 
+    $scope.data2OptionsPDF =
     {
-      scales: 
+      scales:
       {
         xAxes: [
         {
@@ -4710,13 +4767,13 @@ app.controller('climatechangeCtrl', function($scope)
     var doc = new jsPDF('p', 'pt', 'letter');
     var percentageChangeChartImage = $('#percentageChangeChartImage');
     var maxRainfallChartImage = $('#maxRainfallChartImage');
-    var centeredText = function(text, y) 
+    var centeredText = function(text, y)
     {
         var textWidth = doc.getStringUnitWidth(text) * doc.internal.getFontSize() / doc.internal.scaleFactor;
         var textOffset = (doc.internal.pageSize.width - textWidth) / 2;
         doc.text(textOffset, y, text);
     }
-    var width = doc.internal.pageSize.width; 
+    var width = doc.internal.pageSize.width;
 
     doc.setFontSize(20);
 
@@ -4733,7 +4790,7 @@ app.controller('climatechangeCtrl', function($scope)
     centeredText($('#maxRainfallHeader').html(), 425);
 
     doc.addImage(maxRainfallChartImage[0], 'png', 25, 435, 550, 275);
-    
+
     doc.save('SW-Calculator-Climate-Change.pdf');
   }
 
@@ -4753,7 +4810,7 @@ app.controller('landcoverCtrl', function($scope)
   $('.landSlider:eq(2)').bootstrapSlider('setValue', $scope.lawnValue);
   $('.landSlider:eq(3)').bootstrapSlider('setValue', $scope.desertValue);
 
-  $('.landSlider').on('slideStart', function() 
+  $('.landSlider').on('slideStart', function()
   {
     $("#modal").draggable(
     {
@@ -4761,7 +4818,7 @@ app.controller('landcoverCtrl', function($scope)
     });
   });
 
-  $('.landSlider').on('slideStop', function() 
+  $('.landSlider').on('slideStop', function()
   {
     $("#modal").draggable(
     {
@@ -4951,7 +5008,7 @@ app.controller('lidcontrolsCtrl', function($scope)
   $('.lidSlider:eq(6)').bootstrapSlider('setValue', $scope.permeablePavementValue);
   $('.lidModalSlider').bootstrapSlider();
 
-  $('.lidSlider').on('slideStart', function() 
+  $('.lidSlider').on('slideStart', function()
   {
     $("#modal").draggable(
     {
@@ -4959,7 +5016,7 @@ app.controller('lidcontrolsCtrl', function($scope)
     });
   });
 
-  $('.lidSlider').on('slideStop', function() 
+  $('.lidSlider').on('slideStop', function()
   {
     $("#modal").draggable(
     {
@@ -4999,7 +5056,7 @@ app.controller('lidcontrolsCtrl', function($scope)
       sessionStorage.permeablePavement = 0;
     }
 
-    checkResultsGenerated();
+    ld();
 
   });
 
@@ -5429,21 +5486,58 @@ app.controller('resultsCtrl', function($scope)
     $('#costSummaryRadio').prop('checked', true);
   }
 
-  $scope.yearsValue = parseInt(sessionStorage.yearsToAnalyze);
+//----2222222------Years to calculate
+
+  $scope.rainGageNames = rainGageOptions;
+  $scope.weatherStationNames = weatherStationOptions;
+
+  $scope.rainGageSelect = sessionStorage.rainGageName;
+  $scope.rainStartDate = $scope.rainGageNames[0].startDate;
+
+  $scope.rainEndDate = $scope.rainGageNames[0].endDate;
+
+  var sYear = parseInt(new Date($scope.rainGageNames[0].startDate).getFullYear());
+  var eYear= parseInt(new Date($scope.rainGageNames[0].endDate).getFullYear());
+  var tYear = eYear - sYear + 1;
+
+
+if (sessionStorage.stationSelected == 'notSelected'){
+      if ( tYear < parseInt(sessionStorage.yearsToAnalyze) ){
+        sessionStorage.setItem('yearsActualDifference', tYear);
+        $scope.yearsValue = tYear;
+      }
+      else {
+            sessionStorage.setItem('yearsActualDifference', tYear);
+            $scope.yearsValue = parseInt(sessionStorage.yearsToAnalyze);
+      }
+  }
+
+if (sessionStorage.stationSelected == 'selected'){
+  console.log("Station changed. Years to calculate   " + sessionStorage.yearsToCalculate);
+
+  $scope.yearsValue = parseInt(sessionStorage.yearsToCalculate);
+
+
+}
+
+
+
+
+//--------------
   $scope.eventValue = parseFloat(sessionStorage.eventThreshold);
 
   $scope.summary1Labels = ["Runoff", "Infiltration", "Evaporation"];
   $scope.summary1Data = [summaryChartArray[0], summaryChartArray[1], summaryChartArray[2]];
   $scope.summary1Colors = ['#7cb2ab', '#bcd75f', '#ffb74d'];
   $scope.summary1Options = {
-    legend: 
+    legend:
     {
       display: true,
       position: 'top'
     }
   };
   $scope.summary1OptionsPDF = {
-    legend: 
+    legend:
     {
       display: true,
       position: 'top'
@@ -5458,7 +5552,7 @@ app.controller('resultsCtrl', function($scope)
     responsive: false
   };
   $scope.summary2OptionsPDF = {
-    legend: 
+    legend:
     {
       display: true,
       position: 'top'
@@ -5577,21 +5671,21 @@ app.controller('resultsCtrl', function($scope)
 
       $scope.summaryResults = [
       {
-        "Name": 'Average Annual Rainfall (inches)',
+        "Name": 'Average Annual Rainfall (inches1)',
         "Current" : summaryTableArray[0]
-      }, 
+      },
       {
         "Name": 'Average Annual Runoff (inches)',
         "Current" : summaryTableArray[1]
-      }, 
+      },
       {
         "Name": 'Days per Year with Rainfall',
         "Current" : summaryTableArray[2]
-      }, 
+      },
       {
         "Name": 'Days per Year with Runoff',
         "Current" : summaryTableArray[3]
-      }, 
+      },
       {
         "Name": 'Percent of Wet Days Retained',
         "Current" : summaryTableArray[4]
@@ -5599,9 +5693,9 @@ app.controller('resultsCtrl', function($scope)
       {
         "Name": 'Smallest Rainfall w/ Runoff (inches)',
         "Current" : summaryTableArray[5]
-      }, 
+      },
       {
-        "Name": 'Largest Rainfall w/ Runoff (inches)',
+        "Name": 'Largest Rainfall w/o Runoff (inches)',
         "Current" : summaryTableArray[6]
       },
       {
@@ -5738,25 +5832,25 @@ app.controller('resultsCtrl', function($scope)
 
         $scope.summaryResults = [
         {
-          "Name": 'Average Annual Rainfall (inches)',
+          "Name": 'Average Annual Rainfall (inches2)',
           "Current" : summaryTableArray[0],
           "Baseline" : summaryTableArrayBaseline[0]
-        }, 
+        },
         {
           "Name": 'Average Annual Runoff (inches)',
           "Current" : summaryTableArray[1],
           "Baseline" : summaryTableArrayBaseline[1]
-        }, 
+        },
         {
           "Name": 'Days per Year with Rainfall',
           "Current" : summaryTableArray[2],
           "Baseline" : summaryTableArrayBaseline[2]
-        }, 
+        },
         {
           "Name": 'Days per Year with Runoff',
           "Current" : summaryTableArray[3],
           "Baseline" : summaryTableArrayBaseline[3]
-        }, 
+        },
         {
           "Name": 'Percent of Wet Days Retained',
           "Current" : summaryTableArray[4],
@@ -5766,9 +5860,9 @@ app.controller('resultsCtrl', function($scope)
           "Name": 'Smallest Rainfall w/ Runoff (inches)',
           "Current" : summaryTableArray[5],
           "Baseline" : summaryTableArrayBaseline[5]
-        }, 
+        },
         {
-          "Name": 'Largest Rainfall w/ Runoff (inches)',
+          "Name": 'Largest Rainfall w/o Runoff (inches)',
           "Current" : summaryTableArray[6],
           "Baseline" : summaryTableArrayBaseline[6]
         },
@@ -5782,7 +5876,7 @@ app.controller('resultsCtrl', function($scope)
         $scope.summary2Data = [summaryChartArrayBaseline[0], summaryChartArrayBaseline[1], summaryChartArrayBaseline[2]];
         $scope.summary2Colors = ['#7cb2ab', '#bcd75f', '#ffb74d'];
         $scope.summary2Options = {
-            legend: 
+            legend:
             {
               display: true,
               position: 'top'
@@ -5793,7 +5887,7 @@ app.controller('resultsCtrl', function($scope)
 
   $scope.rainfallRunoffEventsSeries = ['Current Scenario', 'Baseline Scenario'];
   $scope.rainfallRunoffEventsData = [rainfallRunoffEventsArray, rainfallRunoffEventsArrayBaseline];
-  $scope.rainfallRunoffEventsColors = 
+  $scope.rainfallRunoffEventsColors =
   [
     {
       backgroundColor: '#01579B',
@@ -5810,9 +5904,9 @@ app.controller('resultsCtrl', function($scope)
       showLine: false
     }
   ];
-  $scope.rainfallRunoffEventsOptions = 
+  $scope.rainfallRunoffEventsOptions =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -5848,9 +5942,9 @@ app.controller('resultsCtrl', function($scope)
       display: true
     }
   };
-  $scope.rainfallRunoffEventsOptionsPDF = 
+  $scope.rainfallRunoffEventsOptionsPDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -5897,7 +5991,7 @@ app.controller('resultsCtrl', function($scope)
 
   $scope.rainfallRunoffFrequencySeries = ['Rainfall', 'Runoff', 'Rainfall Baseline', 'Runoff Baseline'];
   $scope.rainfallRunoffFrequencyData = [rainfallFrequencyArray, runoffFrequencyArray, rainfallFrequencyArrayBaseline, runoffFrequencyArrayBaseline];
-  $scope.rainfallRunoffFrequencyColors = 
+  $scope.rainfallRunoffFrequencyColors =
   [
     {
       backgroundColor: '#01579B',
@@ -5932,9 +6026,9 @@ app.controller('resultsCtrl', function($scope)
       fill: false
     }
   ];
-  $scope.rainfallRunoffFrequencyOptions = 
+  $scope.rainfallRunoffFrequencyOptions =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -5971,9 +6065,9 @@ app.controller('resultsCtrl', function($scope)
     }
   };
 
-  $scope.rainfallRunoffFrequencyOptionsPDF = 
+  $scope.rainfallRunoffFrequencyOptionsPDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6020,7 +6114,7 @@ app.controller('resultsCtrl', function($scope)
 
   $scope.rainfallRetentionSeries = ['Current Scenario', 'Baseline Scenario'];
   $scope.rainfallRetentionData = [rainfallRetentionArray, rainfallRetentionArrayBaseline];
-  $scope.rainfallRetentionColors = 
+  $scope.rainfallRetentionColors =
   [
     {
       backgroundColor: '#01579B',
@@ -6039,9 +6133,9 @@ app.controller('resultsCtrl', function($scope)
       fill: false
     }
   ];
-  $scope.rainfallRetentionOptions = 
+  $scope.rainfallRetentionOptions =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6079,9 +6173,9 @@ app.controller('resultsCtrl', function($scope)
     }
   };
 
-  $scope.rainfallRetentionOptionsPDF = 
+  $scope.rainfallRetentionOptionsPDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6130,7 +6224,7 @@ app.controller('resultsCtrl', function($scope)
   $scope.runoffContributionSeries = ['Current Scenario', 'Baseline Scenario'];
   $scope.runoffContributionLabels = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '75%', '80%', '85%', '90%', '95%', '99%'];
   $scope.runoffContributionData = [runoffContributionArray, runoffContributionArrayBaseline];
-  $scope.runoffContributionColors = 
+  $scope.runoffContributionColors =
   [
     {
       backgroundColor: '#01579B',
@@ -6141,9 +6235,9 @@ app.controller('resultsCtrl', function($scope)
       borderColor: '#7E57C2',
     }
   ];
-  $scope.runoffContributionOptions = 
+  $scope.runoffContributionOptions =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6173,9 +6267,9 @@ app.controller('resultsCtrl', function($scope)
     }
   };
 
-  $scope.runoffContributionOptionsPDF = 
+  $scope.runoffContributionOptionsPDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6215,7 +6309,7 @@ app.controller('resultsCtrl', function($scope)
 
   $scope.extremeEventSeries = ['Rainfall', 'Runoff', 'Rainfall Baseline', 'Runoff Baseline'];
   $scope.extremeEventLabels = ['5', '10', '15', '30', '50', '100'];
-  $scope.extremeEventColors = 
+  $scope.extremeEventColors =
   [
     {
       backgroundColor: '#01579B',
@@ -6234,9 +6328,9 @@ app.controller('resultsCtrl', function($scope)
       borderColor: '#FFEB3B',
     }
   ];
-  $scope.extremeEvent1Options = 
+  $scope.extremeEvent1Options =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6267,9 +6361,9 @@ app.controller('resultsCtrl', function($scope)
       display: true
     }
   };
-  $scope.extremeEvent1OptionsPDF = 
+  $scope.extremeEvent1OptionsPDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6308,9 +6402,9 @@ app.controller('resultsCtrl', function($scope)
     },
     responsive: false
   };
-  $scope.extremeEvent2Options = 
+  $scope.extremeEvent2Options =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6341,9 +6435,9 @@ app.controller('resultsCtrl', function($scope)
       display: true
     }
   };
-  $scope.extremeEvent2OptionsPDF = 
+  $scope.extremeEvent2OptionsPDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6392,7 +6486,7 @@ app.controller('resultsCtrl', function($scope)
   $scope.costsData = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
   $scope.costsDataCapital = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
   $scope.costsDataMaintenance = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
-  $scope.costsColors = 
+  $scope.costsColors =
   [
     {
       backgroundColor: '#01579B',
@@ -6403,9 +6497,9 @@ app.controller('resultsCtrl', function($scope)
       borderColor: '#7E57C2',
     }
   ];
-  $scope.costsOptions = 
+  $scope.costsOptions =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6434,9 +6528,9 @@ app.controller('resultsCtrl', function($scope)
       display: true
     }
   };
-  $scope.costsOptionsCapital = 
+  $scope.costsOptionsCapital =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6465,9 +6559,9 @@ app.controller('resultsCtrl', function($scope)
       display: true
     }
   };
-  $scope.costsOptionsCapitalPDF = 
+  $scope.costsOptionsCapitalPDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6504,9 +6598,9 @@ app.controller('resultsCtrl', function($scope)
     },
     responsive: false
   };
-  $scope.costsOptionsMaintenance = 
+  $scope.costsOptionsMaintenance =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6535,9 +6629,9 @@ app.controller('resultsCtrl', function($scope)
       display: true
     }
   };
-  $scope.costsOptionsMaintenancePDF = 
+  $scope.costsOptionsMaintenancePDF =
   {
-    scales: 
+    scales:
     {
       xAxes: [
       {
@@ -6736,7 +6830,7 @@ $scope.costSummaryTableData = [
       {
         name: 'Site Suitability',
         currentScenario: currentSiteSuitability,
-        baselineScenario: baselineSiteSuitability 
+        baselineScenario: baselineSiteSuitability
       },
       {
         name: 'Topography',
@@ -6762,8 +6856,31 @@ $scope.costSummaryTableData = [
     sessionStorage.resultsPage = page;
   }
 
+  const yearsValueAtLoadTime = $scope.yearsValue;
+
+  // when actual difference between is greater than 20, then we need to assign difference value to limit of input box.
+  if(sessionStorage.getItem('yearsActualDifference') && sessionStorage.getItem('yearsActualDifference') > 20) {
+     $scope.yearsValueTemp = parseInt(sessionStorage.getItem('yearsActualDifference'));
+   }
+   else {
+    $scope.yearsValueTemp = $scope.yearsValue;
+   }
+
+
   $scope.changeYearsToAnalyze = function()
   {
+    if($scope.yearsValue > yearsValueAtLoadTime || typeof $scope.yearsValue == "undefined") {
+
+      if(sessionStorage.getItem('yearsActualDifference') &&  sessionStorage.getItem('yearsActualDifference') > 20) {
+        if(typeof $scope.yearsValue == "undefined") {
+            $scope.yearsValue = parseInt(yearsValueAtLoadTime);
+        }
+      }
+      else {
+        $scope.yearsValue = parseInt(yearsValueAtLoadTime);
+      }
+
+    }
     sessionStorage.yearsToAnalyze = $scope.yearsValue;
     checkResultsGenerated();
   }
@@ -6791,7 +6908,7 @@ $scope.costSummaryTableData = [
   $scope.generateResults = function()
   {
     console.log()
-    xmlString = 
+    xmlString =
       '<?xml version="1.0" encoding="UTF-8" ?>' + '\n' +
       '<siteData>' + '\n' +
       '<version>1.1</version>' + '\n' +
@@ -6836,7 +6953,7 @@ $scope.costSummaryTableData = [
       '<porousPavementGravelThickness>' + $('#permeablePavementGravelValue').val() + '</porousPavementGravelThickness>' + '\n' +
       '<porousPavementCaptureRatio>' + $('#permeablePavementCaptureValue').val() + '</porousPavementCaptureRatio>' + '\n' +
       '<designStorm>' + sessionStorage.designStorm + '</designStorm>' + '\n' +
-      '<yearsAnalyzed>' + sessionStorage.yearsToAnalyze + '</yearsAnalyzed>' + '\n' +
+      '<yearsAnalyzed>' + $scope.yearsValue + '</yearsAnalyzed>' + '\n' +
       '<runoffThreshold>' + sessionStorage.eventThreshold + '</runoffThreshold>' + '\n' +
       '<ignoreConsecStorms>' + sessionStorage.ignoreDays + '</ignoreConsecStorms>' + '\n' +
       '<climateScenario>' + sessionStorage.climateScenario + '</climateScenario>' + '\n' +
@@ -6892,7 +7009,7 @@ $scope.costSummaryTableData = [
     baselineRainGardensLowCapital = currentRainGardensLowCapital;
     baselineRainGardensHighCapital = currentRainGardensHighCapital;
     baselineGreenRoofsLowCapital = currentGreenRoofsLowCapital;
-    baselineGreenRoofsHighCapital = currentGreenRoofsHighCapital; 
+    baselineGreenRoofsHighCapital = currentGreenRoofsHighCapital;
     baselineStreetPlantersLowCapital = currentStreetPlantersLowCapital;
     baselineStreetPlantersHighCapital = currentStreetPlantersHighCapital;
     baselineInfiltrationBasinsLowCapital = currentInfiltrationBasinsLowCapital;
@@ -6944,7 +7061,7 @@ $scope.costSummaryTableData = [
       {
         name: 'Site Suitability',
         currentScenario: currentSiteSuitability,
-        baselineScenario: baselineSiteSuitability 
+        baselineScenario: baselineSiteSuitability
       },
       {
         name: 'Topography',
@@ -7086,7 +7203,7 @@ $scope.costSummaryTableData = [
     $scope.summary2Data = [summaryChartArrayBaseline[0], summaryChartArrayBaseline[1], summaryChartArrayBaseline[2]];
     $scope.summary2Colors = ['#7cb2ab', '#bcd75f', '#ffb74d'];
     $scope.summary2Options = {
-    legend: 
+    legend:
     {
       display: true,
       position: 'top'
@@ -7098,25 +7215,25 @@ $scope.costSummaryTableData = [
 
     $scope.summaryResults = [
     {
-      "Name": 'Average Annual Rainfall (inches)',
+      "Name": 'Average Annual Rainfall (inches3)',
       "Current" : summaryTableArray[0],
       "Baseline" : summaryTableArrayBaseline[0]
-    }, 
+    },
     {
       "Name": 'Average Annual Runoff (inches)',
       "Current" : summaryTableArray[1],
       "Baseline" : summaryTableArrayBaseline[1]
-    }, 
+    },
     {
       "Name": 'Days per Year with Rainfall',
       "Current" : summaryTableArray[2],
       "Baseline" : summaryTableArrayBaseline[2]
-    }, 
+    },
     {
       "Name": 'Days per Year with Runoff',
       "Current" : summaryTableArray[3],
       "Baseline" : summaryTableArrayBaseline[3]
-    }, 
+    },
     {
       "Name": 'Percent of Wet Days Retained',
       "Current" : summaryTableArray[4],
@@ -7126,9 +7243,9 @@ $scope.costSummaryTableData = [
       "Name": 'Smallest Rainfall w/ Runoff (inches)',
       "Current" : summaryTableArray[5],
       "Baseline" : summaryTableArrayBaseline[5]
-    }, 
+    },
     {
-      "Name": 'Largest Rainfall w/ Runoff (inches)',
+      "Name": 'Largest Rainfall w/o Runoff (inches)',
       "Current" : summaryTableArray[6],
       "Baseline" : summaryTableArrayBaseline[6]
     },
@@ -8230,7 +8347,7 @@ $scope.costSummaryTableData = [
     var extremeEventPeakChartImage = $('#extremeEventPeakChartImage');
     var costsChartCapitalImage = $('#costsChartCapitalImage');
     var costsChartMaintenanceImage = $('#costsChartMaintenanceImage');
-    var centeredText = function(text, y) 
+    var centeredText = function(text, y)
     {
         var textWidth = doc.getStringUnitWidth(text) * doc.internal.getFontSize() / doc.internal.scaleFactor;
         var textOffset = (doc.internal.pageSize.width - textWidth) / 2;
@@ -8280,13 +8397,13 @@ $scope.costSummaryTableData = [
 
         summaryColumns = ["Statisic", "Current Scenario"];
         summaryRows = [
-            ['Average Annual Rainfall (inches)', summaryTableArray[0]],
+            ['Average Annual Rainfall (inches4)', summaryTableArray[0]],
             ['Average Annual Runoff (inches)', summaryTableArray[1]],
             ['Days per Year with Rainfall', summaryTableArray[2]],
             ['Days per Year with Runoff', summaryTableArray[3]],
             ['Percent of Wet Days Retained', summaryTableArray[4]],
             ['Smallest Rainfall w/ Runoff (inches)', summaryTableArray[5]],
-            ['Largest Rainfall w/ Runoff (inches)', summaryTableArray[6]],
+            ['Largest Rainfall w/o Runoff (inches)', summaryTableArray[6]],
             ['Max Rainfall Retained (inches)', summaryTableArray[7]]
             ];
 
@@ -8341,14 +8458,15 @@ $scope.costSummaryTableData = [
             ];
 
         summaryColumns = ["Statisic", "Current Scenario", "Baseline Scenario"];
+
         summaryRows = [
-            ['Average Annual Rainfall (inches)', summaryTableArray[0], summaryTableArrayBaseline[0]],
+            ['Average Annual Rainfall (inches5)', summaryTableArray[0], summaryTableArrayBaseline[0]],
             ['Average Annual Runoff (inches)', summaryTableArray[1], summaryTableArrayBaseline[1]],
             ['Days per Year with Rainfall', summaryTableArray[2], summaryTableArrayBaseline[2]],
             ['Days per Year with Runoff', summaryTableArray[3], summaryTableArrayBaseline[3]],
             ['Percent of Wet Days Retained', summaryTableArray[4], summaryTableArrayBaseline[4]],
             ['Smallest Rainfall w/ Runoff (inches)', summaryTableArray[5], summaryTableArrayBaseline[5]],
-            ['Largest Rainfall w/ Runoff (inches)', summaryTableArray[6], summaryTableArrayBaseline[6]],
+            ['Largest Rainfall w/o Runoff (inches)', summaryTableArray[6], summaryTableArrayBaseline[6]],
             ['Max Rainfall Retained (inches)', summaryTableArray[7], summaryTableArrayBaseline[7]]
             ];
 
@@ -8535,7 +8653,7 @@ $scope.costSummaryTableData = [
         {
             fontSize: 8
         },
-        headerStyles: 
+        headerStyles:
          {
             fillColor: [25, 148, 147],
         }
@@ -8547,7 +8665,7 @@ $scope.costSummaryTableData = [
         {
             fontSize: 8
         },
-        headerStyles: 
+        headerStyles:
          {
             fillColor: [25, 148, 147],
         }
@@ -8575,7 +8693,7 @@ $scope.costSummaryTableData = [
         {
             fontSize: 8
         },
-        headerStyles: 
+        headerStyles:
          {
             fillColor: [25, 148, 147],
         }
@@ -8587,7 +8705,7 @@ $scope.costSummaryTableData = [
         {
             fontSize: 8
         },
-        headerStyles: 
+        headerStyles:
          {
             fillColor: [25, 148, 147],
         }

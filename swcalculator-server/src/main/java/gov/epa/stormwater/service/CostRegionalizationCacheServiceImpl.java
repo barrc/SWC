@@ -44,7 +44,7 @@ public class CostRegionalizationCacheServiceImpl implements CostRegionalizationC
 
 
         logger.debug("### SWCALCULATOR_HOME = "+ System.getProperty("SWCALCULATOR_HOME"));
-        PERSISTENT_CACHE_FILENAME = System.getProperty("SWCALCULATOR_HOME")+ "\\cache\\costRegionalizationCache.txt";
+        PERSISTENT_CACHE_FILENAME = System.getProperty("SWCALCULATOR_HOME")+ "\\costData\\costRegionalizationCache.txt";
 
         logger.debug("CostRegionalizationCacheServiceImpl.postConstruct: initializing memory cache >>> " +
                 "Thread: " + Thread.currentThread().toString() +

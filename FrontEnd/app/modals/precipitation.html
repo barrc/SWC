@@ -24,7 +24,7 @@
 <div class="row">
   <div class="col-md-12">
     <div class="form-group">
-      <label for="rainGageSelect">Rain Gage: <img src="images/rainGageIcon.png" alt="rain gage" height="30px" width="30px" /></label>
+      <label for="rainGageSelect">Rain Gage: <img src="stormwatercalculator/images/rainGageIcon.png" alt="rain gage" height="30px" width="30px" /></label>
       <select class="form-control" id="rainGageSelect" ng-model="rainGageSelect" data-ng-options="items.value as items.name for items in rainGageNames" ng-change="selectRainGageDropdown()">
       </select>
     </div>
@@ -33,7 +33,7 @@
 <div class="row">
   <div class="col-md-12">
     <div class="form-group">
-      <label for="weatherStationSelect">Weather Station: <img src="images/weatherStationIcon.png" alt="weather station" height="30px" width="30px" /></label>
+      <label for="weatherStationSelect">Weather Station: <img src="stormwatercalculator/images/weatherStationIcon.png" alt="weather station" height="30px" width="30px" /></label>
       <select class="form-control" id="weatherStationSelect" ng-model="weatherStationSelect" ng-options="items.value as items.name for items in weatherStationNames" ng-change="selectWeatherStationDropdown()">
       </select>
     </div>
@@ -45,7 +45,7 @@
       <label for="precipitationInformation">Rainfall and Evaporation Information:</label>
       <div id="precipitationInformation">
         <p id="rainGageInformation">
-          <img src="images/rainGageIcon.png" alt="rain gage" height="30px" width="30px" />
+          <img src="stormwatercalculator/images/rainGageIcon.png" alt="rain gage" height="30px" width="30px" />
           <br>
           <span>Record Start Date: </span>
           <span ng-bind="rainStartDate">
@@ -60,7 +60,7 @@
           </span>
         </p>
         <p id="weatherStationInformation">
-          <img src="images/weatherStationIcon.png" alt="weather station" height="30px" width="30px" />
+          <img src="stormwatercalculator/images/weatherStationIcon.png" alt="weather station" height="30px" width="30px" />
           <br>
           <span>Record Start Date: </span>
           <span ng-bind="weatherStartDate">

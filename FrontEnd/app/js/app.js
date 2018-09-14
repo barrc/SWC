@@ -394,7 +394,7 @@ $(document).ready(function()
     $.ajax(
       {
         type: 'GET',
-        url: 'js/config.json',
+        url: 'stormwatercalculator/js/config.json',
         crossDomain: true,
         success: function(response)
         {
@@ -616,17 +616,17 @@ function loadXMLFile(e)
 
     locationMarker.setOptions(
     {
-      icon: 'images/mapMarker.png'
+      icon: 'stormwatercalculator/images/mapMarker.png'
     });
 
     map.entities.push(locationMarker);
 
-    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
 
-    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     soilDataBoolean = false;
 
@@ -767,7 +767,7 @@ function initializeMap()
 
   locationMarker.setOptions(
   {
-    icon: 'images/mapMarker.png'
+    icon: 'stormwatercalculator/images/mapMarker.png'
   });
 
   siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
@@ -780,11 +780,11 @@ function initializeMap()
   map.entities.push(locationMarker);
   map.entities.push(siteRadiusPolygon);
 
-  soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+  soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-  precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
+  precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
 
-  costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
+  costURLString = '/swcalculator-server/api/v1/costing?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
 
   getPrecipitationData();
   getCostingRegionalization();
@@ -827,7 +827,7 @@ function moveLocationIcon(e)
 
     locationMarker.setOptions(
     {
-      icon: 'images/mapMarker.png'
+      icon: 'stormwatercalculator/images/mapMarker.png'
     });
 
     siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
@@ -840,11 +840,11 @@ function moveLocationIcon(e)
     map.entities.push(locationMarker);
     map.entities.push(siteRadiusPolygon);
 
-    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     soilDataBoolean = false;
 
@@ -909,7 +909,7 @@ function GeocodeCallback(result)
 
     locationMarker.setOptions(
     {
-      icon: 'images/mapMarker.png'
+      icon: 'stormwatercalculator/images/mapMarker.png'
     });
 
     siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
@@ -922,11 +922,11 @@ function GeocodeCallback(result)
     map.entities.push(locationMarker);
     map.entities.push(siteRadiusPolygon);
 
-    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     sessionStorage.location = $('#locationInput').val();
     sessionStorage.latitude = locationMarker.getLocation().latitude;
@@ -1015,7 +1015,7 @@ function drawCustomArea()
 
       siteAreaMarker = new Microsoft.Maps.Pushpin(location,
       {
-        icon: 'images/mapmarker2.png',
+        icon: 'stormwatercalculator/images/mapmarker2.png',
         draggable: false,
       });
 
@@ -1407,7 +1407,7 @@ function getPrecipitationData()
         rainGageMarker.setOptions(
         {
           visible: false,
-          icon: 'images/rainGageIcon.png'
+          icon: 'stormwatercalculator/images/rainGageIcon.png'
         });
 
         Microsoft.Maps.Events.addHandler(rainGageMarker, 'click', selectRainGageMarker);
@@ -1425,9 +1425,9 @@ function getPrecipitationData()
 
         rainGageCount++;
 
-        rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + response.precStations[0].stationId;
+        rainfallDataURLString = '/swcalculator-server/api/v1/metStations/download/precipData/' + response.precStations[0].stationId;
 
-        climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + response.precStations[0].stationId;
+        climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + response.precStations[0].stationId;
       }
 
       sessionStorage.setItem('rainGageName', rainGageArray[0].name);
@@ -1448,7 +1448,7 @@ function getPrecipitationData()
         weatherStationMarker.setOptions(
         {
           visible: false,
-          icon: 'images/weatherStationIcon.png'
+          icon: 'stormwatercalculator/images/weatherStationIcon.png'
         });
 
         Microsoft.Maps.Events.addHandler(weatherStationMarker, 'click', selectWeatherStationMarker);
@@ -1466,7 +1466,7 @@ function getPrecipitationData()
 
         weatherStationCount++;
 
-        weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + response.evapStations[0].stationId;
+        weatherDataURLString = '/swcalculator-server/api/v1/metStations/download/evapData/' + response.evapStations[0].stationId;
 
       }
 
@@ -1492,7 +1492,7 @@ function getPrecipitationData()
                 sameStationMarker.setOptions(
                 {
                   visible: false,
-                  icon: 'images/sameStationIcon.png'
+                  icon: 'stormwatercalculator/images/sameStationIcon.png'
                 });
 
                 Microsoft.Maps.Events.addHandler(sameStationMarker, 'click', selectSameStationMarker);
@@ -1606,19 +1606,19 @@ function selectRainGageMarker(e)
     {
       rainGageArray[i].setOptions(
       {
-        icon: 'images/rainGageIcon.png'
+        icon: 'stormwatercalculator/images/rainGageIcon.png'
       });
     }
 
     for (var i = 0; i < weatherStationArray.length; i++)
     {
-      if (weatherStationArray[i].image.src.includes('images/weatherStationActiveIcon.png'))
+      if (weatherStationArray[i].image.src.includes('stormwatercalculator/images/weatherStationActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
           sameStationArray[j].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -1626,7 +1626,7 @@ function selectRainGageMarker(e)
 
     e.target.setOptions(
     {
-      icon: 'images/rainGageActiveIcon.png'
+      icon: 'stormwatercalculator/images/rainGageActiveIcon.png'
     });
 
     var scope = angular.element(document.getElementById("rainGageSelect")).scope();
@@ -1639,9 +1639,9 @@ function selectRainGageMarker(e)
     sessionStorage.rainGageID = e.target.stationID;
     sessionStorage.rainGageName = e.target.name;
 
-    rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
+    rainfallDataURLString = '/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
 
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     checkResultsGenerated();
   }
@@ -1656,19 +1656,19 @@ function selectWeatherStationMarker(e)
     {
       weatherStationArray[i].setOptions(
       {
-        icon: 'images/weatherStationIcon.png'
+        icon: 'stormwatercalculator/images/weatherStationIcon.png'
       });
     }
 
     for (var i = 0; i < rainGageArray.length; i++)
     {
-      if (rainGageArray[i].image.src.includes('images/rainGageActiveIcon.png'))
+      if (rainGageArray[i].image.src.includes('stormwatercalculator/images/rainGageActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
           sameStationArray[j].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -1676,7 +1676,7 @@ function selectWeatherStationMarker(e)
 
     e.target.setOptions(
     {
-      icon: 'images/weatherStationActiveIcon.png'
+      icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
     });
 
     var scope = angular.element(document.getElementById("weatherStationSelect")).scope();
@@ -1689,7 +1689,7 @@ function selectWeatherStationMarker(e)
     sessionStorage.weatherStationID = e.target.stationID;
     sessionStorage.weatherStationName = e.target.name;
 
-    weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
+    weatherDataURLString = '/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
 
     checkResultsGenerated();
   }
@@ -1703,7 +1703,7 @@ function selectSameStationMarker(e)
     {
       rainGageArray[i].setOptions(
       {
-        icon: 'images/rainGageIcon.png'
+        icon: 'stormwatercalculator/images/rainGageIcon.png'
       });
     }
 
@@ -1711,7 +1711,7 @@ function selectSameStationMarker(e)
     {
       weatherStationArray[i].setOptions(
       {
-        icon: 'images/weatherStationIcon.png'
+        icon: 'stormwatercalculator/images/weatherStationIcon.png'
       });
     }
 
@@ -1719,13 +1719,13 @@ function selectSameStationMarker(e)
     {
       sameStationArray[i].setOptions(
       {
-        icon: 'images/sameStationIcon.png'
+        icon: 'stormwatercalculator/images/sameStationIcon.png'
       });
     }
 
     e.target.setOptions(
     {
-      icon: 'images/sameStationActiveIcon.png'
+      icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
     });
 
     var scope1 = angular.element(document.getElementById("rainGageSelect")).scope();
@@ -1746,11 +1746,11 @@ function selectSameStationMarker(e)
     sessionStorage.rainGageName = e.target.name;
     sessionStorage.weatherStationName = e.target.name;
 
-    rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
+    rainfallDataURLString = '/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
 
-     weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
+     weatherDataURLString = '/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
 
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     checkResultsGenerated();
   }
@@ -1761,12 +1761,12 @@ function downloadRainfallWeatherDataMobile()
     var email = $('#emailAddressValue').val();
 
     $('#emailModalHeader').hide();
-    $('#emailModalBody').html('<span>Sending Precipitation/Evaporation Data</span><br><img src="images/Spinner.gif" height="75px" width="75px"/>');
+    $('#emailModalBody').html('<span>Sending Precipitation/Evaporation Data</span><br><img src="stormwatercalculator/images/Spinner.gif" height="75px" width="75px"/>');
 
     $.ajax(
     {
         type: 'GET',
-        url: 'http://localhost:9999/swcalculator-server/api/v1/email/precipData/' + sessionStorage.rainGageID + '/' + email,
+        url: '/swcalculator-server/api/v1/email/precipData/' + sessionStorage.rainGageID + '/' + email,
         async: true,
         dataType: 'json',
         headers:
@@ -1787,7 +1787,7 @@ function downloadRainfallWeatherDataMobile()
     $.ajax(
     {
         type: 'GET',
-        url: 'http://localhost:9999/swcalculator-server/api/v1/email/evapData/' + sessionStorage.weatherStationID + '/' + email,
+        url: '/swcalculator-server/api/v1/email/evapData/' + sessionStorage.weatherStationID + '/' + email,
         async: true,
         dataType: 'json',
         headers:
@@ -1802,12 +1802,12 @@ function saveSiteMobile()
     var email = $('#emailAddressValue').val();
 
     $('#emailModalHeader').hide();
-    $('#emailModalBody').html('<span>Sending SWC XML File</span><br><img src="images/Spinner.gif" height="75px" width="75px"/>');
+    $('#emailModalBody').html('<span>Sending SWC XML File</span><br><img src="stormwatercalculator/images/Spinner.gif" height="75px" width="75px"/>');
 
     $.ajax(
     {
         type: 'POST',
-        url: 'http://localhost:9999/swcalculator-server/api/v1/email/emailXml/' + email + '?fileName=' + sessionStorage.siteName + '.xml',
+        url: '/swcalculator-server/api/v1/email/emailXml/' + email + '?fileName=' + sessionStorage.siteName + '.xml',
         data: xmlSaveString,
         async: true,
         headers:
@@ -2071,7 +2071,7 @@ function getResults()
   $.ajax(
   {
     type: 'POST',
-    url: 'http://localhost:9999/swcalculator-server/api/v1/calculate/siteData',
+    url: '/swcalculator-server/api/v1/calculate/siteData',
     async: true,
     contentType: 'application/xml',
     data: xmlString,
@@ -3938,16 +3938,16 @@ app.controller("navigationCtrl", function($scope, $location)
 
         locationMarker.setOptions(
         {
-          icon: 'images/mapMarker.png'
+          icon: 'stormwatercalculator/images/mapMarker.png'
         });
 
         map.entities.push(locationMarker);
 
-        soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+        soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-        precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+        precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-        costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+        costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
         soilDataBoolean = false;
 
@@ -4254,7 +4254,7 @@ app.controller('precipitationCtrl', function($scope)
     {
       rainGageArray[i].setOptions(
       {
-        icon: 'images/rainGageActiveIcon.png'
+        icon: 'stormwatercalculator/images/rainGageActiveIcon.png'
       });
     }
   }
@@ -4265,7 +4265,7 @@ app.controller('precipitationCtrl', function($scope)
     {
       weatherStationArray[i].setOptions(
       {
-        icon: 'images/weatherStationActiveIcon.png'
+        icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
       });
     }
   }
@@ -4276,7 +4276,7 @@ app.controller('precipitationCtrl', function($scope)
     {
       sameStationArray[i].setOptions(
       {
-        icon: 'images/sameStationActiveIcon.png'
+        icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
       });
     }
   }
@@ -4289,14 +4289,14 @@ app.controller('precipitationCtrl', function($scope)
       {
         rainGageArray[i].setOptions(
         {
-          icon: 'images/rainGageActiveIcon.png'
+          icon: 'stormwatercalculator/images/rainGageActiveIcon.png'
         });
       }
       else
       {
         rainGageArray[i].setOptions(
         {
-          icon: 'images/rainGageIcon.png'
+          icon: 'stormwatercalculator/images/rainGageIcon.png'
         });
 
         $scope.rainStartDate = rainGageArray[i].startDate;
@@ -4329,7 +4329,7 @@ sessionStorage.stationSelected = 'selected';
       {
         sameStationArray[i].setOptions(
         {
-          icon: 'images/sameStationActiveIcon.png'
+          icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
         });
       }
       else
@@ -4338,7 +4338,7 @@ sessionStorage.stationSelected = 'selected';
         {
           sameStationArray[i].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -4346,7 +4346,7 @@ sessionStorage.stationSelected = 'selected';
 
     for (var i = 0; i < weatherStationArray.length; i++)
     {
-      if (weatherStationArray[i].image.src.includes('images/weatherStationActiveIcon.png'))
+      if (weatherStationArray[i].image.src.includes('stormwatercalculator/images/weatherStationActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
@@ -4354,14 +4354,14 @@ sessionStorage.stationSelected = 'selected';
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationActiveIcon.png'
+              icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
             });
           }
           else
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationIcon.png'
+              icon: 'stormwatercalculator/images/sameStationIcon.png'
             });
           }
         }
@@ -4378,14 +4378,14 @@ sessionStorage.stationSelected = 'selected';
       {
         weatherStationArray[i].setOptions(
         {
-          icon: 'images/weatherStationActiveIcon.png'
+          icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
         });
       }
       else
       {
         weatherStationArray[i].setOptions(
         {
-          icon: 'images/weatherStationIcon.png'
+          icon: 'stormwatercalculator/images/weatherStationIcon.png'
         });
 
         $scope.weatherStartDate = weatherStationArray[i].startDate;
@@ -4400,7 +4400,7 @@ sessionStorage.stationSelected = 'selected';
       {
         sameStationArray[i].setOptions(
         {
-          icon: 'images/sameStationActiveIcon.png'
+          icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
         });
       }
       else
@@ -4409,7 +4409,7 @@ sessionStorage.stationSelected = 'selected';
         {
           sameStationArray[i].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -4417,7 +4417,7 @@ sessionStorage.stationSelected = 'selected';
 
     for (var i = 0; i < rainGageArray.length; i++)
     {
-      if (rainGageArray[i].image.src.includes('images/rainGageActiveIcon.png'))
+      if (rainGageArray[i].image.src.includes('stormwatercalculator/images/rainGageActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
@@ -4425,14 +4425,14 @@ sessionStorage.stationSelected = 'selected';
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationActiveIcon.png'
+              icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
             });
           }
           else
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationIcon.png'
+              icon: 'stormwatercalculator/images/sameStationIcon.png'
             });
           }
         }
@@ -4736,7 +4736,7 @@ app.controller('climatechangeCtrl', function($scope)
 
   $scope.getNearTermData = function()
   {
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     $('#percentageChangeHeader').html('Percentage Change in Monthly Rainfall for Near Term Projections');
     $('#maxRainfallHeader').html('Annual Max. Day Rainfall (inches) for Near Term Projections');
@@ -4750,7 +4750,7 @@ app.controller('climatechangeCtrl', function($scope)
 
   $scope.getFarTermData = function()
   {
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2060&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2060&precStationID=' + sessionStorage.rainGageID;
 
     $('#percentageChangeHeader').html('Percentage Change in Monthly Rainfall for Far Term Projections');
     $('#maxRainfallHeader').html('Annual Max. Day Rainfall (inches) for Far Term Projections');

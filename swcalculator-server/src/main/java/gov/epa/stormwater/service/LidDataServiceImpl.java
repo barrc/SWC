@@ -33,6 +33,7 @@ public class LidDataServiceImpl implements LidDataService {
         double vRatio;
         
         LidModel lidModel = siteData.getLidModel();
+        System.out.println("Soil Height " + lidModel.getGrSoilHeight());
 
         // Rain Garden
         Utils.writeLine(bw, "RainGarden  BC");

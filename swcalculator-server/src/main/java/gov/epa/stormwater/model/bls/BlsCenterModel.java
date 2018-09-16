@@ -44,7 +44,7 @@ public class BlsCenterModel extends BaseModel {
     @Override
     public int compareTo(BlsCenterModel o) {
         // usually toString should not be used,
-        // instead one of the attributes or more in a comparator chain
+        // instead one of the attributes or more in a comparator chain        
         //return toString().compareTo(o.toString());int compareQuantity = ((Fruit) compareFruit).getQuantity();
         double compareDistToCurrentPoint = ((BlsCenterModel) o).getDistToCurrentPoint();
 

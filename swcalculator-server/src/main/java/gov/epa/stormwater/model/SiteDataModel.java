@@ -37,43 +37,44 @@ public class SiteDataModel {
     private Double percImpervious;
     private Double percDisconnection;
     //lidmodel.idcapture private Integer disconnectionCaptureRatio;
+    private Integer disconnectionCaptureRatio;
     private Double percHarvesting;
-    /*    
+
     private Integer harvestingCisternSize;
     private Integer harvestingCisternNumber;
     private Integer harvestingEmptyingRate;
-     */
+
     private Double percRainGardens;
-    /*
+
     private Integer rainGardensPondingHeight;
     private Integer rainGardensSoilThickness;
     private Integer rainGardensSoilKsat;
     private Integer rainGardensCaptureRatio;
-     */
+
     private Double percGreenRoofs;
-    /*
+
     private Integer greenRoofsSoilThickness;
     private Integer greenRoofsSoilKsat;
-     */
+
     private Double percStreetPlanters;
-    /*    
+
     private Integer streetPlantersPondingHeight;
     private Integer streetPlantersSoilThickness;
     private Integer streetPlantersSoilKsat;
     private Integer streetPlantersGravelThickness;
     private Integer streetPlantersCaptureRatio;
-     */
+
     private Double percInfilBasin;
-    /*    
+
     private Integer infilBasinBasinDepth;
     private Integer infilBasinCaptureRatio;
-     */
+
     private Double percPorousPavement;
-    /*    
+
     private Integer porousPavementPavementThickness;
     private Integer porousPavementgravelThickness;
     private Integer porousPavementcaptureRatio;
-     */
+
     private Double designStorm;
     private Integer yearsAnalyzed;
     private Double runoffThreshold = 0.10;
@@ -106,6 +107,7 @@ public class SiteDataModel {
     public void setVersion(String version) {
         this.version = version;
     }
+
 
     public String getSiteName() {
         return siteName;
@@ -230,7 +232,7 @@ public class SiteDataModel {
         this.percDisconnection = percDisconnection;
     }
 
-/*  moved to lidmodel.idcapture  
+  // moved to lidmodel.idcapture
     public Integer getDisconnectionCaptureRatio() {
         return disconnectionCaptureRatio;
     }
@@ -238,7 +240,7 @@ public class SiteDataModel {
     public void setDisconnectionCaptureRatio(Integer disconnectionCaptureRatio) {
         this.disconnectionCaptureRatio = disconnectionCaptureRatio;
     }
-*/
+
     public Double getPercHarvesting() {
         return percHarvesting;
     }
@@ -247,7 +249,7 @@ public class SiteDataModel {
         this.percHarvesting = percHarvesting;
     }
 
-    /*    
+
     public Integer getHarvestingCisternSize() {
         return harvestingCisternSize;
     }
@@ -271,7 +273,7 @@ public class SiteDataModel {
     public void setHarvestingEmptyingRate(Integer harvestingEmptyingRate) {
         this.harvestingEmptyingRate = harvestingEmptyingRate;
     }
-     */
+
     public Double getPercRainGardens() {
         return percRainGardens;
     }
@@ -280,7 +282,7 @@ public class SiteDataModel {
         this.percRainGardens = percRainGardens;
     }
 
-    /*    
+
     public Integer getRainGardensPondingHeight() {
         return rainGardensPondingHeight;
     }
@@ -312,7 +314,7 @@ public class SiteDataModel {
     public void setRainGardensCaptureRatio(Integer rainGardensCaptureRatio) {
         this.rainGardensCaptureRatio = rainGardensCaptureRatio;
     }
-     */
+
     public Double getPercGreenRoofs() {
         return percGreenRoofs;
     }
@@ -321,7 +323,7 @@ public class SiteDataModel {
         this.percGreenRoofs = percGreenRoofs;
     }
 
-    /*
+
     public Integer getGreenRoofSoilThickness() {
         return greenRoofsSoilThickness;
     }
@@ -337,7 +339,7 @@ public class SiteDataModel {
     public void setGreenRoofSoilKsat(Integer greenRoofsSoilKsat) {
         this.greenRoofsSoilKsat = greenRoofsSoilKsat;
     }
-     */
+
     public Double getPercStreetPlanters() {
         return percStreetPlanters;
     }
@@ -346,7 +348,7 @@ public class SiteDataModel {
         this.percStreetPlanters = percStreetPlanters;
     }
 
-    /*
+
     public Integer getStreetPlantersPondingHeight() {
         return streetPlantersPondingHeight;
     }
@@ -386,7 +388,7 @@ public class SiteDataModel {
     public void setStreetPlantersCaptureRatio(Integer streetPlantersCaptureRatio) {
         this.streetPlantersCaptureRatio = streetPlantersCaptureRatio;
     }
-     */
+
     public Double getPercInfilBasin() {
         return percInfilBasin;
     }
@@ -395,7 +397,7 @@ public class SiteDataModel {
         this.percInfilBasin = percInfilBasin;
     }
 
-    /*
+
     public Integer getInfilBasinBasinDepth() {
         return infilBasinBasinDepth;
     }
@@ -411,7 +413,7 @@ public class SiteDataModel {
     public void setInfilBasinCaptureRatio(Integer infilBasinCaptureRatio) {
         this.infilBasinCaptureRatio = infilBasinCaptureRatio;
     }
-     */
+
     public Double getPercPorousPavement() {
         return percPorousPavement;
     }
@@ -420,7 +422,7 @@ public class SiteDataModel {
         this.percPorousPavement = percPorousPavement;
     }
 
-    /*
+
     public Integer getPorousPavementPavementThickness() {
         return porousPavementPavementThickness;
     }
@@ -444,7 +446,7 @@ public class SiteDataModel {
     public void setPorousPavementCaptureRatio(Integer porousPavementcaptureRatio) {
         this.porousPavementcaptureRatio = porousPavementcaptureRatio;
     }
-     */
+
     public Double getDesignStorm() {
         return designStorm;
     }
@@ -499,7 +501,9 @@ public class SiteDataModel {
     }
 
     public void setLidModel(LidModel lidModel) {
+
         this.lidModel = lidModel;
+        System.out.println("Site Data Model " + lidModel.getGrSoilHeight());
     }
 
     public Boolean getIsNewDevelopment() {

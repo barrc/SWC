@@ -21,7 +21,9 @@
     color: #fff;
     z-index: 2;
     font-size: 12px;
-    cursor: move; } }
+    cursor: move; }
+
+  }
 
 @media only screen and (min-width: 1025px) {
   .lidSliderGroup {
@@ -151,7 +153,8 @@ select {
   width: 100%;
   height: 100%;
   background-color: rgba(255, 255, 255, 0.8);
-  z-index: 3;
+  /* z-index: 3; */
+  z-index : 9999;
   display: none; }
 
 #alertDiv {
@@ -430,7 +433,7 @@ select {
 .nav-item a {
   color: #000;
   display: block;
-  padding: .5em 1em;
+  padding: .3em 1em;
   text-decoration: none;
   cursor: pointer;
   transition: color 0.2s, background 0.5s; }
@@ -986,3 +989,12 @@ label[for="nav-trigger"] {
 
 #costsTable {
   overflow-x: auto; }
+@media only screen and (max-width: 479px) {
+   /* start of phone styles */
+   #alertModal {
+     top : 66%;
+   }
+   #alertText {
+     font-size : 13px;
+   }
+  }

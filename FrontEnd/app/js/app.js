@@ -394,7 +394,7 @@ $(document).ready(function()
     $.ajax(
       {
         type: 'GET',
-        url: 'js/config.json',
+        url: 'stormwatercalculator/js/config.json',
         crossDomain: true,
         success: function(response)
         {
@@ -616,17 +616,17 @@ function loadXMLFile(e)
 
     locationMarker.setOptions(
     {
-      icon: 'images/mapMarker.png'
+      icon: 'stormwatercalculator/images/mapMarker.png'
     });
 
     map.entities.push(locationMarker);
 
-    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
 
-    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     soilDataBoolean = false;
 
@@ -767,7 +767,7 @@ function initializeMap()
 
   locationMarker.setOptions(
   {
-    icon: 'images/mapMarker.png'
+    icon: 'stormwatercalculator/images/mapMarker.png'
   });
 
   siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
@@ -780,11 +780,11 @@ function initializeMap()
   map.entities.push(locationMarker);
   map.entities.push(siteRadiusPolygon);
 
-  soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+  soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-  precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
+  precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
 
-  costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
+  costURLString = '/swcalculator-server/api/v1/costing?latitude=' + 40 + '&longitude=' + locationMarker.getLocation().longitude;
 
   getPrecipitationData();
   getCostingRegionalization();
@@ -827,7 +827,7 @@ function moveLocationIcon(e)
 
     locationMarker.setOptions(
     {
-      icon: 'images/mapMarker.png'
+      icon: 'stormwatercalculator/images/mapMarker.png'
     });
 
     siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
@@ -840,11 +840,11 @@ function moveLocationIcon(e)
     map.entities.push(locationMarker);
     map.entities.push(siteRadiusPolygon);
 
-    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     soilDataBoolean = false;
 
@@ -909,7 +909,7 @@ function GeocodeCallback(result)
 
     locationMarker.setOptions(
     {
-      icon: 'images/mapMarker.png'
+      icon: 'stormwatercalculator/images/mapMarker.png'
     });
 
     siteRadiusPolygon = new Microsoft.Maps.Polygon(exteriorRing,
@@ -922,11 +922,11 @@ function GeocodeCallback(result)
     map.entities.push(locationMarker);
     map.entities.push(siteRadiusPolygon);
 
-    soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+    soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-    precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-    costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+    costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
     sessionStorage.location = $('#locationInput').val();
     sessionStorage.latitude = locationMarker.getLocation().latitude;
@@ -1407,7 +1407,7 @@ function getPrecipitationData()
         rainGageMarker.setOptions(
         {
           visible: false,
-          icon: 'images/rainGageIcon.png'
+          icon: 'stormwatercalculator/images/rainGageIcon.png'
         });
 
         Microsoft.Maps.Events.addHandler(rainGageMarker, 'click', selectRainGageMarker);
@@ -1425,9 +1425,9 @@ function getPrecipitationData()
 
         rainGageCount++;
 
-        rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + response.precStations[0].stationId;
+        rainfallDataURLString = '/swcalculator-server/api/v1/metStations/download/precipData/' + response.precStations[0].stationId;
 
-        climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + response.precStations[0].stationId;
+        climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + response.precStations[0].stationId;
       }
 
       sessionStorage.setItem('rainGageName', rainGageArray[0].name);
@@ -1448,7 +1448,7 @@ function getPrecipitationData()
         weatherStationMarker.setOptions(
         {
           visible: false,
-          icon: 'images/weatherStationIcon.png'
+          icon: 'stormwatercalculator/images/weatherStationIcon.png'
         });
 
         Microsoft.Maps.Events.addHandler(weatherStationMarker, 'click', selectWeatherStationMarker);
@@ -1466,7 +1466,7 @@ function getPrecipitationData()
 
         weatherStationCount++;
 
-        weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + response.evapStations[0].stationId;
+        weatherDataURLString = '/swcalculator-server/api/v1/metStations/download/evapData/' + response.evapStations[0].stationId;
 
       }
 
@@ -1492,7 +1492,7 @@ function getPrecipitationData()
                 sameStationMarker.setOptions(
                 {
                   visible: false,
-                  icon: 'images/sameStationIcon.png'
+                  icon: 'stormwatercalculator/images/sameStationIcon.png'
                 });
 
                 Microsoft.Maps.Events.addHandler(sameStationMarker, 'click', selectSameStationMarker);
@@ -1606,19 +1606,19 @@ function selectRainGageMarker(e)
     {
       rainGageArray[i].setOptions(
       {
-        icon: 'images/rainGageIcon.png'
+        icon: 'stormwatercalculator/images/rainGageIcon.png'
       });
     }
 
     for (var i = 0; i < weatherStationArray.length; i++)
     {
-      if (weatherStationArray[i].image.src.includes('images/weatherStationActiveIcon.png'))
+      if (weatherStationArray[i].image.src.includes('stormwatercalculator/images/weatherStationActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
           sameStationArray[j].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -1626,7 +1626,7 @@ function selectRainGageMarker(e)
 
     e.target.setOptions(
     {
-      icon: 'images/rainGageActiveIcon.png'
+      icon: 'stormwatercalculator/images/rainGageActiveIcon.png'
     });
 
     var scope = angular.element(document.getElementById("rainGageSelect")).scope();
@@ -1639,9 +1639,9 @@ function selectRainGageMarker(e)
     sessionStorage.rainGageID = e.target.stationID;
     sessionStorage.rainGageName = e.target.name;
 
-    rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
+    rainfallDataURLString = '/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
 
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     checkResultsGenerated();
   }
@@ -1656,13 +1656,13 @@ function selectWeatherStationMarker(e)
     {
       weatherStationArray[i].setOptions(
       {
-        icon: 'images/weatherStationIcon.png'
+        icon: 'stormwatercalculator/images/weatherStationIcon.png'
       });
     }
 
     for (var i = 0; i < rainGageArray.length; i++)
     {
-      if (rainGageArray[i].image.src.includes('images/rainGageActiveIcon.png'))
+      if (rainGageArray[i].image.src.includes('stormwatercalculator/images/rainGageActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
@@ -1689,7 +1689,7 @@ function selectWeatherStationMarker(e)
     sessionStorage.weatherStationID = e.target.stationID;
     sessionStorage.weatherStationName = e.target.name;
 
-    weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
+    weatherDataURLString = '/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
 
     checkResultsGenerated();
   }
@@ -1703,7 +1703,7 @@ function selectSameStationMarker(e)
     {
       rainGageArray[i].setOptions(
       {
-        icon: 'images/rainGageIcon.png'
+        icon: 'stormwatercalculator/images/rainGageIcon.png'
       });
     }
 
@@ -1711,7 +1711,7 @@ function selectSameStationMarker(e)
     {
       weatherStationArray[i].setOptions(
       {
-        icon: 'images/weatherStationIcon.png'
+        icon: 'stormwatercalculator/images/weatherStationIcon.png'
       });
     }
 
@@ -1725,7 +1725,7 @@ function selectSameStationMarker(e)
 
     e.target.setOptions(
     {
-      icon: 'images/sameStationActiveIcon.png'
+      icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
     });
 
     var scope1 = angular.element(document.getElementById("rainGageSelect")).scope();
@@ -1746,11 +1746,11 @@ function selectSameStationMarker(e)
     sessionStorage.rainGageName = e.target.name;
     sessionStorage.weatherStationName = e.target.name;
 
-    rainfallDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
+    rainfallDataURLString = '/swcalculator-server/api/v1/metStations/download/precipData/' + sessionStorage.rainGageID;
 
-     weatherDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
+     weatherDataURLString = '/swcalculator-server/api/v1/metStations/download/evapData/' + sessionStorage.weatherStationID;
 
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     checkResultsGenerated();
   }
@@ -1766,7 +1766,7 @@ function downloadRainfallWeatherDataMobile()
     $.ajax(
     {
         type: 'GET',
-        url: 'http://localhost:9999/swcalculator-server/api/v1/email/precipData/' + sessionStorage.rainGageID + '/' + email,
+        url: '/swcalculator-server/api/v1/email/precipData/' + sessionStorage.rainGageID + '/' + email,
         async: true,
         dataType: 'json',
         headers:
@@ -1787,7 +1787,7 @@ function downloadRainfallWeatherDataMobile()
     $.ajax(
     {
         type: 'GET',
-        url: 'http://localhost:9999/swcalculator-server/api/v1/email/evapData/' + sessionStorage.weatherStationID + '/' + email,
+        url: '/swcalculator-server/api/v1/email/evapData/' + sessionStorage.weatherStationID + '/' + email,
         async: true,
         dataType: 'json',
         headers:
@@ -1807,7 +1807,7 @@ function saveSiteMobile()
     $.ajax(
     {
         type: 'POST',
-        url: 'http://localhost:9999/swcalculator-server/api/v1/email/emailXml/' + email + '?fileName=' + sessionStorage.siteName + '.xml',
+        url: '/swcalculator-server/api/v1/email/emailXml/' + email + '?fileName=' + sessionStorage.siteName + '.xml',
         data: xmlSaveString,
         async: true,
         headers:
@@ -1878,12 +1878,14 @@ function changeLIDModalSlider(sliderNumber)
     var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
     sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
   }
+
+
     $('.lidModalSlider:eq(' + sliderNumber + ')').bootstrapSlider('setValue', parseInt($('.sliderValue:eq(' + sliderNumber + ')').val()));
 }
 
 function calculateDesignStorm(category)
 {
-  var netStormDepth = parseFloat($('#designStormValue').val()) - parseFloat(sessionStorage.soilDrainage) * 12;
+  var netStormDepth = parseFloat($('#designStormValue').val()) - parseFloat(sessionStorage.soilDrainage) * 0.5;
 
   if (category == 'rainHarvesting')
   {
@@ -1934,7 +1936,7 @@ function calculateDesignStorm(category)
     {
         lidDepth = parseInt($('#infiltrationBasinsBasinValue').val());
     }
-lidDepth = Math.min(lidDepth, 24);
+
     if (netStormDepth >= lidDepth)
     {
         $('#infiltrationBasinsCaptureValue').val(1);
@@ -1945,8 +1947,6 @@ lidDepth = Math.min(lidDepth, 24);
         $('#infiltrationBasinsCaptureValue').val(parseFloat($('#designStormValue').val()) / (lidDepth - netStormDepth));
         $('#infiltrationBasinsCaptureValue').val(Math.round($('#infiltrationBasinsCaptureValue').val() * 100));
         $('.lidModalSlider:eq(16)').bootstrapSlider('setValue', $('#infiltrationBasinsCaptureValue').val());
-        $('#infiltrationBasinsBasinValue').val(Math.round(lidDepth));
-   $('.lidModalSlider:eq(15)').bootstrapSlider('setValue', $('#infiltrationBasinsBasinValue').val());
     }
   }
   if (category == 'permeablePavement')
@@ -2082,7 +2082,7 @@ function getResults()
   $.ajax(
   {
     type: 'POST',
-    url: 'http://localhost:9999/swcalculator-server/api/v1/calculate/siteData',
+    url: '/swcalculator-server/api/v1/calculate/siteData',
     async: true,
     contentType: 'application/xml',
     data: xmlString,
@@ -2098,7 +2098,7 @@ function getResults()
         var rainHarvestingSizeValue1 = parseInt($('#rainHarvestingCisternValue').val());
         var rainHarvestingSizeValue2 = parseInt($('#rainHarvestingFeetValue').val());
     var streetPlantersSizeValue = parseInt($('#streetPlantersCaptureValue').val());
-    var infiltrationBasinsSizeValue = parseInt($('#infiltrationBasinsCaptureValue').val());
+    var infiltrationBasinsSizeValue = parseInt($('#infiltrationBasinsBasinValue').val());
     var permeablePavementSizeValue = parseInt($('#permeablePavementCaptureValue').val());
 
     var costRegionValue = parseFloat(sessionStorage.costRegionValue);
@@ -2270,7 +2270,7 @@ function getResults()
       }
       if (sessionStorage.permeablePavement != 0)
       {
-          currentPermeablePavementMaintenanceLow  = (0.0563 * permeablePavementSquareFoot) * costRegionValue * inflationFactor;
+          currentPermeablePavementMaintenanceLow = ((0.0487 * permeablePavementSquareFoot) + 2e-13) * costRegionValue * inflationFactor;
           currentPermeablePavementMaintenanceHigh = ((0.3075 * permeablePavementSquareFoot) + 1e-12) * costRegionValue * inflationFactor;
       }
       else
@@ -2279,18 +2279,18 @@ function getResults()
           currentPermeablePavementMaintenanceHigh = 0;
       }
 
-      if ((complexTotal >= typicalTotal) && (complexTotal >= simpleTotal))
-       {
-         costComplexity = 'complex';
-       }
-       else if ((typicalTotal >= complexTotal) && (typicalTotal >= simpleTotal))
-       {
-         costComplexity = 'typical';
-       }
-       else
-       {
-         costComplexity = 'simple';
-       }
+      if ((simpleTotal > typicalTotal) && (simpleTotal > complexTotal))
+      {
+        costComplexity = 'simple';
+      }
+      if ((typicalTotal > simpleTotal) && (typicalTotal > complexTotal))
+      {
+        costComplexity = 'typical';
+      }
+      if ((complexTotal > simpleTotal) && (complexTotal > typicalTotal))
+      {
+        costComplexity = 'complex';
+      }
 
       if (costComplexity == 'simple')
       {
@@ -3114,9 +3114,9 @@ var app = angular.module("stormwaterCalculator", ["ngRoute", "chart.js"]);
 
 app.config(function($routeProvider, $locationProvider)
 {
-  $routeProvider.when("/",
+  $routeProvider.when("/stormwatercalculator",
   {
-    templateUrl: "modals/homepage.html",
+    templateUrl: "/stormwatercalculator/modals/homepage.html",
     controller: "homepageCtrl",
     resolve:
     {
@@ -3145,9 +3145,9 @@ app.config(function($routeProvider, $locationProvider)
         $('.navcontainer').hide();
       }
     }
-  }).when("/location",
+  }).when("/stormwatercalculator/location",
   {
-    templateUrl: "modals/location.html",
+    templateUrl: "/stormwatercalculator/modals/location.html",
     controller: "locationCtrl",
     resolve:
     {
@@ -3155,7 +3155,7 @@ app.config(function($routeProvider, $locationProvider)
       {
         $('#bingMap').show();
 
-        sessionStorage.modal = 'location';
+        sessionStorage.modal = '/stormwatercalculator/location';
 
         siteLocationHandler = Microsoft.Maps.Events.addHandler(map, 'click', moveLocationIcon);
 
@@ -3252,9 +3252,9 @@ app.config(function($routeProvider, $locationProvider)
         $('.navcontainer').show();
       }
     }
-  }).when("/soiltype",
+  }).when("/stormwatercalculator/soiltype",
   {
-    templateUrl: "modals/soiltype.html",
+    templateUrl: "stormwatercalculator/modals/soiltype.html",
     controller: "soildataCtrl",
     resolve:
     {
@@ -3333,9 +3333,9 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/soildrainage",
+  }).when("/stormwatercalculator/soildrainage",
   {
-    templateUrl: "modals/soildrainage.html",
+    templateUrl: "stormwatercalculator/modals/soildrainage.html",
     controller: "soildataCtrl",
     resolve:
     {
@@ -3414,9 +3414,9 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/topography",
+  }).when("/stormwatercalculator/topography",
   {
-    templateUrl: "modals/topography.html",
+    templateUrl: "/stormwatercalculator/modals/topography.html",
     controller: "soildataCtrl",
     resolve:
     {
@@ -3495,9 +3495,9 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/precipitation",
+  }).when("/stormwatercalculator/precipitation",
   {
-    templateUrl: "modals/precipitation.html",
+    templateUrl: "/stormwatercalculator/modals/precipitation.html",
     controller: "precipitationCtrl",
     resolve:
     {
@@ -3541,9 +3541,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/climatechange",
+  }).when("/stormwatercalculator/climatechange",
   {
-    templateUrl: "modals/climatechange.html",
+    templateUrl: "/stormwatercalculator/modals/climatechange.html",
     controller: "climatechangeCtrl",
     resolve:
     {
@@ -3576,9 +3576,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/landcover",
+  }).when("/stormwatercalculator/landcover",
   {
-    templateUrl: "modals/landcover.html",
+    templateUrl: "/stormwatercalculator/modals/landcover.html",
     controller: "landcoverCtrl",
     resolve:
     {
@@ -3623,9 +3623,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/lidcontrols",
+  }).when("/stormwatercalculator/lidcontrols",
   {
-    templateUrl: "modals/lidcontrols.html",
+    templateUrl: "/stormwatercalculator/modals/lidcontrols.html",
     controller: "lidcontrolsCtrl",
     resolve:
     {
@@ -3664,9 +3664,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/projectcost",
+  }).when("/stormwatercalculator/projectcost",
   {
-    templateUrl: "modals/projectcost.html",
+    templateUrl: "/stormwatercalculator/modals/projectcost.html",
     controller: "projectcostCtrl",
     resolve:
     {
@@ -3705,9 +3705,10 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/results",
+  }).when("/stormwatercalculator/results",
   {
-    templateUrl: "modals/results.html",
+
+    templateUrl: "/stormwatercalculator/modals/results.html",
     controller: "resultsCtrl",
     resolve:
     {
@@ -3742,6 +3743,7 @@ app.controller("homepageCtrl", function($scope, $location)
 {
     $scope.go = function(path)
     {
+
       $location.path(path);
 
       if ($scope.nameYourSite == undefined)
@@ -3760,6 +3762,7 @@ app.controller("navigationCtrl", function($scope, $location)
 {
     $scope.go = function(path)
     {
+
       $location.path(path);
     }
     $scope.openSaveModal = function()
@@ -3769,7 +3772,6 @@ app.controller("navigationCtrl", function($scope, $location)
     }
     $scope.saveSite = function()
     {
-      console.log("SAVE SITE");
         var customAreaLatitudeArray = [];
         var customAreaLongitudeArray = [];
 
@@ -3940,16 +3942,16 @@ app.controller("navigationCtrl", function($scope, $location)
 
         locationMarker.setOptions(
         {
-          icon: 'images/mapMarker.png'
+          icon: 'stormwatercalculator/images/mapMarker.png'
         });
 
         map.entities.push(locationMarker);
 
-        soilDataURLString = 'http://localhost:9999/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
+        soilDataURLString = '/swcalculator-server/api/v1/soils?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude + '&distance=1000';
 
-        precipitationURLString = 'http://localhost:9999/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+        precipitationURLString = '/swcalculator-server/api/v1/metStations?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
-        costURLString = 'http://localhost:9999/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
+        costURLString = '/swcalculator-server/api/v1/costing?latitude=' + locationMarker.getLocation().latitude + '&longitude=' + locationMarker.getLocation().longitude;
 
         soilDataBoolean = false;
 
@@ -3965,7 +3967,7 @@ app.controller("navigationCtrl", function($scope, $location)
         siteRadius = sessionStorage.acres / 61.77625;
         drawSiteRadius(sessionStorage.acres);
 
-      $location.path('/location');
+      $location.path('/stormwatercalculator/location');
 
       $('#saveSiteModal').modal('toggle');
 
@@ -4215,43 +4217,19 @@ app.controller('soildataCtrl', function($scope, $route)
     checkResultsGenerated();
   }
 
-  $scope.checkTopography = function()
-   {
-     if ($('#flatRadio').is(':checked'))
-     {
-       sessionStorage.topography = 2;
-       checkResultsGenerated();
-     }
-     if ($('#moderatelyFlatRadio').is(':checked'))
-     {
-       sessionStorage.topography = 5;
-       checkResultsGenerated();
-     }
-     if ($('#moderatelySteepRadio').is(':checked'))
-     {
-       sessionStorage.topography = 10;
-       checkResultsGenerated();
-     }
-     if ($('#steepRadio').is(':checked'))
-     {
-       sessionStorage.topography = 15;
-       checkResultsGenerated();
-     }
-   }
-
   $scope.help = function()
   {
     $('#helpModal').modal();
 
-    if ($route.current.templateUrl == 'modals/soiltype.html')
+    if ($route.current.templateUrl == '/stormwatercalculator/modals/soiltype.html')
     {
       $('#helpText').html("<p>Soil type is identified by its Hydrologic Soil Group, a classification used by soil scientists to characterize the physical nature and runoff potential of a soil. Roughly speaking, Group A is sand, Group B sandy loam, Group C clay loam, and Group D clay. The Calculator uses soil type to infer a site's infiltration properties.</p><p>Soil type data may not be available for your particular site.</p>");
     }
-    if ($route.current.templateUrl == 'modals/soildrainage.html')
+    if ($route.current.templateUrl == '/stormwatercalculator/modals/soildrainage.html')
     {
       $('#helpText').html("<p>The rate at which standing water infiltrates into a soil is measured by its saturated hydraulic conductivity. Soils with higher conductivity produce less runoff.</p><p>Conductivity data might not be available for your particular site.</p>");
     }
-    if ($route.current.templateUrl == 'modals/topography.html')
+    if ($route.current.templateUrl == '/stormwatercalculator/modals/topography.html')
     {
       $('#helpText').html("<p>Site topography, as measured by surface slope (feet of drop per 100 feet of length), affects how fast stormwater will run off a site. Flatter slopes produce slower runoff flow rates and provide more opportunity for rainfall to infiltrate into the soil.</p><p>Slope data may not be available for your particular site.</p>");
     }
@@ -4282,7 +4260,7 @@ app.controller('precipitationCtrl', function($scope)
     {
       rainGageArray[i].setOptions(
       {
-        icon: 'images/rainGageActiveIcon.png'
+        icon: 'stormwatercalculator/images/rainGageActiveIcon.png'
       });
     }
   }
@@ -4293,7 +4271,7 @@ app.controller('precipitationCtrl', function($scope)
     {
       weatherStationArray[i].setOptions(
       {
-        icon: 'images/weatherStationActiveIcon.png'
+        icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
       });
     }
   }
@@ -4304,7 +4282,7 @@ app.controller('precipitationCtrl', function($scope)
     {
       sameStationArray[i].setOptions(
       {
-        icon: 'images/sameStationActiveIcon.png'
+        icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
       });
     }
   }
@@ -4349,7 +4327,7 @@ app.controller('precipitationCtrl', function($scope)
       {
         sameStationArray[i].setOptions(
         {
-          icon: 'images/sameStationActiveIcon.png'
+          icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
         });
       }
       else
@@ -4374,7 +4352,7 @@ app.controller('precipitationCtrl', function($scope)
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationActiveIcon.png'
+              icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
             });
           }
           else
@@ -4410,7 +4388,7 @@ app.controller('precipitationCtrl', function($scope)
       {
         sameStationArray[i].setOptions(
         {
-          icon: 'images/sameStationActiveIcon.png'
+          icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
         });
       }
       else
@@ -4419,7 +4397,7 @@ app.controller('precipitationCtrl', function($scope)
         {
           sameStationArray[i].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -4427,7 +4405,7 @@ app.controller('precipitationCtrl', function($scope)
 
     for (var i = 0; i < rainGageArray.length; i++)
     {
-      if (rainGageArray[i].image.src.includes('images/rainGageActiveIcon.png'))
+      if (rainGageArray[i].image.src.includes('stormwatercalculator/images/rainGageActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
@@ -4435,7 +4413,7 @@ app.controller('precipitationCtrl', function($scope)
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationActiveIcon.png'
+              icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
             });
           }
           else
@@ -4746,7 +4724,7 @@ app.controller('climatechangeCtrl', function($scope)
 
   $scope.getNearTermData = function()
   {
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2035&precStationID=' + sessionStorage.rainGageID;
 
     $('#percentageChangeHeader').html('Percentage Change in Monthly Rainfall for Near Term Projections');
     $('#maxRainfallHeader').html('Annual Max. Day Rainfall (inches) for Near Term Projections');
@@ -4760,7 +4738,7 @@ app.controller('climatechangeCtrl', function($scope)
 
   $scope.getFarTermData = function()
   {
-    climateURLString = 'http://localhost:9999/swcalculator-server/api/v1/climate?year=2060&precStationID=' + sessionStorage.rainGageID;
+    climateURLString = '/swcalculator-server/api/v1/climate?year=2060&precStationID=' + sessionStorage.rainGageID;
 
     $('#percentageChangeHeader').html('Percentage Change in Monthly Rainfall for Far Term Projections');
     $('#maxRainfallHeader').html('Annual Max. Day Rainfall (inches) for Far Term Projections');
@@ -5091,12 +5069,10 @@ app.controller('lidcontrolsCtrl', function($scope)
       var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
       sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
     }
-    checkResultsGenerated();
   });
 
   $scope.changeLIDSlider = function(value, category)
   {
-    console.log("Slider One");
     if(category == 'disconnection' || category == 'rainGardens' || category == 'infiltrationBasins') {
       var disconnectionCalculatedValue = ($('#disconnectionCaptureValue').val()/100)*(parseInt($('#disconnectionValue').val())/100);
       var rainGardensCalculatedValue = ($('#rainGardensCaptureValue').val()/100)*(parseInt($('#rainGardensValue').val())/100);
@@ -6997,7 +6973,6 @@ $scope.costSummaryTableData = [
       '<hydSoilGroup>' + sessionStorage.soilType + '</hydSoilGroup>' + '\n' +
       '<hydConductivity>' + sessionStorage.soilDrainage + '</hydConductivity>' + '\n' +
       '<surfaceSlope>' + sessionStorage.topography + '</surfaceSlope>' + '\n' +
-      '<demoValue>abcd</demoValue>' + '\n' +
       '<rainSource>4</rainSource>' + '\n' +
       '<evapSource>0</evapSource>' + '\n' +
       '<percForest>' + sessionStorage.forest + '</percForest>' + '\n' +
@@ -7050,39 +7025,6 @@ $scope.costSummaryTableData = [
       '<tbRegMultiplier>' + sessionStorage.costRegionValue + '</tbRegMultiplier>' + '\n' +
       '<precStationID>' + sessionStorage.rainGageID + '</precStationID>' + '\n' +
       '<evapStationID>' + sessionStorage.weatherStationID  + '</evapStationID>' + '\n' +
-
-      '<lidData>' + '\n' +
-
-'<idCapture>' + $('#disconnectionCaptureValue').val() + '</idCapture>' + '\n' +
-
-'<rhSize>' + $('#rainHarvestingCisternValue').val() + '</rhSize>' + '\n' +
-'<rhDrainRate>' + $('#rainHarvestingRateValue').val() + '</rhDrainRate>' + '\n' +
-'<rhNumber>' + $('#rainHarvestingFeetValue').val() + '</rhNumber>' + '\n' +
-
-'<rgRimHeight>' + $('#rainGardensPondingValue').val() + '</rgRimHeight>' + '\n' +
-'<rgSoilHeight>' + $('#rainGardensThicknessValue').val() + '</rgSoilHeight>' + '\n' +
-'<rgSoilKsat>' + $('#rainGardensMediaValue').val() + '</rgSoilKsat>' + '\n' +
-'<rgCapture>' + $('#rainGardensCaptureValue').val() + '</rgCapture>' + '\n' +
-
-'<grSoilHeight>' + $('#greenRoofsThicknessValue').val() + '</grSoilHeight>' + '\n' +
-'<grSoilKsat>' + $('#greenRoofsMediaValue').val() + '</grSoilKsat>' + '\n' +
-
-
-'<spRimHeight>' + $('#streetPlantersPondingValue').val() + '</spRimHeight>' + '\n' +
-'<spSoilHeight>' + $('#streetPlantersThicknessValue').val() + '</spSoilHeight>' + '\n' +
-'<spSoilKsat>' + $('#streetPlantersMediaValue').val() + '</spSoilKsat>' + '\n' +
-'<spDrainHeight>' + $('#streetPlantersGravelValue').val() + '</spDrainHeight>' + '\n' +
-'<spCapture>' + $('#streetPlantersCaptureValue').val() + '</spCapture>' + '\n' +
-
-'<ibHeight>' + $('#infiltrationBasinsBasinValue').val() + '</ibHeight>' + '\n' +
-'<ibCapture>' + $('#infiltrationBasinsCaptureValue').val() + '</ibCapture>' + '\n' +
-
-'<ppPaveHeight>' + $('#permeablePavementPavementValue').val() + '</ppPaveHeight>' + '\n' +
-'<ppDrainHeigh>' + $('#permeablePavementGravelValue').val() + '</ppDrainHeigh>' + '\n' +
-'<ppCapture>' + $('#permeablePavementCaptureValue').val() + '</ppCapture>' + '\n' +
-
-      '</lidData>' + '\n' +
-
       '</siteData>';
 
       getResults();

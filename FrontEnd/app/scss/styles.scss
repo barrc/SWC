@@ -3,15 +3,12 @@
     $primaryGrey: #efefef;
     $orange: #ffb74d;
 
-
-
     @media only screen and (min-width: 0px) and (max-width: 768px)
     {
         #climateChangeModal
-        {
-
+        {   
+            
         }
-
     }
     @media only screen and (max-width: 1024px) {
         .site-wrap
@@ -106,7 +103,7 @@
         &:hover {
             background-color: $primaryGreen;
         }
-    }
+    } 
     // #homePage {
     //     position: fixed;
     //     top: 50px;
@@ -683,7 +680,7 @@
         legend {
             color: #fff;
         } // label {
-        //     padding-left: 0;
+        //     padding-left: 0; 
         // }
     }
 
@@ -1195,7 +1192,7 @@ background-color: $primaryGreen;
 {
     color: blue !important;
 }
-.navbar-default .navbar-toggle
+.navbar-default .navbar-toggle 
 {
     border: 0;
 }
@@ -1207,7 +1204,7 @@ background-color: $primaryGreen;
 {
     color: #a2a2a2 !important;
 }
-.navbar-default .navbar-toggle .icon-bar
+.navbar-default .navbar-toggle .icon-bar 
 {
     background-color: #fff;
 }

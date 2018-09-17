@@ -358,7 +358,7 @@ $(document).ready(function()
                 'top' : '50px',
                 'left' : '250px',
                 'height' : 'calc(100% - 50px)',
-                'width' : '100%',
+                'width' : '87%',
                 'background-color' : '#fff',
                 'z-index' : '1'
             });
@@ -1015,7 +1015,7 @@ function drawCustomArea()
 
       siteAreaMarker = new Microsoft.Maps.Pushpin(location,
       {
-        icon: 'stormwatercalculator/images/mapmarker2.png',
+        icon: 'images/mapmarker2.png',
         draggable: false,
       });
 
@@ -1668,7 +1668,7 @@ function selectWeatherStationMarker(e)
         {
           sameStationArray[j].setOptions(
           {
-            icon: 'stormwatercalculator/images/sameStationIcon.png'
+            icon: 'images/sameStationIcon.png'
           });
         }
       }
@@ -1676,7 +1676,7 @@ function selectWeatherStationMarker(e)
 
     e.target.setOptions(
     {
-      icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
+      icon: 'images/weatherStationActiveIcon.png'
     });
 
     var scope = angular.element(document.getElementById("weatherStationSelect")).scope();
@@ -1719,7 +1719,7 @@ function selectSameStationMarker(e)
     {
       sameStationArray[i].setOptions(
       {
-        icon: 'stormwatercalculator/images/sameStationIcon.png'
+        icon: 'images/sameStationIcon.png'
       });
     }
 
@@ -1761,7 +1761,7 @@ function downloadRainfallWeatherDataMobile()
     var email = $('#emailAddressValue').val();
 
     $('#emailModalHeader').hide();
-    $('#emailModalBody').html('<span>Sending Precipitation/Evaporation Data</span><br><img src="stormwatercalculator/images/Spinner.gif" height="75px" width="75px"/>');
+    $('#emailModalBody').html('<span>Sending Precipitation/Evaporation Data</span><br><img src="images/Spinner.gif" height="75px" width="75px"/>');
 
     $.ajax(
     {
@@ -1802,7 +1802,7 @@ function saveSiteMobile()
     var email = $('#emailAddressValue').val();
 
     $('#emailModalHeader').hide();
-    $('#emailModalBody').html('<span>Sending SWC XML File</span><br><img src="stormwatercalculator/images/Spinner.gif" height="75px" width="75px"/>');
+    $('#emailModalBody').html('<span>Sending SWC XML File</span><br><img src="images/Spinner.gif" height="75px" width="75px"/>');
 
     $.ajax(
     {
@@ -1872,6 +1872,14 @@ function getClimateChangeData()
 
 function changeLIDModalSlider(sliderNumber)
 {
+  if(sliderNumber == 0 || sliderNumber == 7 || sliderNumber == 16) {
+    var disconnectionCalculatedValue = ($('#disconnectionCaptureValue').val()/100)*(parseInt($('#disconnectionValue').val())/100);
+    var rainGardensCalculatedValue = ($('#rainGardensCaptureValue').val()/100)*(parseInt($('#rainGardensValue').val())/100);
+    var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
+    sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
+  }
+
+
     $('.lidModalSlider:eq(' + sliderNumber + ')').bootstrapSlider('setValue', parseInt($('.sliderValue:eq(' + sliderNumber + ')').val()));
 }
 
@@ -2046,12 +2054,14 @@ function getCostingRegionalization()
 
       for (var i = 0; i < response.length; i++)
       {
+        console.log("Inflation Factor " + response[i].inflationFactor) ;
         costOptions.push(
         {
           'name': response[i].selectString.split(')')[0] + ')',
           'value': response[i].selectString.split(')')[0] + ')',
           'selectedValue' : count,
-          'regionalFactor': response[i].regionalFactor
+          'regionalFactor': response[i].regionalFactor,
+          'inflationFactor': response[i].inflationFactor
         });
 
         count++;
@@ -2059,6 +2069,7 @@ function getCostingRegionalization()
 
       sessionStorage.setItem('costRegionName', costOptions[0].name);
       sessionStorage.setItem('costRegionValue', costOptions[0].regionalFactor);
+      sessionStorage.setItem('inflationFactor', costOptions[0].inflationFactor);
     }
   });
 }
@@ -2091,6 +2102,7 @@ function getResults()
     var permeablePavementSizeValue = parseInt($('#permeablePavementCaptureValue').val());
 
     var costRegionValue = parseFloat(sessionStorage.costRegionValue);
+    var inflationFactor = parseFloat(sessionStorage.inflationFactor);
 
     disconnectionArea = parseInt(sessionStorage.disconnection);
     rainwaterArea = parseInt(sessionStorage.rainHarvesting);
@@ -2198,107 +2210,72 @@ function getResults()
 
       if (sessionStorage.disconnection != 0)
       {
-        currentDisconnectionMaintenanceLow = ((0.05 * disconnectionSquareFoot) + 1e-13) * costRegionValue;
-        var inflationRateLow = currentDisconnectionMaintenanceLow * 0.02;
-          currentDisconnectionMaintenanceLow = currentDisconnectionMaintenanceLow - inflationRateLow;
-
-          currentDisconnectionMaintenanceHigh = (0.0751 * disconnectionSquareFoot) * costRegionValue;
-          var inflationRateHigh = currentDisconnectionMaintenanceHigh  * 0.02;
-          currentDisconnectionMaintenanceHigh  = currentDisconnectionMaintenanceHigh  - inflationRateHigh;
+        currentDisconnectionMaintenanceLow = ((0.05 * disconnectionSquareFoot) + 1e-13) * costRegionValue * inflationFactor;
+        currentDisconnectionMaintenanceHigh = (0.0751 * disconnectionSquareFoot) * costRegionValue * inflationFactor;
       }
       else
       {
         currentDisconnectionMaintenanceLow = 0;
-          currentDisconnectionMaintenanceHigh = 0;
+        currentDisconnectionMaintenanceHigh = 0;
       }
       if (sessionStorage.rainHarvesting != 0)
       {
-         currentRainHarvestingMaintenanceLow = ((0.1003 * rainwaterSquareFoot) + 0.0002) * costRegionValue;
-         var inflationRateLow = currentRainHarvestingMaintenanceLow * 0.02;
-          currentRainHarvestingMaintenanceLow = currentRainHarvestingMaintenanceLow - inflationRateLow;
-
-          currentRainHarvestingMaintenanceHigh = ((0.2407 * rainwaterSquareFoot) + 0.0006) * costRegionValue;
-          var inflationRateHigh = currentRainHarvestingMaintenanceHigh * 0.02;
-        currentRainHarvestingMaintenanceHigh  = currentRainHarvestingMaintenanceHigh  - inflationRateHigh;
+         currentRainHarvestingMaintenanceLow = ((0.1003 * rainwaterSquareFoot) + 0.0002) * costRegionValue * inflationFactor;
+         currentRainHarvestingMaintenanceHigh = ((0.2407 * rainwaterSquareFoot) + 0.0006) * costRegionValue * inflationFactor;
       }
       else
       {
-            currentRainHarvestingMaintenanceLow = 0;
-          currentRainHarvestingMaintenanceHigh = 0;
+        currentRainHarvestingMaintenanceLow = 0;
+        currentRainHarvestingMaintenanceHigh = 0;
       }
       if (sessionStorage.rainGardens != 0)
       {
-                  currentRainGardensMaintenanceLow = (0.0675 * rainGardensSquareFoot) * costRegionValue;
-                  var inflationRateLow = currentRainGardensMaintenanceLow * 0.02;
-          currentRainGardensMaintenanceLow = currentRainGardensMaintenanceLow - inflationRateLow;
-
-          currentRainGardensMaintenanceHigh = (1.632 * rainGardensSquareFoot) * costRegionValue;
-          var inflationRateHigh = currentRainGardensMaintenanceHigh * 0.02;
-        currentRainGardensMaintenanceHigh  = currentRainGardensMaintenanceHigh - inflationRateHigh;
+        currentRainGardensMaintenanceLow = (0.0675 * rainGardensSquareFoot) * costRegionValue * inflationFactor;
+        currentRainGardensMaintenanceHigh = (1.632 * rainGardensSquareFoot) * costRegionValue * inflationFactor;
       }
       else
       {
-                  currentRainGardensMaintenanceLow = 0;
+          currentRainGardensMaintenanceLow = 0;
           currentRainGardensMaintenanceHigh = 0;
       }
       if (sessionStorage.greenRoofs != 0)
       {
-                  currentGreenRoofsMaintenanceLow = ((0.0281 * greenRoofsSquareFoot) + 6e-14) * costRegionValue;
-                  var inflationRateLow = currentGreenRoofsMaintenanceLow * 0.02;
-          currentGreenRoofsMaintenanceLow = currentGreenRoofsMaintenanceLow - inflationRateLow;
-
-          currentGreenRoofsMaintenanceHigh = ((0.2821 * greenRoofsSquareFoot) + 1e-12) * costRegionValue;
-          var inflationRateHigh = currentGreenRoofsMaintenanceHigh * 0.02;
-        currentGreenRoofsMaintenanceHigh  = currentGreenRoofsMaintenanceHigh - inflationRateHigh;
+          currentGreenRoofsMaintenanceLow = ((0.0281 * greenRoofsSquareFoot) + 6e-14) * costRegionValue * inflationFactor;
+          currentGreenRoofsMaintenanceHigh = ((0.2821 * greenRoofsSquareFoot) + 1e-12) * costRegionValue * inflationFactor;
       }
       else
       {
-                  currentGreenRoofsMaintenanceLow = 0;
+          currentGreenRoofsMaintenanceLow = 0;
           currentGreenRoofsMaintenanceHigh = 0;
       }
       if (sessionStorage.streetPlanters != 0)
       {
-                  currentStreetPlantersMaintenanceLow = (0.045 * streetPlantersSquareFoot) * costRegionValue;
-                  var inflationRateLow = currentStreetPlantersMaintenanceLow * 0.02;
-          currentStreetPlantersMaintenanceLow = currentStreetPlantersMaintenanceLow - inflationRateLow;
-
-          currentStreetPlantersMaintenanceHigh = ((1.0697 * streetPlantersSquareFoot) + 4e-12) * costRegionValue;
-          var inflationRateHigh = currentStreetPlantersMaintenanceHigh * 0.02;
-        currentStreetPlantersMaintenanceHigh  = currentStreetPlantersMaintenanceHigh - inflationRateHigh;
+          currentStreetPlantersMaintenanceLow = (0.045 * streetPlantersSquareFoot) * costRegionValue * inflationFactor;
+          currentStreetPlantersMaintenanceHigh = ((1.0697 * streetPlantersSquareFoot) + 4e-12) * costRegionValue * inflationFactor;
       }
       else
       {
-                  currentStreetPlantersMaintenanceLow= 0;
+          currentStreetPlantersMaintenanceLow= 0;
           currentStreetPlantersMaintenanceHigh = 0;
       }
       if (sessionStorage.infiltrationBasins != 0)
       {
-                  currentInfiltrationBasinsMaintenanceLow = ((0.0487 * infiltrationBasinsSquareFoot) + 2e-13) * costRegionValue;
-                  var inflationRateLow = currentInfiltrationBasinsMaintenanceLow * 0.02;
-          currentInfiltrationBasinsMaintenanceLow = currentInfiltrationBasinsMaintenanceLow - inflationRateLow;
-
-          currentInfiltrationBasinsMaintenanceHigh = ((1.7689 * infiltrationBasinsSquareFoot) + 8e-12) * costRegionValue;
-          var inflationRateHigh = currentInfiltrationBasinsMaintenanceHigh * 0.02;
-        currentInfiltrationBasinsMaintenanceHigh  = currentInfiltrationBasinsMaintenanceHigh - inflationRateHigh;
+          currentInfiltrationBasinsMaintenanceLow = ((0.0487 * infiltrationBasinsSquareFoot) + 2e-13) * costRegionValue * inflationFactor;
+          currentInfiltrationBasinsMaintenanceHigh = ((1.7689 * infiltrationBasinsSquareFoot) + 8e-12) * costRegionValue * inflationFactor;
       }
       else
       {
-                  currentInfiltrationBasinsMaintenanceLow = 0;
+          currentInfiltrationBasinsMaintenanceLow = 0;
           currentInfiltrationBasinsMaintenanceHigh = 0;
       }
       if (sessionStorage.permeablePavement != 0)
       {
-                  currentPermeablePavementMaintenanceLow = ((0.0487 * permeablePavementSquareFoot) + 2e-13) * costRegionValue;
-                  var inflationRateLow = currentPermeablePavementMaintenanceLow * 0.02;
-          currentPermeablePavementMaintenanceLow = currentPermeablePavementMaintenanceLow - inflationRateLow;
-
-          currentPermeablePavementMaintenanceHigh = ((0.3075 * permeablePavementSquareFoot) + 1e-12) * costRegionValue;
-          var inflationRateHigh = currentPermeablePavementMaintenanceHigh * 0.02;
-        currentPermeablePavementMaintenanceHigh  = currentPermeablePavementMaintenanceHigh - inflationRateHigh;
+          currentPermeablePavementMaintenanceLow = ((0.0487 * permeablePavementSquareFoot) + 2e-13) * costRegionValue * inflationFactor;
+          currentPermeablePavementMaintenanceHigh = ((0.3075 * permeablePavementSquareFoot) + 1e-12) * costRegionValue * inflationFactor;
       }
       else
       {
-                  currentPermeablePavementMaintenanceLow= 0;
+          currentPermeablePavementMaintenanceLow= 0;
           currentPermeablePavementMaintenanceHigh = 0;
       }
 
@@ -2319,13 +2296,8 @@ function getResults()
       {
         if (sessionStorage.disconnection != 0)
         {
-          currentDisconnectionLowCapital = ((0.2142 * disconnectionSquareFoot) + 159.75) * costRegionValue;
-          var inflationRateLow = currentDisconnectionLowCapital * 0.02;
-          currentDisconnectionLowCapital = currentDisconnectionLowCapital - inflationRateLow;
-
-          currentDisconnectionHighCapital = ((1.9321 * disconnectionSquareFoot) + 1041.3) * costRegionValue;
-          var inflationRateHigh = currentDisconnectionHighCapital * 0.02;
-          currentDisconnectionHighCapital = currentDisconnectionHighCapital - inflationRateHigh;
+          currentDisconnectionLowCapital = ((0.2142 * disconnectionSquareFoot) + 159.75) * costRegionValue * inflationFactor;
+          currentDisconnectionHighCapital = ((1.9321 * disconnectionSquareFoot) + 1041.3) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2334,13 +2306,8 @@ function getResults()
         }
         if (sessionStorage.rainHarvesting != 0)
         {
-          currentRainHarvestingLowCapital = ((0.3844 * rainwaterSquareFoot) + 61.8) * costRegionValue;
-          var inflationRateLow = currentRainHarvestingLowCapital * 0.02;
-          currentRainHarvestingLowCapital = currentRainHarvestingLowCapital - inflationRateLow;
-
-          currentRainHarvestingHighCapital = ((0.577 * rainwaterSquareFoot) + 1812.9) * costRegionValue;
-          var inflationRateHigh = currentRainHarvestingHighCapital * 0.02;
-          currentRainHarvestingHighCapital = currentRainHarvestingHighCapital - inflationRateHigh;
+          currentRainHarvestingLowCapital = ((0.3844 * rainwaterSquareFoot) + 61.8) * costRegionValue * inflationFactor;
+          currentRainHarvestingHighCapital = ((0.577 * rainwaterSquareFoot) + 1812.9) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2349,13 +2316,8 @@ function getResults()
         }
         if (sessionStorage.rainGardens != 0)
         {
-          currentRainGardensLowCapital = ((0.2717 * rainGardensSquareFoot) + 346.08) * costRegionValue;
-          var inflationRateLow = currentRainGardensLowCapital * 0.02;
-          currentRainGardensLowCapital = currentRainGardensLowCapital - inflationRateLow;
-
-          currentRainGardensHighCapital = ((0.9204 * rainGardensSquareFoot) + 2021) * costRegionValue;
-          var inflationRateHigh = currentRainGardensHighCapital * 0.02;
-          currentRainGardensHighCapital = currentRainGardensLowCapital - inflationRateHigh;
+          currentRainGardensLowCapital = ((0.2717 * rainGardensSquareFoot) + 346.08) * costRegionValue * inflationFactor;
+          currentRainGardensHighCapital = ((0.9204 * rainGardensSquareFoot) + 2021) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2364,13 +2326,8 @@ function getResults()
         }
         if (sessionStorage.greenRoofs != 0)
         {
-          currentGreenRoofsLowCapital = ((0.5421 * greenRoofsSquareFoot) + 1975.2) * costRegionValue;
-          var inflationRateLow = currentGreenRoofsLowCapital * 0.02;
-          currentGreenRoofsLowCapital  = currentGreenRoofsLowCapital - inflationRateLow;
-
-          currentGreenRoofsHighCapital = ((1.5215 * greenRoofsSquareFoot) + 2631.6) * costRegionValue;
-          var inflationRateHigh = currentGreenRoofsHighCapital * 0.02;
-          currentGreenRoofsHighCapital  = currentGreenRoofsHighCapital - inflationRateHigh;
+          currentGreenRoofsLowCapital = ((0.5421 * greenRoofsSquareFoot) + 1975.2) * costRegionValue * inflationFactor;
+          currentGreenRoofsHighCapital = ((1.5215 * greenRoofsSquareFoot) + 2631.6) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2379,13 +2336,8 @@ function getResults()
         }
         if (sessionStorage.streetPlanters != 0)
         {
-          currentStreetPlantersLowCapital = ((0.5592 * streetPlantersSquareFoot) + 1928.2) * costRegionValue;
-          var inflationRateLow = currentStreetPlantersLowCapital  * 0.02;
-          currentStreetPlantersLowCapital   = currentStreetPlantersLowCapital  - inflationRateLow;
-
-          currentStreetPlantersHighCapital = ((1.6359 * streetPlantersSquareFoot) + 2254.4) * costRegionValue;
-          var inflationRateHigh = currentStreetPlantersHighCapital * 0.02;
-          currentStreetPlantersHighCapital  = currentStreetPlantersHighCapital- inflationRateHigh;
+          currentStreetPlantersLowCapital = ((0.5592 * streetPlantersSquareFoot) + 1928.2) * costRegionValue * inflationFactor;
+          currentStreetPlantersHighCapital = ((1.6359 * streetPlantersSquareFoot) + 2254.4) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2394,13 +2346,8 @@ function getResults()
         }
         if (sessionStorage.infiltrationBasins != 0)
         {
-          currentInfiltrationBasinsLowCapital = ((0.8205 * infiltrationBasinsSquareFoot) + 1928.2) * costRegionValue;
-          var inflationRateLow = currentInfiltrationBasinsLowCapital * 0.02;
-          currentInfiltrationBasinsLowCapital = currentInfiltrationBasinsLowCapital - inflationRateLow;
-
-          currentInfiltrationBasinsHighCapital = ((0.8339 * infiltrationBasinsSquareFoot) + 2896.1) * costRegionValue;
-          var inflationRateHigh = currentInfiltrationBasinsHighCapital  * 0.02;
-          currentInfiltrationBasinsHighCapital  = currentInfiltrationBasinsHighCapital  - inflationRateHigh;
+          currentInfiltrationBasinsLowCapital = ((0.8205 * infiltrationBasinsSquareFoot) + 1928.2) * costRegionValue * inflationFactor;
+          currentInfiltrationBasinsHighCapital = ((0.8339 * infiltrationBasinsSquareFoot) + 2896.1) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2409,13 +2356,8 @@ function getResults()
         }
         if (sessionStorage.permeablePavement != 0)
         {
-          currentPermeablePavementLowCapital = ((2.3502 * permeablePavementSquareFoot) + 1545) * costRegionValue;
-          var inflationRateLow = currentPermeablePavementLowCapital * 0.02;
-          currentPermeablePavementLowCapital  = currentPermeablePavementLowCapital  - inflationRateLow;
-
-          currentPermeablePavementHighCapital = ((3.5355 * permeablePavementSquareFoot) + 1672.5) * costRegionValue;
-          var inflationRateHigh = currentPermeablePavementHighCapital * 0.02;
-          currentPermeablePavementHighCapital  = currentPermeablePavementHighCapital  - inflationRateHigh;
+          currentPermeablePavementLowCapital = ((2.3502 * permeablePavementSquareFoot) + 1545) * costRegionValue * inflationFactor;
+          currentPermeablePavementHighCapital = ((3.5355 * permeablePavementSquareFoot) + 1672.5) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2427,13 +2369,8 @@ function getResults()
       {
         if (sessionStorage.disconnection != 0)
         {
-          currentDisconnectionLowCapital = ((3.65 * disconnectionSquareFoot) + 1922.8) * costRegionValue;
-          var inflationRateLow = currentDisconnectionLowCapital * 0.02;
-          currentDisconnectionLowCapital = currentDisconnectionLowCapital - inflationRateLow;
-
-          currentDisconnectionHighCapital = ((4.6869 * disconnectionSquareFoot) + 2864.7) * costRegionValue;
-          var inflationRateHigh = currentDisconnectionHighCapital * 0.02;
-          currentDisconnectionHighCapital = currentDisconnectionHighCapital - inflationRateHigh;
+          currentDisconnectionLowCapital = ((3.65 * disconnectionSquareFoot) + 1922.8) * costRegionValue * inflationFactor;
+          currentDisconnectionHighCapital = ((4.6869 * disconnectionSquareFoot) + 2864.7) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2442,13 +2379,8 @@ function getResults()
         }
         if (sessionStorage.rainHarvesting != 0)
         {
-          currentRainHarvestingLowCapital = ((0.7697 * rainwaterSquareFoot) + 3564) * costRegionValue;
-          var inflationRateLow = currentRainHarvestingLowCapital * 0.02;
-          currentRainHarvestingLowCapital = currentRainHarvestingLowCapital - inflationRateLow;
-
-          currentRainHarvestingHighCapital = ((1.0891 * rainwaterSquareFoot) + 3957) * costRegionValue;
-          var inflationRateHigh = currentRainHarvestingHighCapital * 0.02;
-          currentRainHarvestingHighCapital = currentRainHarvestingHighCapital - inflationRateHigh;
+          currentRainHarvestingLowCapital = ((0.7697 * rainwaterSquareFoot) + 3564) * costRegionValue * inflationFactor;
+          currentRainHarvestingHighCapital = ((1.0891 * rainwaterSquareFoot) + 3957) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2457,13 +2389,8 @@ function getResults()
         }
         if (sessionStorage.rainGardens != 0)
         {
-          currentRainGardensLowCapital = ((1.5691 * rainGardensSquareFoot) + 3696) * costRegionValue;
-          var inflationRateLow = currentRainGardensLowCapital * 0.02;
-          currentRainGardensLowCapital = currentRainGardensLowCapital - inflationRateLow;
-
-          currentRainGardensHighCapital = ((3.29 * rainGardensSquareFoot) + 6873.8) * costRegionValue;
-          var inflationRateHigh = currentRainGardensHighCapital * 0.02;
-          currentRainGardensHighCapital = currentRainGardensHighCapital - inflationRateHigh;
+          currentRainGardensLowCapital = ((1.5691 * rainGardensSquareFoot) + 3696) * costRegionValue * inflationFactor;
+          currentRainGardensHighCapital = ((3.29 * rainGardensSquareFoot) + 6873.8) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2472,13 +2399,8 @@ function getResults()
         }
         if (sessionStorage.greenRoofs != 0)
         {
-          currentGreenRoofsLowCapital = ((2.5009 * greenRoofsSquareFoot) + 3288) * costRegionValue;
-          var inflationRateLow = currentGreenRoofsLowCapital * 0.02;
-          currentGreenRoofsLowCapital  = currentGreenRoofsLowCapital - inflationRateLow;
-
-          currentGreenRoofsHighCapital = ((5.0205 * greenRoofsSquareFoot) + 12056) * costRegionValue;
-          var inflationRateHigh = currentGreenRoofsHighCapital * 0.02;
-          currentGreenRoofsHighCapital  = currentGreenRoofsHighCapital - inflationRateHigh;
+          currentGreenRoofsLowCapital = ((2.5009 * greenRoofsSquareFoot) + 3288) * costRegionValue * inflationFactor;
+          currentGreenRoofsHighCapital = ((5.0205 * greenRoofsSquareFoot) + 12056) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2487,13 +2409,8 @@ function getResults()
         }
         if (sessionStorage.streetPlanters != 0)
         {
-          currentStreetPlantersLowCapital = ((2.7125 * streetPlantersSquareFoot) + 2580.6) * costRegionValue;
-          var inflationRateLow = currentStreetPlantersLowCapital  * 0.02;
-          currentStreetPlantersLowCapital   = currentStreetPlantersLowCapital  - inflationRateLow;
-
-          currentStreetPlantersHighCapital = ((6.5348 * streetPlantersSquareFoot) + 8371.9) * costRegionValue;
-          var inflationRateHigh = currentStreetPlantersHighCapital * 0.02;
-          currentStreetPlantersHighCapital  = currentStreetPlantersHighCapital- inflationRateHigh;
+          currentStreetPlantersLowCapital = ((2.7125 * streetPlantersSquareFoot) + 2580.6) * costRegionValue * inflationFactor;
+          currentStreetPlantersHighCapital = ((6.5348 * streetPlantersSquareFoot) + 8371.9) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2502,13 +2419,8 @@ function getResults()
         }
         if (sessionStorage.infiltrationBasins != 0)
         {
-          currentInfiltrationBasinsLowCapital = ((0.8473 * infiltrationBasinsSquareFoot) + 3864) * costRegionValue;
-          var inflationRateLow = currentInfiltrationBasinsLowCapital * 0.02;
-          currentInfiltrationBasinsLowCapital = currentInfiltrationBasinsLowCapital - inflationRateLow;
-
-          currentInfiltrationBasinsHighCapital = ((2.3002 * infiltrationBasinsSquareFoot) + 8457) * costRegionValue;
-          var inflationRateHigh = currentInfiltrationBasinsHighCapital  * 0.02;
-          currentInfiltrationBasinsHighCapital  = currentInfiltrationBasinsHighCapital  - inflationRateHigh;
+          currentInfiltrationBasinsLowCapital = ((0.8473 * infiltrationBasinsSquareFoot) + 3864) * costRegionValue * inflationFactor;
+          currentInfiltrationBasinsHighCapital = ((2.3002 * infiltrationBasinsSquareFoot) + 8457) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2517,31 +2429,23 @@ function getResults()
         }
         if (sessionStorage.permeablePavement != 0)
         {
-          currentPermeablePavementLowCapital = ((4.7209 * permeablePavementSquareFoot) + 1800)  * costRegionValue;
-          var inflationRateLow = currentPermeablePavementLowCapital * 0.02;
-          currentPermeablePavementLowCapital  = currentPermeablePavementLowCapital  - inflationRateLow;
-
-          currentPermeablePavementHighCapital = ((6.2951 * permeablePavementSquareFoot + 2775))  * costRegionValue;
-          var inflationRateHigh = currentPermeablePavementHighCapital * 0.02;
-          currentPermeablePavementHighCapital  = currentPermeablePavementHighCapital  - inflationRateHigh;
+          currentPermeablePavementLowCapital = ((4.7209 * permeablePavementSquareFoot) + 1800)  * costRegionValue * inflationFactor;
+          currentPermeablePavementHighCapital = ((6.2951 * permeablePavementSquareFoot + 2775))  * costRegionValue * inflationFactor;
         }
         else
         {
           currentPermeablePavementLowCapital = 0;
           currentPermeablePavementHighCapital = 0;
         }
+
+
       }
       if (costComplexity == 'complex')
       {
         if (sessionStorage.disconnection != 0)
         {
-          currentDisconnectionLowCapital = ((5.7238 * disconnectionSquareFoot) + 3806.5) * costRegionValue;
-          var inflationRateLow = currentDisconnectionLowCapital * 0.02;
-          currentDisconnectionLowCapital = currentDisconnectionLowCapital - inflationRateLow;
-
-          currentDisconnectionHighCapital = ((6.7608 * disconnectionSquareFoot) + 4748.3) * costRegionValue;
-          var inflationRateHigh = currentDisconnectionHighCapital * 0.02;
-          currentDisconnectionHighCapital = currentDisconnectionHighCapital - inflationRateHigh;
+          currentDisconnectionLowCapital = ((5.7238 * disconnectionSquareFoot) + 3806.5) * costRegionValue * inflationFactor;
+          currentDisconnectionHighCapital = ((6.7608 * disconnectionSquareFoot) + 4748.3) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2550,13 +2454,8 @@ function getResults()
         }
         if (sessionStorage.rainHarvesting != 0)
         {
-          currentRainHarvestingLowCapital = ((1.4085 * rainwaterSquareFoot) + 4350) * costRegionValue;
-          var inflationRateLow = currentRainHarvestingLowCapital * 0.02;
-          currentRainHarvestingLowCapital = currentRainHarvestingLowCapital - inflationRateLow;
-
-          currentRainHarvestingHighCapital = ((1.728 * rainwaterSquareFoot) + 4743) * costRegionValue;
-          var inflationRateHigh = currentRainHarvestingHighCapital * 0.02;
-          currentRainHarvestingHighCapital = currentRainHarvestingHighCapital - inflationRateHigh;
+          currentRainHarvestingLowCapital = ((1.4085 * rainwaterSquareFoot) + 4350) * costRegionValue * inflationFactor;
+          currentRainHarvestingHighCapital = ((1.728 * rainwaterSquareFoot) + 4743) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2565,13 +2464,8 @@ function getResults()
         }
         if (sessionStorage.rainGardens != 0)
         {
-          currentRainGardensLowCapital = ((5.0109 * rainGardensSquareFoot) + 10052) * costRegionValue;
-          var inflationRateLow = currentRainGardensLowCapital * 0.02;
-          currentRainGardensLowCapital = currentRainGardensLowCapital - inflationRateLow;
-
-          currentRainGardensHighCapital = ((6.7319 * rainGardensSquareFoot) + 13229) * costRegionValue;
-          var inflationRateHigh = currentRainGardensHighCapital * 0.02;
-          currentRainGardensHighCapital = currentRainGardensHighCapital - inflationRateHigh;
+          currentRainGardensLowCapital = ((5.0109 * rainGardensSquareFoot) + 10052) * costRegionValue * inflationFactor;
+          currentRainGardensHighCapital = ((6.7319 * rainGardensSquareFoot) + 13229) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2580,13 +2474,8 @@ function getResults()
         }
         if (sessionStorage.greenRoofs != 0)
         {
-          currentGreenRoofsLowCapital = ((7.5401 * greenRoofsSquareFoot) + 20824) * costRegionValue;
-          var inflationRateLow = currentGreenRoofsLowCapital * 0.02;
-          currentGreenRoofsLowCapital  = currentGreenRoofsLowCapital - inflationRateLow;
-
-          currentGreenRoofsHighCapital = ((10.06 * greenRoofsSquareFoot) + 29592) * costRegionValue;
-          var inflationRateHigh = currentGreenRoofsHighCapital * 0.02;
-          currentGreenRoofsHighCapital  = currentGreenRoofsHighCapital - inflationRateHigh;
+          currentGreenRoofsLowCapital = ((7.5401 * greenRoofsSquareFoot) + 20824) * costRegionValue * inflationFactor;
+          currentGreenRoofsHighCapital = ((10.06 * greenRoofsSquareFoot) + 29592) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2595,13 +2484,8 @@ function getResults()
         }
         if (sessionStorage.streetPlanters != 0)
         {
-          currentStreetPlantersLowCapital = ((10.357 * streetPlantersSquareFoot) + 14163) * costRegionValue;
-          var inflationRateLow = currentStreetPlantersLowCapital  * 0.02;
-          currentStreetPlantersLowCapital   = currentStreetPlantersLowCapital  - inflationRateLow;
-
-          currentStreetPlantersHighCapital = ((14.179 * streetPlantersSquareFoot) + 19955) * costRegionValue;
-          var inflationRateHigh = currentStreetPlantersHighCapital * 0.02;
-          currentStreetPlantersHighCapital  = currentStreetPlantersHighCapital- inflationRateHigh;
+          currentStreetPlantersLowCapital = ((10.357 * streetPlantersSquareFoot) + 14163) * costRegionValue * inflationFactor;
+          currentStreetPlantersHighCapital = ((14.179 * streetPlantersSquareFoot) + 19955) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2610,13 +2494,8 @@ function getResults()
         }
         if (sessionStorage.infiltrationBasins != 0)
         {
-          currentInfiltrationBasinsLowCapital = ((3.7531 * infiltrationBasinsSquareFoot) + 13050) * costRegionValue;
-          var inflationRateLow = currentInfiltrationBasinsLowCapital * 0.02;
-          currentInfiltrationBasinsLowCapital = currentInfiltrationBasinsLowCapital - inflationRateLow;
-
-          currentInfiltrationBasinsHighCapital = ((5.2059 * infiltrationBasinsSquareFoot) + 17643) * costRegionValue;
-          var inflationRateHigh = currentInfiltrationBasinsHighCapital  * 0.02;
-          currentInfiltrationBasinsHighCapital  = currentInfiltrationBasinsHighCapital  - inflationRateHigh;
+          currentInfiltrationBasinsLowCapital = ((3.7531 * infiltrationBasinsSquareFoot) + 13050) * costRegionValue * inflationFactor;
+          currentInfiltrationBasinsHighCapital = ((5.2059 * infiltrationBasinsSquareFoot) + 17643) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2625,13 +2504,8 @@ function getResults()
         }
         if (sessionStorage.permeablePavement != 0)
         {
-          currentPermeablePavementLowCapital = ((7.8694 * permeablePavementSquareFoot) + 3750) * costRegionValue;
-          var inflationRateLow = currentPermeablePavementLowCapital * 0.02;
-          currentPermeablePavementLowCapital  = currentPermeablePavementLowCapital  - inflationRateLow;
-
-          currentPermeablePavementHighCapital = ((9.4437 * permeablePavementSquareFoot) + 4275) * costRegionValue;
-          var inflationRateHigh = currentPermeablePavementHighCapital * 0.02;
-          currentPermeablePavementHighCapital  = currentPermeablePavementHighCapital  - inflationRateHigh;
+          currentPermeablePavementLowCapital = ((7.8694 * permeablePavementSquareFoot) + 3750) * costRegionValue * inflationFactor;
+          currentPermeablePavementHighCapital = ((9.4437 * permeablePavementSquareFoot) + 4275) * costRegionValue * inflationFactor;
         }
         else
         {
@@ -2717,7 +2591,7 @@ function getResults()
       {
         scope.summaryResults = [
         {
-          "Name": 'Average Annual Rainfall (inches6)',
+          "Name": 'Average Annual Rainfall (inches)',
           "Current" : summaryTableArray[0],
           "Baseline" : summaryTableArrayBaseline[0]
         },
@@ -2767,7 +2641,7 @@ function getResults()
 
         if (sessionStorage.baselineActive == 'false')
         {
-            scope.costsDataCapital = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [0, 0, 0, 0, 0, 0, 0]];
+             scope.costsDataCapital = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [0, 0, 0, 0, 0, 0, 0]];
 
             scope.costsDataMaintenance = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [0, 0, 0, 0, 0, 0, 0]];
         }
@@ -2895,13 +2769,107 @@ function getResults()
                   currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             }];
             }
             if (sessionStorage.baselineActive == 'true')
             {
                 scope.costsData = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [((baselineDisconnectionLowCapital + baselineDisconnectionHighCapital) / 2).toFixed(2), ((baselineRainHarvestingLowCapital + baselineRainHarvestingHighCapital) / 2).toFixed(2), ((baselineRainGardensLowCapital + baselineRainGardensHighCapital) / 2).toFixed(2), ((baselineGreenRoofsLowCapital + baselineGreenRoofsHighCapital) / 2).toFixed(2), ((baselineStreetPlantersLowCapital + baselineStreetPlantersHighCapital) / 2).toFixed(2), ((baselineInfiltrationBasinsLowCapital + baselineInfiltrationBasinsHighCapital) / 2).toFixed(2), ((baselinePermeablePavementLowCapital + baselinePermeablePavementHighCapital) / 2).toFixed(2)]];
+
+
+
+            scope.costSummaryTableData = [
+            {
+              name: 'Disconnection',
+              drainageArea: sessionStorage.disconnection  + ' / ' + baselineDisconnection,
+              preTreatment: 'No / No',
+              currentLow: '$' + currentDisconnectionLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              currentHigh: '$' + currentDisconnectionHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + baselineDisconnectionLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + baselineDisconnectionHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
+            {
+              name: 'Rainwater Harvesting',
+              drainageArea: sessionStorage.rainHarvesting  + ' / ' + baselineRainHarvesting,
+              preTreatment: 'No / No',
+              currentLow: '$' + currentRainHarvestingLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              currentHigh: '$' + currentRainHarvestingHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + baselineRainHarvestingLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + baselineRainHarvestingHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
+            {
+              name: 'Rain Gardens',
+              drainageArea: sessionStorage.rainGardens + ' / ' + baselineRainGardens,
+              preTreatment: rainGardensPretreatment + ' / ' + rainGardensPretreatmentBaseline,
+              currentLow: '$' + currentRainGardensLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              currentHigh: '$' + currentRainGardensHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + baselineRainGardensLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + baselineRainGardensHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentRainGardensLowCapital - baselineRainGardensLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentRainGardensHighCapital - baselineRainGardensHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            },
+            {
+              name: 'Green Roofs',
+              drainageArea: sessionStorage.greenRoofs  + ' / ' + baselineGreenRoofs,
+              preTreatment: 'No / No',
+              currentLow: '$' + currentGreenRoofsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              currentHigh: '$' + currentGreenRoofsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + baselineGreenRoofsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + baselineGreenRoofsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            },
+            {
+              name: 'Street Planters',
+              drainageArea: sessionStorage.streetPlanters  + ' / ' + baselineStreetPlanters,
+              preTreatment: 'No / No',
+              currentLow: '$' + currentStreetPlantersLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              currentHigh: '$' + currentStreetPlantersHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + baselineStreetPlantersLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + baselineStreetPlantersHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            },
+            {
+              name: 'Infiltration Basins',
+              drainageArea: sessionStorage.infiltrationBasins  + ' / ' + baselineInfiltrationBasins,
+              preTreatment: infiltrationBasinsPretreatment + ' / ' + infiltrationBasinsPretreatmentBaseline,
+              currentLow: '$' + currentInfiltrationBasinsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              currentHigh: '$' + currentInfiltrationBasinsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + baselineInfiltrationBasinsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + baselineInfiltrationBasinsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            },
+            {
+              name: 'Permeable Pavement',
+              drainageArea: sessionStorage.permeablePavement + ' / ' + baselinePermeablePavement,
+              preTreatment: permeablePavementPretreatment + ' / ' + permeablePavementPretreatmentBaseline,
+              currentLow: '$' + currentPermeablePavementLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              currentHigh: '$' + currentPermeablePavementHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + baselinePermeablePavementLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + baselinePermeablePavementHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            },
+            {
+              name: 'Total',
+              drainageArea: (parseInt(sessionStorage.disconnection) + parseInt(sessionStorage.rainHarvesting) + parseInt(sessionStorage.rainGardens) + parseInt(sessionStorage.greenRoofs) + parseInt(sessionStorage.streetPlanters) + parseInt(sessionStorage.infiltrationBasins) + parseInt(sessionStorage.permeablePavement)) + ' / ' + (parseInt(baselineDisconnection) + parseInt(baselineRainHarvesting) + parseInt(baselineRainGardens) + parseInt(baselineGreenRoofs) + parseInt(baselineStreetPlanters) + parseInt(baselineInfiltrationBasins) + parseInt(baselinePermeablePavement)),
+              preTreatment: 'Varies',
+              currentLow: '$' + (currentDisconnectionLowCapital + currentRainHarvestingLowCapital + currentRainGardensLowCapital + currentGreenRoofsLowCapital + currentStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                  currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+            }];
+
+
             }
         }
         if (sessionStorage.costCriteria == 'maintenance')
@@ -3021,8 +2989,8 @@ function getResults()
               currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         }];
             }
             if (sessionStorage.baselineActive == 'true')
@@ -3032,32 +3000,65 @@ function getResults()
 
         }
 
-        scope.costSummaryTableInfoData = [
-          {
-            name: 'Dev. Type',
-            currentScenario: currentDevType,
-            baselineScenario: 'NA'
-          },
-          {
-            name: 'Site Suitability',
-            currentScenario: currentSiteSuitability,
-            baselineScenario: 'NA'
-          },
-          {
-            name: 'Topography',
-            currentScenario: currentTopography,
-            baselineScenario: 'NA'
-          },
-          {
-            name: 'Soil Type',
-            currentScenario: sessionStorage.soilType,
-            baselineScenario: 'NA'
-          },
-          {
-            name: 'Cost Region',
-            currentScenario: sessionStorage.costRegionName + " " + sessionStorage.costRegionValue,
-            baselineScenario: 'NA'
-          }];
+        if(sessionStorage.baselineActive == true) {
+    			scope.costSummaryTableInfoData = [
+    			{
+    				name: 'Dev. Type',
+    				currentScenario: currentDevType,
+    				baselineScenario: baselineDevType
+    			},
+    			{
+    				name: 'Site Suitability',
+    				currentScenario: currentSiteSuitability,
+    				baselineScenario: baselineSiteSuitability
+    			},
+    			{
+    				name: 'Topography',
+    				currentScenario: currentTopography,
+    				baselineScenario: baselineTopography
+    			},
+    			{
+    				name: 'Soil Type',
+    				currentScenario: sessionStorage.soilType,
+    				baselineScenario: baselineSoilType
+    			},
+    			{
+    				name: 'Cost Region',
+    				currentScenario: sessionStorage.costRegionName + " " + sessionStorage.costRegionValue,
+    				baselineScenario: baselineCostRegion
+    			}];
+    		}
+    		else {
+    			if(sessionStorage.baselineActive == false) {
+    			  scope.costSummaryTableInfoData = [
+      			  {
+        				name: 'Dev. Type',
+        				currentScenario: currentDevType,
+        				baselineScenario: 'NA'
+      			  },
+      			  {
+        				name: 'Site Suitability',
+        				currentScenario: currentSiteSuitability,
+        				baselineScenario: 'NA'
+      			  },
+      			  {
+        				name: 'Topography',
+        				currentScenario: currentTopography,
+        				baselineScenario: 'NA'
+      			  },
+      			  {
+        				name: 'Soil Type',
+        				currentScenario: sessionStorage.soilType,
+        				baselineScenario: 'NA'
+      			  },
+      			  {
+        				name: 'Cost Region',
+        				currentScenario: sessionStorage.costRegionName + " " + sessionStorage.costRegionValue,
+        				baselineScenario: 'NA'
+      			  }
+            ];
+    			}
+    		}
       });
 
       $('#refreshResultsButton').prop('disabled', true);
@@ -3113,9 +3114,9 @@ var app = angular.module("stormwaterCalculator", ["ngRoute", "chart.js"]);
 
 app.config(function($routeProvider, $locationProvider)
 {
-  $routeProvider.when("/",
+  $routeProvider.when("/stormwatercalculator",
   {
-    templateUrl: "modals/homepage.html",
+    templateUrl: "/stormwatercalculator/modals/homepage.html",
     controller: "homepageCtrl",
     resolve:
     {
@@ -3144,9 +3145,9 @@ app.config(function($routeProvider, $locationProvider)
         $('.navcontainer').hide();
       }
     }
-  }).when("/location",
+  }).when("/stormwatercalculator/location",
   {
-    templateUrl: "modals/location.html",
+    templateUrl: "/stormwatercalculator/modals/location.html",
     controller: "locationCtrl",
     resolve:
     {
@@ -3154,7 +3155,7 @@ app.config(function($routeProvider, $locationProvider)
       {
         $('#bingMap').show();
 
-        sessionStorage.modal = 'location';
+        sessionStorage.modal = '/stormwatercalculator/location';
 
         siteLocationHandler = Microsoft.Maps.Events.addHandler(map, 'click', moveLocationIcon);
 
@@ -3251,9 +3252,9 @@ app.config(function($routeProvider, $locationProvider)
         $('.navcontainer').show();
       }
     }
-  }).when("/soiltype",
+  }).when("/stormwatercalculator/soiltype",
   {
-    templateUrl: "modals/soiltype.html",
+    templateUrl: "stormwatercalculator/modals/soiltype.html",
     controller: "soildataCtrl",
     resolve:
     {
@@ -3332,9 +3333,9 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/soildrainage",
+  }).when("/stormwatercalculator/soildrainage",
   {
-    templateUrl: "modals/soildrainage.html",
+    templateUrl: "stormwatercalculator/modals/soildrainage.html",
     controller: "soildataCtrl",
     resolve:
     {
@@ -3413,9 +3414,9 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/topography",
+  }).when("/stormwatercalculator/topography",
   {
-    templateUrl: "modals/topography.html",
+    templateUrl: "/stormwatercalculator/modals/topography.html",
     controller: "soildataCtrl",
     resolve:
     {
@@ -3494,9 +3495,9 @@ app.config(function($routeProvider, $locationProvider)
         }
       }
     }
-  }).when("/precipitation",
+  }).when("/stormwatercalculator/precipitation",
   {
-    templateUrl: "modals/precipitation.html",
+    templateUrl: "/stormwatercalculator/modals/precipitation.html",
     controller: "precipitationCtrl",
     resolve:
     {
@@ -3540,9 +3541,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/climatechange",
+  }).when("/stormwatercalculator/climatechange",
   {
-    templateUrl: "modals/climatechange.html",
+    templateUrl: "/stormwatercalculator/modals/climatechange.html",
     controller: "climatechangeCtrl",
     resolve:
     {
@@ -3575,9 +3576,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/landcover",
+  }).when("/stormwatercalculator/landcover",
   {
-    templateUrl: "modals/landcover.html",
+    templateUrl: "/stormwatercalculator/modals/landcover.html",
     controller: "landcoverCtrl",
     resolve:
     {
@@ -3622,9 +3623,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/lidcontrols",
+  }).when("/stormwatercalculator/lidcontrols",
   {
-    templateUrl: "modals/lidcontrols.html",
+    templateUrl: "/stormwatercalculator/modals/lidcontrols.html",
     controller: "lidcontrolsCtrl",
     resolve:
     {
@@ -3663,9 +3664,9 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/projectcost",
+  }).when("/stormwatercalculator/projectcost",
   {
-    templateUrl: "modals/projectcost.html",
+    templateUrl: "/stormwatercalculator/modals/projectcost.html",
     controller: "projectcostCtrl",
     resolve:
     {
@@ -3704,9 +3705,10 @@ app.config(function($routeProvider, $locationProvider)
         });
       }
     }
-  }).when("/results",
+  }).when("/stormwatercalculator/results",
   {
-    templateUrl: "modals/results.html",
+
+    templateUrl: "/stormwatercalculator/modals/results.html",
     controller: "resultsCtrl",
     resolve:
     {
@@ -3741,6 +3743,7 @@ app.controller("homepageCtrl", function($scope, $location)
 {
     $scope.go = function(path)
     {
+
       $location.path(path);
 
       if ($scope.nameYourSite == undefined)
@@ -3759,6 +3762,7 @@ app.controller("navigationCtrl", function($scope, $location)
 {
     $scope.go = function(path)
     {
+
       $location.path(path);
     }
     $scope.openSaveModal = function()
@@ -3963,7 +3967,7 @@ app.controller("navigationCtrl", function($scope, $location)
         siteRadius = sessionStorage.acres / 61.77625;
         drawSiteRadius(sessionStorage.acres);
 
-      $location.path('/location');
+      $location.path('/stormwatercalculator/location');
 
       $('#saveSiteModal').modal('toggle');
 
@@ -4217,15 +4221,15 @@ app.controller('soildataCtrl', function($scope, $route)
   {
     $('#helpModal').modal();
 
-    if ($route.current.templateUrl == 'modals/soiltype.html')
+    if ($route.current.templateUrl == '/stormwatercalculator/modals/soiltype.html')
     {
       $('#helpText').html("<p>Soil type is identified by its Hydrologic Soil Group, a classification used by soil scientists to characterize the physical nature and runoff potential of a soil. Roughly speaking, Group A is sand, Group B sandy loam, Group C clay loam, and Group D clay. The Calculator uses soil type to infer a site's infiltration properties.</p><p>Soil type data may not be available for your particular site.</p>");
     }
-    if ($route.current.templateUrl == 'modals/soildrainage.html')
+    if ($route.current.templateUrl == '/stormwatercalculator/modals/soildrainage.html')
     {
       $('#helpText').html("<p>The rate at which standing water infiltrates into a soil is measured by its saturated hydraulic conductivity. Soils with higher conductivity produce less runoff.</p><p>Conductivity data might not be available for your particular site.</p>");
     }
-    if ($route.current.templateUrl == 'modals/topography.html')
+    if ($route.current.templateUrl == '/stormwatercalculator/modals/topography.html')
     {
       $('#helpText').html("<p>Site topography, as measured by surface slope (feet of drop per 100 feet of length), affects how fast stormwater will run off a site. Flatter slopes produce slower runoff flow rates and provide more opportunity for rainfall to infiltrate into the soil.</p><p>Slope data may not be available for your particular site.</p>");
     }
@@ -4234,6 +4238,8 @@ app.controller('soildataCtrl', function($scope, $route)
 
 app.controller('precipitationCtrl', function($scope)
 {
+ // console.log('rainGageOptions');
+  //console.log(rainGageOptions);
   $scope.rainGageNames = rainGageOptions;
   $scope.weatherStationNames = weatherStationOptions;
 
@@ -4283,32 +4289,26 @@ app.controller('precipitationCtrl', function($scope)
 
   $scope.selectRainGageDropdown = function()
   {
-    for (var i = 0; i < rainGageArray.length; i++)
+    var rainGageNames=$scope.rainGageNames;
+    for (var i = 0; i < rainGageNames.length; i++)
     {
-      if (rainGageArray[i].name == $scope.rainGageSelect)
+      if (rainGageNames[i].name == $scope.rainGageSelect)
       {
-        rainGageArray[i].setOptions(
-        {
-          icon: 'stormwatercalculator/images/rainGageActiveIcon.png'
-        });
-      }
-      else
-      {
-        rainGageArray[i].setOptions(
-        {
-          icon: 'stormwatercalculator/images/rainGageIcon.png'
-        });
+        // rainGageArray[i].setOptions(
+        // {
+        //  icon: 'images/rainGageIcon.png'
+        // });
 
-        $scope.rainStartDate = rainGageArray[i].startDate;
-        $scope.rainEndDate = rainGageArray[i].endDate;
-        $scope.rainRainfall= rainGageArray[i].rainfall;
+        $scope.rainStartDate = rainGageNames[i].startDate;
+        $scope.rainEndDate = rainGageNames[i].endDate;
+        $scope.rainRainfall= rainGageNames[i].rainfall;
 
 
 
-sessionStorage.stationSelected = 'selected';
+        sessionStorage.stationSelected = 'selected';
 
-        var sYear = parseInt(new Date(rainGageArray[i].startDate).getFullYear());
-        var eYear= parseInt(new Date(rainGageArray[i].endDate).getFullYear());
+        var sYear = parseInt(new Date(rainGageNames[i].startDate).getFullYear());
+        var eYear= parseInt(new Date(rainGageNames[i].endDate).getFullYear());
         var tYear = eYear - sYear + 1;
         if ( tYear < parseInt(sessionStorage.yearsToAnalyze) ){
           sessionStorage.setItem('yearsActualDifference', tYear);
@@ -4318,8 +4318,6 @@ sessionStorage.stationSelected = 'selected';
           sessionStorage.setItem('yearsActualDifference', tYear);
           sessionStorage.yearsToCalculate = sessionStorage.yearsToAnalyze;
         }
-
-
       }
     }
 
@@ -4338,7 +4336,7 @@ sessionStorage.stationSelected = 'selected';
         {
           sameStationArray[i].setOptions(
           {
-            icon: 'stormwatercalculator/images/sameStationIcon.png'
+            icon: 'images/sameStationIcon.png'
           });
         }
       }
@@ -4346,7 +4344,7 @@ sessionStorage.stationSelected = 'selected';
 
     for (var i = 0; i < weatherStationArray.length; i++)
     {
-      if (weatherStationArray[i].image.src.includes('stormwatercalculator/images/weatherStationActiveIcon.png'))
+      if (weatherStationArray[i].image.src.includes('images/weatherStationActiveIcon.png'))
       {
         for (var j = 0; j < sameStationArray.length; j++)
         {
@@ -4361,7 +4359,7 @@ sessionStorage.stationSelected = 'selected';
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'stormwatercalculator/images/sameStationIcon.png'
+              icon: 'images/sameStationIcon.png'
             });
           }
         }
@@ -4372,26 +4370,16 @@ sessionStorage.stationSelected = 'selected';
 
   $scope.selectWeatherStationDropdown = function()
   {
-    for (var i = 0; i < weatherStationArray.length; i++)
+    const weatherStationNames = $scope.weatherStationNames;
+    for (var i = 0; i < weatherStationNames.length; i++)
     {
-      if (weatherStationArray[i].name == $scope.weatherStationSelect)
+      if (weatherStationNames[i].name == $scope.weatherStationSelect)
       {
-        weatherStationArray[i].setOptions(
-        {
-          icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
-        });
+        $scope.weatherStartDate = weatherStationNames[i].startDate;
+        $scope.weatherEndDate = weatherStationNames[i].endDate;
+        $scope.weatherRate = weatherStationNames[i].rate;
       }
-      else
-      {
-        weatherStationArray[i].setOptions(
-        {
-          icon: 'stormwatercalculator/images/weatherStationIcon.png'
-        });
 
-        $scope.weatherStartDate = weatherStationArray[i].startDate;
-        $scope.weatherEndDate = weatherStationArray[i].endDate;
-        $scope.weatherRate = weatherStationArray[i].rate;
-      }
     }
 
     for (var i = 0; i < sameStationArray.length; i++)
@@ -4432,7 +4420,7 @@ sessionStorage.stationSelected = 'selected';
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'stormwatercalculator/images/sameStationIcon.png'
+              icon: 'images/sameStationIcon.png'
             });
           }
         }
@@ -4500,7 +4488,7 @@ app.controller('climatechangeCtrl', function($scope)
   }
   if (sessionStorage.climateScenario == 1)
   {
-    $('#warmWetRadio').prop('checked', true);
+    $('#hotDryRadio').prop('checked', true);
   }
   if (sessionStorage.climateScenario == 2)
   {
@@ -4508,7 +4496,7 @@ app.controller('climatechangeCtrl', function($scope)
   }
   if (sessionStorage.climateScenario == 3)
   {
-    $('#hotDryRadio').prop('checked', true);
+      $('#warmWetRadio').prop('checked', true);
   }
 
   if (sessionStorage.climateYear == 2035)
@@ -4717,7 +4705,7 @@ app.controller('climatechangeCtrl', function($scope)
       sessionStorage.climateScenario = 0;
       checkResultsGenerated();
     }
-    if ($('#warmWetRadio').is(':checked'))
+        if ($('#hotDryRadio').is(':checked'))
     {
       sessionStorage.climateScenario = 1;
       checkResultsGenerated();
@@ -4727,7 +4715,7 @@ app.controller('climatechangeCtrl', function($scope)
       sessionStorage.climateScenario = 2;
       checkResultsGenerated();
     }
-    if ($('#hotDryRadio').is(':checked'))
+      if ($('#warmWetRadio').is(':checked'))
     {
       sessionStorage.climateScenario = 3;
       checkResultsGenerated();
@@ -5008,6 +4996,13 @@ app.controller('lidcontrolsCtrl', function($scope)
   $('.lidSlider:eq(6)').bootstrapSlider('setValue', $scope.permeablePavementValue);
   $('.lidModalSlider').bootstrapSlider();
 
+  // popup
+
+  var disconnectionCalculatedValue = ($('#disconnectionCaptureValue').val()/100)*($scope.disconnectionValue/100);
+  var rainGardensCalculatedValue = ($('#rainGardensCaptureValue').val()/100)*($scope.rainGardensValue/100);
+  var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*($scope.infiltrationBasinsValue/100);
+  sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
+
   $('.lidSlider').on('slideStart', function()
   {
     $("#modal").draggable(
@@ -5031,6 +5026,10 @@ app.controller('lidcontrolsCtrl', function($scope)
     var sliderID = $(this).attr('data-slider-id').replace("Slider", "");
 
     sessionStorage.setItem(sliderID, slideEvt.value.newValue);
+    var disconnectionCalculatedValue = ($('#disconnectionCaptureValue').val()/100)*(parseInt($('#disconnectionValue').val())/100);
+    var rainGardensCalculatedValue = ($('#rainGardensCaptureValue').val()/100)*(parseInt($('#rainGardensValue').val())/100);
+    var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
+    sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
 
     if ((parseInt($('#disconnectionValue').val()) + parseInt($('#rainHarvestingValue').val()) + parseInt($('#rainGardensValue').val()) + parseInt($('#greenRoofsValue').val()) + parseInt($('#streetPlantersValue').val()) + parseInt($('#infiltrationBasinsValue').val()) + parseInt($('#permeablePavementValue').val())) > 100)
     {
@@ -5056,17 +5055,31 @@ app.controller('lidcontrolsCtrl', function($scope)
       sessionStorage.permeablePavement = 0;
     }
 
-    ld();
+
+    checkResultsGenerated();
 
   });
 
   $('.lidModalSlider').on('change', function(slideEvt)
   {
     $(this).parent().next('div').find(':input').val(slideEvt.value.newValue);
+    if($(".lidModalSlider").attr('data-slider-id') == "disconnectionCaptureSlider" || $(".lidModalSlider").attr('data-slider-id') == "rainGardensCaptureSlider" || $(".lidModalSlider").attr('data-slider-id') == "infiltrationBasinsCaptureSlider") {
+      var disconnectionCalculatedValue = ($('#disconnectionCaptureValue').val()/100)*(parseInt($('#disconnectionValue').val())/100);
+      var rainGardensCalculatedValue = ($('#rainGardensCaptureValue').val()/100)*(parseInt($('#rainGardensValue').val())/100);
+      var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
+      sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
+    }
   });
 
   $scope.changeLIDSlider = function(value, category)
   {
+    if(category == 'disconnection' || category == 'rainGardens' || category == 'infiltrationBasins') {
+      var disconnectionCalculatedValue = ($('#disconnectionCaptureValue').val()/100)*(parseInt($('#disconnectionValue').val())/100);
+      var rainGardensCalculatedValue = ($('#rainGardensCaptureValue').val()/100)*(parseInt($('#rainGardensValue').val())/100);
+      var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
+      sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
+    }
+
     if (category == 'disconnection')
     {
       $('.lidSlider:eq(0)').bootstrapSlider('setValue', value);
@@ -5096,6 +5109,7 @@ app.controller('lidcontrolsCtrl', function($scope)
         sessionStorage.infiltrationBasins = 0;
         sessionStorage.permeablePavement = 0;
       }
+
     }
     if (category == 'rainHarvesting')
     {
@@ -5394,6 +5408,7 @@ app.controller('projectcostCtrl', function($scope)
       {
         sessionStorage.costRegion = costOptions[i].selectedValue;
         sessionStorage.costRegionValue = costOptions[i].regionalFactor;
+        sessionStorage.inflationFactor = costOptions[i].inflationFactor;
 
         $('#regionalMultiplierValue').val(costOptions[i].regionalFactor);
 
@@ -5414,6 +5429,7 @@ app.controller('projectcostCtrl', function($scope)
   $scope.changeMultiplierValue = function()
   {
     sessionStorage.costRegionValue = $scope.regionalMultiplierValue;
+    sessionStorage.inflationFactor = $scope.inflationFactor;
 
     checkResultsGenerated();
   }
@@ -5421,6 +5437,12 @@ app.controller('projectcostCtrl', function($scope)
 
 app.controller('resultsCtrl', function($scope)
 {
+    var perv = sessionStorage.sumOfDiscRainInfiControls * (sessionStorage.impervious/100);
+    if(perv > 1 - parseInt(sessionStorage.impervious)/100) {
+      $('#alertDiv').show();
+      $('#alertText').html('There is not enough pervious land area on the site to handle the disconnected impervious area or to construct rain gardens or an infiltration basin. Try decreasing either the amount of impervious area treated by these controls or their Capture Ratios.');
+    }
+
     if (sessionStorage.resultsActive == 'false')
     {
         $('#refreshResultsButton').prop('disabled', false);
@@ -5671,7 +5693,7 @@ if (sessionStorage.stationSelected == 'selected'){
 
       $scope.summaryResults = [
       {
-        "Name": 'Average Annual Rainfall (inches1)',
+        "Name": 'Average Annual Rainfall (inches)',
         "Current" : summaryTableArray[0]
       },
       {
@@ -5702,6 +5724,7 @@ if (sessionStorage.stationSelected == 'selected'){
         "Name": 'Max Rainfall Retained (inches)',
         "Current" : summaryTableArray[7]
       }];
+
   }
     if (sessionStorage.baselineActive == 'true')
     {
@@ -5832,7 +5855,7 @@ if (sessionStorage.stationSelected == 'selected'){
 
         $scope.summaryResults = [
         {
-          "Name": 'Average Annual Rainfall (inches2)',
+          "Name": 'Average Annual Rainfall (inches)',
           "Current" : summaryTableArray[0],
           "Baseline" : summaryTableArrayBaseline[0]
         },
@@ -6483,9 +6506,41 @@ if (sessionStorage.stationSelected == 'selected'){
 
   $scope.costsSeries = ['Current Scenario', 'Baseline Scenario'];
   $scope.costsLabels = ['D', 'RH', 'RG', 'GR', 'SP', 'IB', 'PP'];
-  $scope.costsData = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
-  $scope.costsDataCapital = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
-  $scope.costsDataMaintenance = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
+
+  if(sessionStorage.costCriteria) {
+      if(sessionStorage.costCriteria == 'capital') {
+          $scope.costsData = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [0, 0, 0, 0, 0, 0, 0]];
+      }
+      else {
+        if(sessionStorage.costCriteria == 'maintenance') {
+          $scope.costsData = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [((baselineDisconnectionMaintenanceLow + baselineDisconnectionMaintenanceHigh) / 2).toFixed(2), ((baselineRainHarvestingMaintenanceLow + baselineRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((baselineRainGardensMaintenanceLow + baselineRainGardensMaintenanceHigh) / 2).toFixed(2), ((baselineGreenRoofsMaintenanceLow + baselineGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((baselineStreetPlantersMaintenanceLow + baselineStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((baselineInfiltrationBasinsMaintenanceLow + baselineInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((baselinePermeablePavementMaintenanceLow + baselinePermeablePavementMaintenanceHigh) / 2).toFixed(2)]];
+        }
+      }
+
+  } else {
+      $scope.costsData = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
+  }
+
+
+
+  if (sessionStorage.baselineActive == 'false')
+  {
+      $scope.costsDataCapital = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [0, 0, 0, 0, 0, 0, 0]];
+
+      $scope.costsDataMaintenance = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [0, 0, 0, 0, 0, 0, 0]];
+  }
+  if (sessionStorage.baselineActive == 'true')
+  {
+      $scope.costsDataCapital = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [((baselineDisconnectionLowCapital + baselineDisconnectionHighCapital) / 2).toFixed(2), ((baselineRainHarvestingLowCapital + baselineRainHarvestingHighCapital) / 2).toFixed(2), ((baselineRainGardensLowCapital + baselineRainGardensHighCapital) / 2).toFixed(2), ((baselineGreenRoofsLowCapital + baselineGreenRoofsHighCapital) / 2).toFixed(2), ((baselineStreetPlantersLowCapital + baselineStreetPlantersHighCapital) / 2).toFixed(2), ((baselineInfiltrationBasinsLowCapital + baselineInfiltrationBasinsHighCapital) / 2).toFixed(2), ((baselinePermeablePavementLowCapital + baselinePermeablePavementHighCapital) / 2).toFixed(2)]];
+
+      $scope.costsDataMaintenance = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [((baselineDisconnectionMaintenanceLow + baselineDisconnectionMaintenanceHigh) / 2).toFixed(2), ((baselineRainHarvestingMaintenanceLow + baselineRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((baselineRainGardensMaintenanceLow + baselineRainGardensMaintenanceHigh) / 2).toFixed(2), ((baselineGreenRoofsMaintenanceLow + baselineGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((baselineStreetPlantersMaintenanceLow + baselineStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((baselineInfiltrationBasinsMaintenanceLow + baselineInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((baselinePermeablePavementMaintenanceLow + baselinePermeablePavementMaintenanceHigh) / 2).toFixed(2)]];
+  }
+
+
+
+
+  // $scope.costsDataCapital = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
+  // $scope.costsDataMaintenance = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]];
   $scope.costsColors =
   [
     {
@@ -6703,8 +6758,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentDisconnectionHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineDisconnectionLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineDisconnectionHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentDisconnectionLowCapital.toFixed(2) - baselineDisconnectionLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentDisconnectionHighCapital.toFixed(2) - baselineDisconnectionHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Rainwater Harvesting',
@@ -6714,8 +6769,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentRainHarvestingHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineRainHarvestingLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineRainHarvestingHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentRainHarvestingLowCapital.toFixed(2) - baselineRainHarvestingLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentRainHarvestingHighCapital.toFixed(2) - baselineRainHarvestingHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Rain Gardens',
@@ -6725,8 +6780,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentRainGardensHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineRainGardensLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineRainGardensHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentRainGardensLowCapital.toFixed(2) - baselineRainGardensLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentRainGardensHighCapital.toFixed(2) - baselineRainGardensHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentRainGardensLowCapital - baselineRainGardensLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentRainGardensHighCapital - baselineRainGardensHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Green Roofs',
@@ -6736,8 +6791,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentGreenRoofsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineGreenRoofsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineGreenRoofsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentGreenRoofsLowCapital.toFixed(2) - baselineGreenRoofsLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentGreenRoofsHighCapital.toFixed(2) - baselineGreenRoofsHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             },
             {
               name: 'Street Planters',
@@ -6747,8 +6802,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentStreetPlantersHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineStreetPlantersLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineStreetPlantersHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentStreetPlantersLowCapital.toFixed(2) - baselineStreetPlantersLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentStreetPlantersHighCapital.toFixed(2) - baselineStreetPlantersHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             },
             {
               name: 'Infiltration Basins',
@@ -6758,8 +6813,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentInfiltrationBasinsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineInfiltrationBasinsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineInfiltrationBasinsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentInfiltrationBasinsLowCapital.toFixed(2) - baselineInfiltrationBasinsLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentInfiltrationBasinsHighCapital.toFixed(2) - baselineInfiltrationBasinsHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             },
             {
               name: 'Permeable Pavement',
@@ -6769,8 +6824,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentPermeablePavementHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselinePermeablePavementLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselinePermeablePavementHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             },
             {
               name: 'Total',
@@ -6780,8 +6835,8 @@ $scope.costSummaryTableData = [
                   currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             }];
 
             if (sessionStorage.reDevelopment == 'true')
@@ -7215,7 +7270,7 @@ $scope.costSummaryTableData = [
 
     $scope.summaryResults = [
     {
-      "Name": 'Average Annual Rainfall (inches3)',
+      "Name": 'Average Annual Rainfall (inches)',
       "Current" : summaryTableArray[0],
       "Baseline" : summaryTableArrayBaseline[0]
     },
@@ -7375,8 +7430,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         }];
 
         $scope.costsData = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [((baselineDisconnectionLowCapital + baselineDisconnectionHighCapital) / 2).toFixed(2), ((baselineRainHarvestingLowCapital + baselineRainHarvestingHighCapital) / 2).toFixed(2), ((baselineRainGardensLowCapital + baselineRainGardensHighCapital) / 2).toFixed(2), ((baselineGreenRoofsLowCapital + baselineGreenRoofsHighCapital) / 2).toFixed(2), ((baselineStreetPlantersLowCapital + baselineStreetPlantersHighCapital) / 2).toFixed(2), ((baselineInfiltrationBasinsLowCapital + baselineInfiltrationBasinsHighCapital) / 2).toFixed(2), ((baselinePermeablePavementLowCapital + baselinePermeablePavementHighCapital) / 2).toFixed(2)]];
@@ -7496,8 +7551,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + (currentDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + (baselineDisconnectionMaintenanceLow + baselineRainHarvestingMaintenanceLow + baselineRainGardensMaintenanceLow + baselineGreenRoofsMaintenanceLow + baselineStreetPlantersMaintenanceLow + baselineInfiltrationBasinsMaintenanceLow + baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + (baselineDisconnectionMaintenanceHigh + baselineRainHarvestingMaintenanceHigh + baselineRainGardensMaintenanceHigh + baselineGreenRoofsMaintenanceHigh + baselineStreetPlantersMaintenanceHigh + baselineInfiltrationBasinsMaintenanceHigh + baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentPermeablePavementMaintenanceLow.toFixed(2) - baselinePermeablePavementMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentPermeablePavementMaintenanceHigh.toFixed(2) - baselinePermeablePavementMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow + currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow + currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow + currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow + currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow + currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow + currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         }];
 
         $scope.costsData = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [((baselineDisconnectionMaintenanceLow + baselineDisconnectionMaintenanceHigh) / 2).toFixed(2), ((baselineRainHarvestingMaintenanceLow + baselineRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((baselineRainGardensMaintenanceLow + baselineRainGardensMaintenanceHigh) / 2).toFixed(2), ((baselineGreenRoofsMaintenanceLow + baselineGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((baselineStreetPlantersMaintenanceLow + baselineStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((baselineInfiltrationBasinsMaintenanceLow + baselineInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((baselinePermeablePavementMaintenanceLow + baselinePermeablePavementMaintenanceHigh) / 2).toFixed(2)]];
@@ -7670,8 +7725,8 @@ $scope.costSummaryTableData = [
                   currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             }];
         }
         if (sessionStorage.costCriteria == 'maintenance')
@@ -7787,8 +7842,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + (currentDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + (baselineDisconnectionMaintenanceLow + baselineRainHarvestingMaintenanceLow + baselineRainGardensMaintenanceLow + baselineGreenRoofsMaintenanceLow + baselineStreetPlantersMaintenanceLow + baselineInfiltrationBasinsMaintenanceLow + baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + (baselineDisconnectionMaintenanceHigh + baselineRainHarvestingMaintenanceHigh + baselineRainGardensMaintenanceHigh + baselineGreenRoofsMaintenanceHigh + baselineStreetPlantersMaintenanceHigh + baselineInfiltrationBasinsMaintenanceHigh + baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentPermeablePavementMaintenanceLow.toFixed(2) - baselinePermeablePavementMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentPermeablePavementMaintenanceHigh.toFixed(2) - baselinePermeablePavementMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow + currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow + currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow + currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow + currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow + currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow + currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         }];
         }
 
@@ -7932,10 +7987,10 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + (currentDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + (baselineDisconnectionMaintenanceLow + baselineRainHarvestingMaintenanceLow + baselineRainGardensMaintenanceLow + baselineGreenRoofsMaintenanceLow + baselineStreetPlantersMaintenanceLow + baselineInfiltrationBasinsMaintenanceLow + baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + (baselineDisconnectionMaintenanceHigh + baselineRainHarvestingMaintenanceHigh + baselineRainGardensMaintenanceHigh + baselineGreenRoofsMaintenanceHigh + baselineStreetPlantersMaintenanceHigh + baselineInfiltrationBasinsMaintenanceHigh + baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentPermeablePavementMaintenanceLow.toFixed(2) - baselinePermeablePavementMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentPermeablePavementMaintenanceHigh.toFixed(2) - baselinePermeablePavementMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow + currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow + currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow + currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow + currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow + currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow + currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         }];
-
+        // console.log($scope.costSummaryTableData);
             $scope.costsData = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [((baselineDisconnectionMaintenanceLow + baselineDisconnectionMaintenanceHigh) / 2).toFixed(2), ((baselineRainHarvestingMaintenanceLow + baselineRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((baselineRainGardensMaintenanceLow + baselineRainGardensMaintenanceHigh) / 2).toFixed(2), ((baselineGreenRoofsMaintenanceLow + baselineGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((baselineStreetPlantersMaintenanceLow + baselineStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((baselineInfiltrationBasinsMaintenanceLow + baselineInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((baselinePermeablePavementMaintenanceLow + baselinePermeablePavementMaintenanceHigh) / 2).toFixed(2)]];
 
             $scope.costsDataMaintenance = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [((baselineDisconnectionMaintenanceLow + baselineDisconnectionMaintenanceHigh) / 2).toFixed(2), ((baselineRainHarvestingMaintenanceLow + baselineRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((baselineRainGardensMaintenanceLow + baselineRainGardensMaintenanceHigh) / 2).toFixed(2), ((baselineGreenRoofsMaintenanceLow + baselineGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((baselineStreetPlantersMaintenanceLow + baselineStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((baselineInfiltrationBasinsMaintenanceLow + baselineInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((baselinePermeablePavementMaintenanceLow + baselinePermeablePavementMaintenanceHigh) / 2).toFixed(2)]];
@@ -7976,8 +8031,8 @@ $scope.costSummaryTableData = [
           currentHigh: '$' + currentDisconnectionMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + baselineDisconnectionMaintenanceLow.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + baselineDisconnectionMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentDisconnectionMaintenanceLow.toFixed(2) - baselineDisconnectionMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentDisconnectionMaintenanceHigh.toFixed(2) - baselineDisconnectionMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         },
         {
           name: 'Rainwater Harvesting',
@@ -7987,8 +8042,8 @@ $scope.costSummaryTableData = [
           currentHigh: '$' + currentRainHarvestingMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + baselineRainHarvestingMaintenanceLow.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + baselineRainHarvestingMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentRainHarvestingMaintenanceLow.toFixed(2) - baselineRainHarvestingMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentRainHarvestingMaintenanceHigh.toFixed(2) - baselineRainHarvestingMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         },
         {
           name: 'Rain Gardens',
@@ -7998,8 +8053,8 @@ $scope.costSummaryTableData = [
           currentHigh: '$' + currentRainGardensMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + baselineRainGardensMaintenanceLow.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + baselineRainGardensMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentRainGardensMaintenanceLow.toFixed(2) - baselineRainGardensMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentRainGardensMaintenanceHigh.toFixed(2) - baselineRainGardensMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         },
         {
           name: 'Green Roofs',
@@ -8009,8 +8064,8 @@ $scope.costSummaryTableData = [
           currentHigh: '$' + currentGreenRoofsMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + baselineGreenRoofsMaintenanceLow.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + baselineGreenRoofsMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentGreenRoofsMaintenanceLow.toFixed(2) - baselineGreenRoofsMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentGreenRoofsMaintenanceHigh.toFixed(2) - baselineGreenRoofsMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         },
         {
           name: 'Street Planters',
@@ -8020,8 +8075,8 @@ $scope.costSummaryTableData = [
           currentHigh: '$' + currentStreetPlantersMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + baselineStreetPlantersMaintenanceLow.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + baselineStreetPlantersMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentStreetPlantersMaintenanceLow.toFixed(2) - baselineStreetPlantersMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentStreetPlantersMaintenanceHigh.toFixed(2) - baselineStreetPlantersMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         },
         {
           name: 'Infiltration Basins',
@@ -8031,8 +8086,8 @@ $scope.costSummaryTableData = [
           currentHigh: '$' + currentInfiltrationBasinsMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + baselineInfiltrationBasinsMaintenanceLow.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + baselineInfiltrationBasinsMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentInfiltrationBasinsMaintenanceLow.toFixed(2) - baselineInfiltrationBasinsMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentInfiltrationBasinsMaintenanceHigh.toFixed(2) - baselineInfiltrationBasinsMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         },
         {
           name: 'Permeable Pavement',
@@ -8042,8 +8097,8 @@ $scope.costSummaryTableData = [
           currentHigh: '$' + currentPermeablePavementMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + baselinePermeablePavementMaintenanceLow.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + baselinePermeablePavementMaintenanceHigh.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentPermeablePavementMaintenanceLow.toFixed(2) - baselinePermeablePavementMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentPermeablePavementMaintenanceHigh.toFixed(2) - baselinePermeablePavementMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         },
         {
           name: 'Total',
@@ -8053,9 +8108,12 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + (currentDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineLow: '$' + (baselineDisconnectionMaintenanceLow + baselineRainHarvestingMaintenanceLow + baselineRainGardensMaintenanceLow + baselineGreenRoofsMaintenanceLow + baselineStreetPlantersMaintenanceLow + baselineInfiltrationBasinsMaintenanceLow + baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
           baselineHigh: '$' + (baselineDisconnectionMaintenanceHigh + baselineRainHarvestingMaintenanceHigh + baselineRainGardensMaintenanceHigh + baselineGreenRoofsMaintenanceHigh + baselineStreetPlantersMaintenanceHigh + baselineInfiltrationBasinsMaintenanceHigh + baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceLow: '$' + (currentPermeablePavementMaintenanceLow.toFixed(2) - baselinePermeablePavementMaintenanceLow.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          differenceHigh: '$' + (currentPermeablePavementMaintenanceHigh.toFixed(2) - baselinePermeablePavementMaintenanceHigh.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceLow: '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow + currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow + currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow + currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow + currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow + currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow + currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+          differenceHigh: '$' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh + currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh + currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh + currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh + currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh + currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh + currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
         }];
+        $scope.costsData = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [((baselineDisconnectionMaintenanceLow + baselineDisconnectionMaintenanceHigh) / 2).toFixed(2), ((baselineRainHarvestingMaintenanceLow + baselineRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((baselineRainGardensMaintenanceLow + baselineRainGardensMaintenanceHigh) / 2).toFixed(2), ((baselineGreenRoofsMaintenanceLow + baselineGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((baselineStreetPlantersMaintenanceLow + baselineStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((baselineInfiltrationBasinsMaintenanceLow + baselineInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((baselinePermeablePavementMaintenanceLow + baselinePermeablePavementMaintenanceHigh) / 2).toFixed(2)]];
+
+        $scope.costsDataMaintenance = [[((currentDisconnectionMaintenanceLow + currentDisconnectionMaintenanceHigh) / 2).toFixed(2), ((currentRainHarvestingMaintenanceLow + currentRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((currentRainGardensMaintenanceLow + currentRainGardensMaintenanceHigh) / 2).toFixed(2), ((currentGreenRoofsMaintenanceLow + currentGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((currentStreetPlantersMaintenanceLow + currentStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((currentInfiltrationBasinsMaintenanceLow + currentInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((currentPermeablePavementMaintenanceLow + currentPermeablePavementMaintenanceHigh) / 2).toFixed(2)], [((baselineDisconnectionMaintenanceLow + baselineDisconnectionMaintenanceHigh) / 2).toFixed(2), ((baselineRainHarvestingMaintenanceLow + baselineRainHarvestingMaintenanceHigh) / 2).toFixed(2), ((baselineRainGardensMaintenanceLow + baselineRainGardensMaintenanceHigh) / 2).toFixed(2), ((baselineGreenRoofsMaintenanceLow + baselineGreenRoofsMaintenanceHigh) / 2).toFixed(2), ((baselineStreetPlantersMaintenanceLow + baselineStreetPlantersMaintenanceHigh) / 2).toFixed(2), ((baselineInfiltrationBasinsMaintenanceLow + baselineInfiltrationBasinsMaintenanceHigh) / 2).toFixed(2), ((baselinePermeablePavementMaintenanceLow + baselinePermeablePavementMaintenanceHigh) / 2).toFixed(2)]];
         }
     }
     else if ($('#typeOfCostsLink').hasClass('capitalCosts'))
@@ -8182,8 +8240,8 @@ $scope.costSummaryTableData = [
                   currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
             }];
 
             $scope.costsData = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [((baselineDisconnectionLowCapital + baselineDisconnectionHighCapital) / 2).toFixed(2), ((baselineRainHarvestingLowCapital + baselineRainHarvestingHighCapital) / 2).toFixed(2), ((baselineRainGardensLowCapital + baselineRainGardensHighCapital) / 2).toFixed(2), ((baselineGreenRoofsLowCapital + baselineGreenRoofsHighCapital) / 2).toFixed(2), ((baselineStreetPlantersLowCapital + baselineStreetPlantersHighCapital) / 2).toFixed(2), ((baselineInfiltrationBasinsLowCapital + baselineInfiltrationBasinsHighCapital) / 2).toFixed(2), ((baselinePermeablePavementLowCapital + baselinePermeablePavementHighCapital) / 2).toFixed(2)]];
@@ -8226,8 +8284,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentDisconnectionHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineDisconnectionLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineDisconnectionHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentDisconnectionLowCapital.toFixed(2) - baselineDisconnectionLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentDisconnectionHighCapital.toFixed(2) - baselineDisconnectionHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Rainwater Harvesting',
@@ -8237,8 +8295,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentRainHarvestingHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineRainHarvestingLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineRainHarvestingHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentRainHarvestingLowCapital.toFixed(2) - baselineRainHarvestingLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentRainHarvestingHighCapital.toFixed(2) - baselineRainHarvestingHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentRainHarvestingLowCapital.toFixed(2) - baselineRainHarvestingLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentRainHarvestingHighCapital.toFixed(2) - baselineRainHarvestingHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Rain Gardens',
@@ -8248,8 +8306,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentRainGardensHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineRainGardensLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineRainGardensHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentRainGardensLowCapital.toFixed(2) - baselineRainGardensLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentRainGardensHighCapital.toFixed(2) - baselineRainGardensHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentRainGardensLowCapital - baselineRainGardensLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentRainGardensHighCapital - baselineRainGardensHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Green Roofs',
@@ -8259,8 +8317,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentGreenRoofsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineGreenRoofsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineGreenRoofsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentGreenRoofsLowCapital.toFixed(2) - baselineGreenRoofsLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentGreenRoofsHighCapital.toFixed(2) - baselineGreenRoofsHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Street Planters',
@@ -8270,8 +8328,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentStreetPlantersHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineStreetPlantersLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineStreetPlantersHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentStreetPlantersLowCapital.toFixed(2) - baselineStreetPlantersLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentStreetPlantersHighCapital.toFixed(2) - baselineStreetPlantersHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Infiltration Basins',
@@ -8281,8 +8339,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentInfiltrationBasinsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselineInfiltrationBasinsLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselineInfiltrationBasinsHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentInfiltrationBasinsLowCapital.toFixed(2) - baselineInfiltrationBasinsLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentInfiltrationBasinsHighCapital.toFixed(2) - baselineInfiltrationBasinsHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Permeable Pavement',
@@ -8292,8 +8350,8 @@ $scope.costSummaryTableData = [
               currentHigh: '$' + currentPermeablePavementHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + baselinePermeablePavementLowCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + baselinePermeablePavementHighCapital.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             },
             {
               name: 'Total',
@@ -8303,9 +8361,12 @@ $scope.costSummaryTableData = [
                   currentHigh: '$' + (currentDisconnectionHighCapital + currentRainHarvestingHighCapital + currentRainGardensHighCapital + currentGreenRoofsHighCapital + currentStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineLow: '$' + (baselineDisconnectionLowCapital + baselineRainHarvestingLowCapital + baselineRainGardensLowCapital + baselineGreenRoofsLowCapital + baselineStreetPlantersLowCapital + baselineInfiltrationBasinsLowCapital + baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
               baselineHigh: '$' + (baselineDisconnectionHighCapital + baselineRainHarvestingHighCapital + baselineRainGardensHighCapital + baselineGreenRoofsHighCapital + baselineStreetPlantersHighCapital + baselineInfiltrationBasinsHighCapital + baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceLow: '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-              differenceHigh: '$' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              differenceLow: '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital + currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital + currentRainGardensLowCapital - baselineRainGardensLowCapital + currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital + currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital + currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital + currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+              differenceHigh: '$' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital + currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital + currentRainGardensHighCapital - baselineRainGardensHighCapital + currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital + currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital + currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital + currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }];
+            $scope.costsData = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [((baselineDisconnectionLowCapital + baselineDisconnectionHighCapital) / 2).toFixed(2), ((baselineRainHarvestingLowCapital + baselineRainHarvestingHighCapital) / 2).toFixed(2), ((baselineRainGardensLowCapital + baselineRainGardensHighCapital) / 2).toFixed(2), ((baselineGreenRoofsLowCapital + baselineGreenRoofsHighCapital) / 2).toFixed(2), ((baselineStreetPlantersLowCapital + baselineStreetPlantersHighCapital) / 2).toFixed(2), ((baselineInfiltrationBasinsLowCapital + baselineInfiltrationBasinsHighCapital) / 2).toFixed(2), ((baselinePermeablePavementLowCapital + baselinePermeablePavementHighCapital) / 2).toFixed(2)]];
+
+            $scope.costsDataCapital = [[((currentDisconnectionLowCapital + currentDisconnectionHighCapital) / 2).toFixed(2), ((currentRainHarvestingLowCapital + currentRainHarvestingHighCapital) / 2).toFixed(2), ((currentRainGardensLowCapital + currentRainGardensHighCapital) / 2).toFixed(2), ((currentGreenRoofsLowCapital + currentGreenRoofsHighCapital) / 2).toFixed(2), ((currentStreetPlantersLowCapital + currentStreetPlantersHighCapital) / 2).toFixed(2), ((currentInfiltrationBasinsLowCapital + currentInfiltrationBasinsHighCapital) / 2).toFixed(2), ((currentPermeablePavementLowCapital + currentPermeablePavementHighCapital) / 2).toFixed(2)], [((baselineDisconnectionLowCapital + baselineDisconnectionHighCapital) / 2).toFixed(2), ((baselineRainHarvestingLowCapital + baselineRainHarvestingHighCapital) / 2).toFixed(2), ((baselineRainGardensLowCapital + baselineRainGardensHighCapital) / 2).toFixed(2), ((baselineGreenRoofsLowCapital + baselineGreenRoofsHighCapital) / 2).toFixed(2), ((baselineStreetPlantersLowCapital + baselineStreetPlantersHighCapital) / 2).toFixed(2), ((baselineInfiltrationBasinsLowCapital + baselineInfiltrationBasinsHighCapital) / 2).toFixed(2), ((baselinePermeablePavementLowCapital + baselinePermeablePavementHighCapital) / 2).toFixed(2)]];
         }
     }
   }
@@ -8397,7 +8458,7 @@ $scope.costSummaryTableData = [
 
         summaryColumns = ["Statisic", "Current Scenario"];
         summaryRows = [
-            ['Average Annual Rainfall (inches4)', summaryTableArray[0]],
+            ['Average Annual Rainfall (inches)', summaryTableArray[0]],
             ['Average Annual Runoff (inches)', summaryTableArray[1]],
             ['Days per Year with Rainfall', summaryTableArray[2]],
             ['Days per Year with Runoff', summaryTableArray[3]],
@@ -8415,7 +8476,7 @@ $scope.costSummaryTableData = [
         ["SP", sessionStorage.streetPlanters + ' (C)', "NA", '$' + currentStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  currentStreetPlantersHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  currentStreetPlantersHighCapital.toFixed(2) + ' (High)'],
         ["IB", sessionStorage.infiltrationBasins + ' (C)', "NA", '$' + currentInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsHighCapital.toFixed(2) + ' (High)'],
         ["PP", sessionStorage.permeablePavement + ' (C)', "NA", '$' + currentPermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  currentPermeablePavementHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentPermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  currentPermeablePavementHighCapital.toFixed(2) + ' (High)']];
-
+        console.log(costsCapitalRows);
         costsMaintenanceRows = [
         ["D", sessionStorage.disconnection  + ' (C)', "NA", '$' + currentDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentDisconnectionMaintenanceHigh.toFixed(2) + ' (High)'],
         ["RH", sessionStorage.rainHarvesting  + ' (C)', "NA", '$' + currentRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)'],
@@ -8460,7 +8521,7 @@ $scope.costSummaryTableData = [
         summaryColumns = ["Statisic", "Current Scenario", "Baseline Scenario"];
 
         summaryRows = [
-            ['Average Annual Rainfall (inches5)', summaryTableArray[0], summaryTableArrayBaseline[0]],
+            ['Average Annual Rainfall (inches)', summaryTableArray[0], summaryTableArrayBaseline[0]],
             ['Average Annual Runoff (inches)', summaryTableArray[1], summaryTableArrayBaseline[1]],
             ['Days per Year with Rainfall', summaryTableArray[2], summaryTableArrayBaseline[2]],
             ['Days per Year with Runoff', summaryTableArray[3], summaryTableArrayBaseline[3]],
@@ -8471,22 +8532,22 @@ $scope.costSummaryTableData = [
             ];
 
         costsCapitalRows = [
-        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  currentDisconnectionHighCapital.toFixed(2) + ' (High)', '$' +baselineDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  baselineDisconnectionHighCapital.toFixed(2) + ' (High)', '$' + (currentDisconnectionLowCapital.toFixed(2) - baselineDisconnectionLowCapital.toFixed(2)) + ' (Low) / $' + (currentDisconnectionHighCapital.toFixed(2) - baselineDisconnectionHighCapital.toFixed(2)) + ' (High)'],
-        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  currentRainHarvestingHighCapital.toFixed(2) + ' (High)', '$' +baselineRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  baselineRainHarvestingHighCapital.toFixed(2) + ' (High)', '$' + (currentRainHarvestingLowCapital.toFixed(2) - baselineRainHarvestingLowCapital.toFixed(2)) + ' (Low) / $' + (currentRainHarvestingHighCapital.toFixed(2) - baselineRainHarvestingHighCapital.toFixed(2)) + ' (High)'],
-        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  currentRainGardensHighCapital.toFixed(2) + ' (High)', '$' +baselineRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  baselineRainGardensHighCapital.toFixed(2) + ' (High)', '$' + (currentRainGardensLowCapital.toFixed(2) - baselineRainGardensLowCapital.toFixed(2)) + ' (Low) / $' + (currentRainGardensHighCapital.toFixed(2) - baselineRainGardensHighCapital.toFixed(2)) + ' (High)'],
-        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  currentGreenRoofsHighCapital.toFixed(2) + ' (High)', '$' +baselineGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  baselineGreenRoofsHighCapital.toFixed(2) + ' (High)', '$' + (currentGreenRoofsLowCapital.toFixed(2) - baselineGreenRoofsLowCapital.toFixed(2)) + ' (Low) / $' + (currentGreenRoofsHighCapital.toFixed(2) - baselineGreenRoofsHighCapital.toFixed(2)) + ' (High)'],
-        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  currentStreetPlantersHighCapital.toFixed(2) + ' (High)', '$' +baselineStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  baselineStreetPlantersHighCapital.toFixed(2) + ' (High)', '$' + (currentStreetPlantersLowCapital.toFixed(2) - baselineStreetPlantersLowCapital.toFixed(2)) + ' (Low) / $' + (currentStreetPlantersHighCapital.toFixed(2) - baselineStreetPlantersHighCapital.toFixed(2)) + ' (High)'],
-        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', '$' +baselineInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  baselineInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', '$' + (currentInfiltrationBasinsLowCapital.toFixed(2) - baselineInfiltrationBasinsLowCapital.toFixed(2)) + ' (Low) / $' + (currentInfiltrationBasinsHighCapital.toFixed(2) - baselineInfiltrationBasinsHighCapital.toFixed(2)) + ' (High)'],
-        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  currentPermeablePavementHighCapital.toFixed(2) + ' (High)', '$' +baselinePermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  baselinePermeablePavementHighCapital.toFixed(2) + ' (High)', '$' + (currentPermeablePavementLowCapital.toFixed(2) - baselinePermeablePavementLowCapital.toFixed(2)) + ' (Low) / $' + (currentPermeablePavementHighCapital.toFixed(2) - baselinePermeablePavementHighCapital.toFixed(2)) + ' (High)']];
+        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  currentDisconnectionHighCapital.toFixed(2) + ' (High)', '$' +baselineDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  baselineDisconnectionHighCapital.toFixed(2) + ' (High)', '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital).toFixed(2) + ' (Low) / $' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital).toFixed(2) + ' (High)'],
+        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  currentRainHarvestingHighCapital.toFixed(2) + ' (High)', '$' +baselineRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  baselineRainHarvestingHighCapital.toFixed(2) + ' (High)', '$' + (currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital).toFixed(2) + ' (Low) / $' + (currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital).toFixed(2) + ' (High)'],
+        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  currentRainGardensHighCapital.toFixed(2) + ' (High)', '$' +baselineRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  baselineRainGardensHighCapital.toFixed(2) + ' (High)', '$' + (currentRainGardensLowCapital - baselineRainGardensLowCapital).toFixed(2) + ' (Low) / $' + (currentRainGardensHighCapital - baselineRainGardensHighCapital).toFixed(2) + ' (High)'],
+        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  currentGreenRoofsHighCapital.toFixed(2) + ' (High)', '$' +baselineGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  baselineGreenRoofsHighCapital.toFixed(2) + ' (High)', '$' + (currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital).toFixed(2) + ' (Low) / $' + (currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital).toFixed(2) + ' (High)'],
+        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  currentStreetPlantersHighCapital.toFixed(2) + ' (High)', '$' +baselineStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  baselineStreetPlantersHighCapital.toFixed(2) + ' (High)', '$' + (currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital).toFixed(2) + ' (Low) / $' + (currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital).toFixed(2) + ' (High)'],
+        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', '$' +baselineInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  baselineInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', '$' + (currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital).toFixed(2) + ' (Low) / $' + (currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital).toFixed(2) + ' (High)'],
+        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  currentPermeablePavementHighCapital.toFixed(2) + ' (High)', '$' +baselinePermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  baselinePermeablePavementHighCapital.toFixed(2) + ' (High)', '$' + (currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2) + ' (Low) / $' + (currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2) + ' (High)']];
 
         costsMaintenanceRows = [
-        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentDisconnectionMaintenanceLow.toFixed(2) - baselineDisconnectionMaintenanceLow.toFixed(2)) + ' (Low) / $' + (currentDisconnectionMaintenanceHigh.toFixed(2) - baselineDisconnectionMaintenanceHigh.toFixed(2)) + ' (High)'],
-        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentRainHarvestingMaintenanceLow.toFixed(2) - baselineRainHarvestingMaintenanceLow.toFixed(2)) + ' (Low) / $' + (currentRainHarvestingMaintenanceHigh.toFixed(2) - baselineRainHarvestingMaintenanceHigh.toFixed(2)) + ' (High)'],
-        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainGardensMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineRainGardensMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentRainGardensMaintenanceLow.toFixed(2) - baselineRainGardensMaintenanceLow.toFixed(2)) + ' (Low) / $' + (currentRainGardensMaintenanceHigh.toFixed(2) - baselineRainGardensMaintenanceHigh.toFixed(2)) + ' (High)'],
-        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentGreenRoofsMaintenanceLow.toFixed(2) - baselineGreenRoofsMaintenanceLow.toFixed(2)) + ' (Low) / $' + (currentGreenRoofsMaintenanceHigh.toFixed(2) - baselineGreenRoofsMaintenanceHigh.toFixed(2)) + ' (High)'],
-        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentStreetPlantersMaintenanceLow.toFixed(2) - baselineStreetPlantersMaintenanceLow.toFixed(2)) + ' (Low) / $' + (currentStreetPlantersMaintenanceHigh.toFixed(2) - baselineStreetPlantersMaintenanceHigh.toFixed(2)) + ' (High)'],
-        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentInfiltrationBasinsMaintenanceLow.toFixed(2) - baselineInfiltrationBasinsMaintenanceLow.toFixed(2)) + ' (Low) / $' + (currentInfiltrationBasinsMaintenanceHigh.toFixed(2) - baselineInfiltrationBasinsMaintenanceHigh.toFixed(2)) + ' (High)'],
-        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentPermeablePavementMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselinePermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselinePermeablePavementMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentPermeablePavementMaintenanceLow.toFixed(2) - baselinePermeablePavementMaintenanceLow.toFixed(2)) + ' (Low) / $' + (currentPermeablePavementMaintenanceHigh.toFixed(2) - baselinePermeablePavementMaintenanceHigh.toFixed(2)) + ' (High)']];
+        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh).toFixed(2) + ' (High)'],
+        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh).toFixed(2) + ' (High)'],
+        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainGardensMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineRainGardensMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh).toFixed(2) + ' (High)'],
+        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh).toFixed(2) + ' (High)'],
+        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh).toFixed(2) + ' (High)'],
+        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh).toFixed(2) + ' (High)'],
+        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentPermeablePavementMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselinePermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselinePermeablePavementMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2) + ' (High)']];
     }
 
     costsColumns = ["", "Drainage Area %", "Has Pre-Treatment?", "Area Treated (C)", "Area Treated (B)", "Difference (C-B)"]

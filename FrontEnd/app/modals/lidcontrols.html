@@ -30,7 +30,7 @@
                 <input class="lidSlider" data-slider-id='disconnectionSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" />
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="disconnectionValue" ng-model="disconnectionValue" ng-change="changeLIDSlider(disconnectionValue, 'disconnection')">
+                <input type="number" step="0.01" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="disconnectionValue" ng-model="disconnectionValue" ng-change="changeLIDSlider(disconnectionValue, 'disconnection')">
                 <span class="input-group-addon" id="sizing-addon2">%</span>
             </div>
         </div>
@@ -42,7 +42,7 @@
                 <input class="lidSlider" data-slider-id='rainHarvestingSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" />
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="rainHarvestingValue" ng-model="rainHarvestingValue" ng-change="changeLIDSlider(rainHarvestingValue, 'rainHarvesting')">
+                <input type="number" step="0.01"class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="rainHarvestingValue" ng-model="rainHarvestingValue" ng-change="changeLIDSlider(rainHarvestingValue, 'rainHarvesting')">
                 <span class="input-group-addon" id="sizing-addon2">%</span>
             </div>
         </div>
@@ -54,7 +54,7 @@
                 <input class="lidSlider" data-slider-id='rainGardensSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" />
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="rainGardensValue" ng-model="rainGardensValue" ng-change="changeLIDSlider(rainGardensValue, 'rainGardens')">
+                <input type="number"  step="0.01" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="rainGardensValue" ng-model="rainGardensValue" ng-change="changeLIDSlider(rainGardensValue, 'rainGardens')">
                 <span class="input-group-addon" id="sizing-addon2">%</span>
             </div>
         </div>
@@ -66,7 +66,7 @@
                 <input class="lidSlider" data-slider-id='greenRoofsSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" />
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="greenRoofsValue" ng-model="greenRoofsValue" ng-change="changeLIDSlider(greenRoofsValue, 'greenRoofs')">
+                <input type="number" step="0.01" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="greenRoofsValue" ng-model="greenRoofsValue" ng-change="changeLIDSlider(greenRoofsValue, 'greenRoofs')">
                 <span class="input-group-addon" id="sizing-addon2">%</span>
             </div>
         </div>
@@ -78,7 +78,7 @@
                 <input class="lidSlider" data-slider-id='streetPlantersSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" />
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="streetPlantersValue" ng-model="streetPlantersValue" ng-change="changeLIDSlider(streetPlantersValue, 'streetPlanters')">
+                <input type="number"  step="0.01" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="streetPlantersValue" ng-model="streetPlantersValue" ng-change="changeLIDSlider(streetPlantersValue, 'streetPlanters')">
                 <span class="input-group-addon" id="sizing-addon2">%</span>
             </div>
         </div>
@@ -90,7 +90,7 @@
                 <input class="lidSlider" data-slider-id='infiltrationBasinsSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" />
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="infiltrationBasinsValue" ng-model="infiltrationBasinsValue" ng-change="changeLIDSlider(infiltrationBasinsValue, 'infiltrationBasins')">
+                <input type="number" step="0.01" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="infiltrationBasinsValue" ng-model="infiltrationBasinsValue" ng-change="changeLIDSlider(infiltrationBasinsValue, 'infiltrationBasins')">
                 <span class="input-group-addon" id="sizing-addon2">%</span>
             </div>
         </div>
@@ -102,7 +102,7 @@
                 <input class="lidSlider" data-slider-id='permeablePavementSlider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide" />
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="permeablePavementValue" ng-model="permeablePavementValue" ng-change="changeLIDSlider(permeablePavementValue, 'permeablePavement')">
+                <input type="number" step="0.01" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0" id="permeablePavementValue" ng-model="permeablePavementValue" ng-change="changeLIDSlider(permeablePavementValue, 'permeablePavement')">
                 <span class="input-group-addon" id="sizing-addon2">%</span>
             </div>
         </div>
@@ -115,7 +115,7 @@
             <div class="col-xs-9 col-sm-7 col-md-4">
             </div>
             <div class="input-group input-group-sm sliderGroup lidSliderGroup col-xs-3 col-sm-2 col-md-3" id="designStormGroup">
-                <input type="number" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0.00" id="designStormValue" ng-model="designStormValue" ng-change="changeDesignStorm()">
+                <input type="number" step="0.01" class="form-control sliderValue" aria-describedby="sizing-addon2" value="0.00" id="designStormValue" ng-model="designStormValue" ng-change="changeDesignStorm()">
                 <span class="input-group-addon" id="sizing-addon2">in.</span>
             </div>
         </div>

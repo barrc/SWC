@@ -1015,7 +1015,7 @@ function drawCustomArea()
 
       siteAreaMarker = new Microsoft.Maps.Pushpin(location,
       {
-        icon: 'images/mapmarker2.png',
+        icon: 'stormwatercalculator/images/mapmarker2.png',
         draggable: false,
       });
 
@@ -1668,7 +1668,7 @@ function selectWeatherStationMarker(e)
         {
           sameStationArray[j].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -1676,7 +1676,7 @@ function selectWeatherStationMarker(e)
 
     e.target.setOptions(
     {
-      icon: 'images/weatherStationActiveIcon.png'
+      icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
     });
 
     var scope = angular.element(document.getElementById("weatherStationSelect")).scope();
@@ -1719,7 +1719,7 @@ function selectSameStationMarker(e)
     {
       sameStationArray[i].setOptions(
       {
-        icon: 'images/sameStationIcon.png'
+        icon: 'stormwatercalculator/images/sameStationIcon.png'
       });
     }
 
@@ -1761,7 +1761,7 @@ function downloadRainfallWeatherDataMobile()
     var email = $('#emailAddressValue').val();
 
     $('#emailModalHeader').hide();
-    $('#emailModalBody').html('<span>Sending Precipitation/Evaporation Data</span><br><img src="images/Spinner.gif" height="75px" width="75px"/>');
+    $('#emailModalBody').html('<span>Sending Precipitation/Evaporation Data</span><br><img src="stormwatercalculator/images/Spinner.gif" height="75px" width="75px"/>');
 
     $.ajax(
     {
@@ -1802,7 +1802,7 @@ function saveSiteMobile()
     var email = $('#emailAddressValue').val();
 
     $('#emailModalHeader').hide();
-    $('#emailModalBody').html('<span>Sending SWC XML File</span><br><img src="images/Spinner.gif" height="75px" width="75px"/>');
+    $('#emailModalBody').html('<span>Sending SWC XML File</span><br><img src="stormwatercalculator/images/Spinner.gif" height="75px" width="75px"/>');
 
     $.ajax(
     {
@@ -1878,14 +1878,12 @@ function changeLIDModalSlider(sliderNumber)
     var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
     sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
   }
-
-
     $('.lidModalSlider:eq(' + sliderNumber + ')').bootstrapSlider('setValue', parseInt($('.sliderValue:eq(' + sliderNumber + ')').val()));
 }
 
 function calculateDesignStorm(category)
 {
-  var netStormDepth = parseFloat($('#designStormValue').val()) - parseFloat(sessionStorage.soilDrainage) * 0.5;
+  var netStormDepth = parseFloat($('#designStormValue').val()) - parseFloat(sessionStorage.soilDrainage) * 12;
 
   if (category == 'rainHarvesting')
   {
@@ -1936,7 +1934,7 @@ function calculateDesignStorm(category)
     {
         lidDepth = parseInt($('#infiltrationBasinsBasinValue').val());
     }
-
+lidDepth = Math.min(lidDepth, 24);
     if (netStormDepth >= lidDepth)
     {
         $('#infiltrationBasinsCaptureValue').val(1);
@@ -1947,6 +1945,8 @@ function calculateDesignStorm(category)
         $('#infiltrationBasinsCaptureValue').val(parseFloat($('#designStormValue').val()) / (lidDepth - netStormDepth));
         $('#infiltrationBasinsCaptureValue').val(Math.round($('#infiltrationBasinsCaptureValue').val() * 100));
         $('.lidModalSlider:eq(16)').bootstrapSlider('setValue', $('#infiltrationBasinsCaptureValue').val());
+        $('#infiltrationBasinsBasinValue').val(Math.round(lidDepth));
+   $('.lidModalSlider:eq(15)').bootstrapSlider('setValue', $('#infiltrationBasinsBasinValue').val());
     }
   }
   if (category == 'permeablePavement')
@@ -2098,7 +2098,7 @@ function getResults()
         var rainHarvestingSizeValue1 = parseInt($('#rainHarvestingCisternValue').val());
         var rainHarvestingSizeValue2 = parseInt($('#rainHarvestingFeetValue').val());
     var streetPlantersSizeValue = parseInt($('#streetPlantersCaptureValue').val());
-    var infiltrationBasinsSizeValue = parseInt($('#infiltrationBasinsBasinValue').val());
+    var infiltrationBasinsSizeValue = parseInt($('#infiltrationBasinsCaptureValue').val());
     var permeablePavementSizeValue = parseInt($('#permeablePavementCaptureValue').val());
 
     var costRegionValue = parseFloat(sessionStorage.costRegionValue);
@@ -2270,7 +2270,7 @@ function getResults()
       }
       if (sessionStorage.permeablePavement != 0)
       {
-          currentPermeablePavementMaintenanceLow = ((0.0487 * permeablePavementSquareFoot) + 2e-13) * costRegionValue * inflationFactor;
+          currentPermeablePavementMaintenanceLow  = (0.0563 * permeablePavementSquareFoot) * costRegionValue * inflationFactor;
           currentPermeablePavementMaintenanceHigh = ((0.3075 * permeablePavementSquareFoot) + 1e-12) * costRegionValue * inflationFactor;
       }
       else
@@ -2279,18 +2279,18 @@ function getResults()
           currentPermeablePavementMaintenanceHigh = 0;
       }
 
-      if ((simpleTotal > typicalTotal) && (simpleTotal > complexTotal))
-      {
-        costComplexity = 'simple';
-      }
-      if ((typicalTotal > simpleTotal) && (typicalTotal > complexTotal))
-      {
-        costComplexity = 'typical';
-      }
-      if ((complexTotal > simpleTotal) && (complexTotal > typicalTotal))
-      {
-        costComplexity = 'complex';
-      }
+      if ((complexTotal >= typicalTotal) && (complexTotal >= simpleTotal))
+       {
+         costComplexity = 'complex';
+       }
+       else if ((typicalTotal >= complexTotal) && (typicalTotal >= simpleTotal))
+       {
+         costComplexity = 'typical';
+       }
+       else
+       {
+         costComplexity = 'simple';
+       }
 
       if (costComplexity == 'simple')
       {
@@ -3083,7 +3083,7 @@ function getResults()
         $('#alertText').html('An error has occurred. Redirecting you to the home page');
         $('#closeAlertButton').remove();
         setTimeout(function(){
-          window.location.href = window.location.origin;
+          window.location.href ="/stormwatercalculator";
       }, 3000);
     //  }
 
@@ -3114,9 +3114,9 @@ var app = angular.module("stormwaterCalculator", ["ngRoute", "chart.js"]);
 
 app.config(function($routeProvider, $locationProvider)
 {
-  $routeProvider.when("/stormwatercalculator",
+  $routeProvider.when("/stormwatercalculator/",
   {
-    templateUrl: "/stormwatercalculator/modals/homepage.html",
+    templateUrl: "stormwatercalculator/modals/homepage.html",
     controller: "homepageCtrl",
     resolve:
     {
@@ -3155,7 +3155,7 @@ app.config(function($routeProvider, $locationProvider)
       {
         $('#bingMap').show();
 
-        sessionStorage.modal = '/stormwatercalculator/location';
+        sessionStorage.modal = 'location';
 
         siteLocationHandler = Microsoft.Maps.Events.addHandler(map, 'click', moveLocationIcon);
 
@@ -3254,7 +3254,7 @@ app.config(function($routeProvider, $locationProvider)
     }
   }).when("/stormwatercalculator/soiltype",
   {
-    templateUrl: "stormwatercalculator/modals/soiltype.html",
+    templateUrl: "/stormwatercalculator/modals/soiltype.html",
     controller: "soildataCtrl",
     resolve:
     {
@@ -3707,7 +3707,6 @@ app.config(function($routeProvider, $locationProvider)
     }
   }).when("/stormwatercalculator/results",
   {
-
     templateUrl: "/stormwatercalculator/modals/results.html",
     controller: "resultsCtrl",
     resolve:
@@ -3743,7 +3742,6 @@ app.controller("homepageCtrl", function($scope, $location)
 {
     $scope.go = function(path)
     {
-
       $location.path(path);
 
       if ($scope.nameYourSite == undefined)
@@ -3762,7 +3760,6 @@ app.controller("navigationCtrl", function($scope, $location)
 {
     $scope.go = function(path)
     {
-
       $location.path(path);
     }
     $scope.openSaveModal = function()
@@ -3772,6 +3769,7 @@ app.controller("navigationCtrl", function($scope, $location)
     }
     $scope.saveSite = function()
     {
+      console.log("SAVE SITE");
         var customAreaLatitudeArray = [];
         var customAreaLongitudeArray = [];
 
@@ -3967,7 +3965,7 @@ app.controller("navigationCtrl", function($scope, $location)
         siteRadius = sessionStorage.acres / 61.77625;
         drawSiteRadius(sessionStorage.acres);
 
-      $location.path('/stormwatercalculator/location');
+      $location.path('/location');
 
       $('#saveSiteModal').modal('toggle');
 
@@ -4217,19 +4215,43 @@ app.controller('soildataCtrl', function($scope, $route)
     checkResultsGenerated();
   }
 
+  $scope.checkTopography = function()
+   {
+     if ($('#flatRadio').is(':checked'))
+     {
+       sessionStorage.topography = 2;
+       checkResultsGenerated();
+     }
+     if ($('#moderatelyFlatRadio').is(':checked'))
+     {
+       sessionStorage.topography = 5;
+       checkResultsGenerated();
+     }
+     if ($('#moderatelySteepRadio').is(':checked'))
+     {
+       sessionStorage.topography = 10;
+       checkResultsGenerated();
+     }
+     if ($('#steepRadio').is(':checked'))
+     {
+       sessionStorage.topography = 15;
+       checkResultsGenerated();
+     }
+   }
+
   $scope.help = function()
   {
     $('#helpModal').modal();
 
-    if ($route.current.templateUrl == '/stormwatercalculator/modals/soiltype.html')
+    if ($route.current.templateUrl == 'stormwatercalculator/modals/soiltype.html')
     {
       $('#helpText').html("<p>Soil type is identified by its Hydrologic Soil Group, a classification used by soil scientists to characterize the physical nature and runoff potential of a soil. Roughly speaking, Group A is sand, Group B sandy loam, Group C clay loam, and Group D clay. The Calculator uses soil type to infer a site's infiltration properties.</p><p>Soil type data may not be available for your particular site.</p>");
     }
-    if ($route.current.templateUrl == '/stormwatercalculator/modals/soildrainage.html')
+    if ($route.current.templateUrl == 'modals/soildrainage.html')
     {
       $('#helpText').html("<p>The rate at which standing water infiltrates into a soil is measured by its saturated hydraulic conductivity. Soils with higher conductivity produce less runoff.</p><p>Conductivity data might not be available for your particular site.</p>");
     }
-    if ($route.current.templateUrl == '/stormwatercalculator/modals/topography.html')
+    if ($route.current.templateUrl == 'soildrainagemodals/topography.html')
     {
       $('#helpText').html("<p>Site topography, as measured by surface slope (feet of drop per 100 feet of length), affects how fast stormwater will run off a site. Flatter slopes produce slower runoff flow rates and provide more opportunity for rainfall to infiltrate into the soil.</p><p>Slope data may not be available for your particular site.</p>");
     }
@@ -4336,7 +4358,7 @@ app.controller('precipitationCtrl', function($scope)
         {
           sameStationArray[i].setOptions(
           {
-            icon: 'images/sameStationIcon.png'
+            icon: 'stormwatercalculator/images/sameStationIcon.png'
           });
         }
       }
@@ -4359,7 +4381,7 @@ app.controller('precipitationCtrl', function($scope)
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationIcon.png'
+              icon: 'stormwatercalculator/images/sameStationIcon.png'
             });
           }
         }
@@ -4420,7 +4442,7 @@ app.controller('precipitationCtrl', function($scope)
           {
             sameStationArray[j].setOptions(
             {
-              icon: 'images/sameStationIcon.png'
+              icon: 'stormwatercalculator/images/sameStationIcon.png'
             });
           }
         }
@@ -5069,10 +5091,12 @@ app.controller('lidcontrolsCtrl', function($scope)
       var infiltrationBasinsCalculatedValue = ($('#infiltrationBasinsCaptureValue').val()/100)*(parseInt($('#infiltrationBasinsValue').val())/100);
       sessionStorage.sumOfDiscRainInfiControls = disconnectionCalculatedValue + rainGardensCalculatedValue + infiltrationBasinsCalculatedValue;
     }
+    checkResultsGenerated();
   });
 
   $scope.changeLIDSlider = function(value, category)
   {
+    console.log("Slider One");
     if(category == 'disconnection' || category == 'rainGardens' || category == 'infiltrationBasins') {
       var disconnectionCalculatedValue = ($('#disconnectionCaptureValue').val()/100)*(parseInt($('#disconnectionValue').val())/100);
       var rainGardensCalculatedValue = ($('#rainGardensCaptureValue').val()/100)*(parseInt($('#rainGardensValue').val())/100);
@@ -6973,6 +6997,7 @@ $scope.costSummaryTableData = [
       '<hydSoilGroup>' + sessionStorage.soilType + '</hydSoilGroup>' + '\n' +
       '<hydConductivity>' + sessionStorage.soilDrainage + '</hydConductivity>' + '\n' +
       '<surfaceSlope>' + sessionStorage.topography + '</surfaceSlope>' + '\n' +
+      '<demoValue>abcd</demoValue>' + '\n' +
       '<rainSource>4</rainSource>' + '\n' +
       '<evapSource>0</evapSource>' + '\n' +
       '<percForest>' + sessionStorage.forest + '</percForest>' + '\n' +
@@ -7025,6 +7050,39 @@ $scope.costSummaryTableData = [
       '<tbRegMultiplier>' + sessionStorage.costRegionValue + '</tbRegMultiplier>' + '\n' +
       '<precStationID>' + sessionStorage.rainGageID + '</precStationID>' + '\n' +
       '<evapStationID>' + sessionStorage.weatherStationID  + '</evapStationID>' + '\n' +
+
+      '<lidData>' + '\n' +
+
+'<idCapture>' + $('#disconnectionCaptureValue').val() + '</idCapture>' + '\n' +
+
+'<rhSize>' + $('#rainHarvestingCisternValue').val() + '</rhSize>' + '\n' +
+'<rhDrainRate>' + $('#rainHarvestingRateValue').val() + '</rhDrainRate>' + '\n' +
+'<rhNumber>' + $('#rainHarvestingFeetValue').val() + '</rhNumber>' + '\n' +
+
+'<rgRimHeight>' + $('#rainGardensPondingValue').val() + '</rgRimHeight>' + '\n' +
+'<rgSoilHeight>' + $('#rainGardensThicknessValue').val() + '</rgSoilHeight>' + '\n' +
+'<rgSoilKsat>' + $('#rainGardensMediaValue').val() + '</rgSoilKsat>' + '\n' +
+'<rgCapture>' + $('#rainGardensCaptureValue').val() + '</rgCapture>' + '\n' +
+
+'<grSoilHeight>' + $('#greenRoofsThicknessValue').val() + '</grSoilHeight>' + '\n' +
+'<grSoilKsat>' + $('#greenRoofsMediaValue').val() + '</grSoilKsat>' + '\n' +
+
+
+'<spRimHeight>' + $('#streetPlantersPondingValue').val() + '</spRimHeight>' + '\n' +
+'<spSoilHeight>' + $('#streetPlantersThicknessValue').val() + '</spSoilHeight>' + '\n' +
+'<spSoilKsat>' + $('#streetPlantersMediaValue').val() + '</spSoilKsat>' + '\n' +
+'<spDrainHeight>' + $('#streetPlantersGravelValue').val() + '</spDrainHeight>' + '\n' +
+'<spCapture>' + $('#streetPlantersCaptureValue').val() + '</spCapture>' + '\n' +
+
+'<ibHeight>' + $('#infiltrationBasinsBasinValue').val() + '</ibHeight>' + '\n' +
+'<ibCapture>' + $('#infiltrationBasinsCaptureValue').val() + '</ibCapture>' + '\n' +
+
+'<ppPaveHeight>' + $('#permeablePavementPavementValue').val() + '</ppPaveHeight>' + '\n' +
+'<ppDrainHeigh>' + $('#permeablePavementGravelValue').val() + '</ppDrainHeigh>' + '\n' +
+'<ppCapture>' + $('#permeablePavementCaptureValue').val() + '</ppCapture>' + '\n' +
+
+      '</lidData>' + '\n' +
+
       '</siteData>';
 
       getResults();

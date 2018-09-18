@@ -34,7 +34,7 @@
 			    <div class="col-md-4">
 			    	<div class="form-group">
 				        <label for="yearsValue">Years to Analyze:</label>
-				        <input type="number" class="form-control" min="1"  step="1" ng-model="yearsValue" id="yearsValue" ng-change="changeYearsToAnalyze()" />
+				        <input type="number" class="form-control" min="1" max="{{yearsValueTemp}}" step="1" ng-model="yearsValue" id="yearsValue" ng-change="changeYearsToAnalyze()" />
 				    </div>
 				    <div class="form-group">
 				        <label for="eventValue">Event Threshold:</label>

@@ -1771,7 +1771,7 @@ function downloadRainfallWeatherDataMobile()
         dataType: 'json',
         headers:
         {
-            'Authorization': 'Basic c3djYWxjdWxhdG9yQGdtYWlsLmNvbTpTdDBybXdhdGVy'
+            'Authorization': 'Basic c3djYWRtaW46c1Qwcm13QHQzciExMjM='
         },
         success: function ()
         {
@@ -1780,7 +1780,7 @@ function downloadRainfallWeatherDataMobile()
         error: function()
         {
             $('#emailModalHeader').show();
-            $('#emailModalBody').html('<div class="alert alert-warning">You have entered an invalid email address. Please enter a valid email address.</div><div class="form-group"><input type="text" class="form-control" placeholder="Email Address" id="emailAddressValue" onchange="determineEmailValue()" ng-model="emailAddressValue"></div><button type="button" class="btn btn-default" id="sendDataButton" onclick="downloadRainfallWeatherDataMobile();">Send Precipitation Data File</button>');
+            $('#emailModalBody').html('<div class="alert alert-warning">You have entered an invalid email address. Please enter a valid email address.</div><div class="form-group"><input type="text" class="form-control" placeholder="Email Address" id="emailAddressValue" onchange="determineEmailValue()" ng-model="emailAddressValue"></div><button type="button" class="btn btn-default" id="sendDataButton" onclick="downloadRainfallWeatherDataMobile();">Send Precipitation/Evaporation Data File</button>');
         }
     });
 
@@ -1809,12 +1809,13 @@ function saveSiteMobile()
         type: 'POST',
         url: '/swcalculator-server/api/v1/email/emailXml/' + email + '?fileName=' + sessionStorage.siteName + '.xml',
         data: xmlSaveString,
+        contentType: 'application/xml',
         async: true,
         headers:
         {
             'Authorization': 'Basic c3djYWRtaW46c1Qwcm13QHQzciExMjM='
         },
-        dataType: 'json',
+      //  dataType: 'json',
         success: function ()
         {
             $('#emailModalBody').html('<span>SWC XML file sent.</span><button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100%; eight: 50px;">Close</button>');
@@ -2054,7 +2055,7 @@ function getCostingRegionalization()
 
       for (var i = 0; i < response.length; i++)
       {
-        console.log("Inflation Factor " + response[i].inflationFactor) ;
+        console.log("Inflation Factor *" + response[i].inflationFactor) ;
         costOptions.push(
         {
           'name': response[i].selectString.split(')')[0] + ')',
@@ -3849,12 +3850,14 @@ app.controller("navigationCtrl", function($scope, $location)
           '<evapStationName>' + sessionStorage.weatherStationName  + '</evapStationName>' + '\n' +
           '</siteData>';
 
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
-        {
+      //  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+      //  {
             $('#emailModal').modal();
+            $('#emailModalHeader').show();
+            $('#emailModalBody').html('<div class="form-group"><input type="text" class="form-control" placeholder="Email Address" id="emailAddressValue" onchange="determineEmailValue()" ng-model="emailAddressValue"></div><div id="emailButton"></div>');
             $('#emailButton').html('<button type="button" class="btn btn-default" id="sendDataButton" onclick="saveSiteMobile();">Send SWC XML File</button>');
-        }
-        else
+      //  }
+      /*  else
         {
           var xmlFileText = new Blob([xmlSaveString],
           {
@@ -3870,7 +3873,7 @@ app.controller("navigationCtrl", function($scope, $location)
           });
           $('#nameYourSite').show();
           $('#saveSiteModalTitle').html('Name Your Site');
-        }
+        }*/
     }
     $scope.selectNo = function()
     {
@@ -3965,7 +3968,7 @@ app.controller("navigationCtrl", function($scope, $location)
         siteRadius = sessionStorage.acres / 61.77625;
         drawSiteRadius(sessionStorage.acres);
 
-      $location.path('/location');
+      $location.path('stormwatercalculator/location');
 
       $('#saveSiteModal').modal('toggle');
 
@@ -4266,15 +4269,21 @@ app.controller('precipitationCtrl', function($scope)
   $scope.weatherStationNames = weatherStationOptions;
 
   $scope.rainGageSelect = sessionStorage.rainGageName;
-  $scope.rainStartDate = $scope.rainGageNames[0].startDate;
+  $scope.rainStartDate = sessionStorage.rainStartDate ? sessionStorage.rainStartDate : $scope.rainGageNames[0].startDate;
+  $scope.rainEndDate = sessionStorage.rainEndDate ? sessionStorage.rainEndDate : $scope.rainGageNames[0].endDate;
+  $scope.rainRainfall= sessionStorage.rainRainfall ? sessionStorage.rainRainfall : $scope.rainGageNames[0].rainfall;
+
   //-----------Rain End Date
-  $scope.rainEndDate = $scope.rainGageNames[0].endDate;
-  $scope.rainRainfall= $scope.rainGageNames[0].rainfall;
+
+
 
   $scope.weatherStationSelect = sessionStorage.weatherStationName;
-  $scope.weatherStartDate = $scope.weatherStationNames[0].startDate;
-  $scope.weatherEndDate = $scope.weatherStationNames[0].endDate;
-  $scope.weatherRate = $scope.weatherStationNames[0].rate;
+  $scope.weatherStartDate = sessionStorage.weatherStartDate ? sessionStorage.weatherStartDate : $scope.weatherStationNames[0].startDate;
+  $scope.weatherEndDate = sessionStorage.weatherEndDate ? sessionStorage.weatherEndDate : $scope.weatherStationNames[0].endDate;
+  $scope.weatherRate = sessionStorage.weatherRate ? sessionStorage.weatherRate : $scope.weatherStationNames[0].rate;
+
+
+
 
   for (var i = 0; i < rainGageArray.length; i++)
   {
@@ -4308,7 +4317,38 @@ app.controller('precipitationCtrl', function($scope)
       });
     }
   }
+  $scope.yearsService = sessionStorage.yearsService ? parseInt(sessionStorage.yearsService) : 0;
+  $scope.basinsChkbox = sessionStorage.basinsChkbox ? JSON.parse(sessionStorage.basinsChkbox) : false;
+  $scope.yearsServiceFunc = function(yearsService) {
+    sessionStorage.yearsService = yearsService;
+  }
 
+  $scope.selectBasinsChkbox = function(value) {
+    if(value) {
+      console.log('input field value: ');
+      console.log($("#yearsService").val());
+      $.ajax(
+      {
+        type: 'GET',
+        url: precipitationURLString,
+        dataType: 'json',
+        success: function(response)
+        {
+          console.log('success');
+          sessionStorage.basinsChkbox = true;
+          console.log(response);
+        },
+        error: function(errResponse)
+        {
+          console.log('failure');
+          console.log(errResponse);
+        }
+      });
+    }
+    else {
+      sessionStorage.basinsChkbox = false;
+    }
+  }
   $scope.selectRainGageDropdown = function()
   {
     var rainGageNames=$scope.rainGageNames;
@@ -4316,16 +4356,13 @@ app.controller('precipitationCtrl', function($scope)
     {
       if (rainGageNames[i].name == $scope.rainGageSelect)
       {
-        // rainGageArray[i].setOptions(
-        // {
-        //  icon: 'images/rainGageIcon.png'
-        // });
-
         $scope.rainStartDate = rainGageNames[i].startDate;
         $scope.rainEndDate = rainGageNames[i].endDate;
         $scope.rainRainfall= rainGageNames[i].rainfall;
-
-
+        sessionStorage.rainGageName = rainGageNames[i].name;
+        sessionStorage.rainStartDate = rainGageNames[i].startDate;
+        sessionStorage.rainEndDate = rainGageNames[i].endDate;
+        sessionStorage.rainRainfall = rainGageNames[i].rainfall;
 
         sessionStorage.stationSelected = 'selected';
 
@@ -4343,10 +4380,31 @@ app.controller('precipitationCtrl', function($scope)
       }
     }
 
+    for (var i = 0; i < rainGageArray.length; i++)
+    {
+      if (rainGageArray[i].name == $scope.rainGageSelect)
+      {
+        rainGageArray[i].setOptions(
+        {
+          icon: 'stormwatercalculator/images/rainGageActiveIcon.png'
+        });
+      }
+      else
+      {
+        rainGageArray[i].setOptions(
+        {
+          icon: 'stormwatercalculator/images/rainGageIcon.png'
+        });
+
+      }
+    }
+
+
     for (var i = 0; i < sameStationArray.length; i++)
     {
       if (sameStationArray[i].name == $scope.rainGageSelect)
       {
+        console.log('red cloud == selected');
         sameStationArray[i].setOptions(
         {
           icon: 'stormwatercalculator/images/sameStationActiveIcon.png'
@@ -4356,6 +4414,7 @@ app.controller('precipitationCtrl', function($scope)
       {
         if (sameStationArray[i].name != $scope.weatherStationSelect)
         {
+          console.log('red cloud == selected weatherstationselect');
           sameStationArray[i].setOptions(
           {
             icon: 'stormwatercalculator/images/sameStationIcon.png'
@@ -4388,6 +4447,8 @@ app.controller('precipitationCtrl', function($scope)
       }
     }
     checkResultsGenerated();
+
+
   }
 
   $scope.selectWeatherStationDropdown = function()
@@ -4400,9 +4461,33 @@ app.controller('precipitationCtrl', function($scope)
         $scope.weatherStartDate = weatherStationNames[i].startDate;
         $scope.weatherEndDate = weatherStationNames[i].endDate;
         $scope.weatherRate = weatherStationNames[i].rate;
+        sessionStorage.weatherStationName = weatherStationNames[i].name;
+        sessionStorage.weatherStartDate = $scope.weatherStartDate;
+        sessionStorage.weatherEndDate = $scope.weatherEndDate;
+        sessionStorage.weatherRate = $scope.weatherRate;
       }
 
     }
+
+    for (var i = 0; i < weatherStationArray.length; i++)
+    {
+      if (weatherStationArray[i].name == $scope.weatherStationSelect)
+      {
+        weatherStationArray[i].setOptions(
+        {
+          icon: 'stormwatercalculator/images/weatherStationActiveIcon.png'
+        });
+      }
+      else
+      {
+        weatherStationArray[i].setOptions(
+        {
+          icon: 'stormwatercalculator/images/weatherStationIcon.png'
+        });
+
+      }
+    }
+
 
     for (var i = 0; i < sameStationArray.length; i++)
     {
@@ -4485,7 +4570,9 @@ app.controller('precipitationCtrl', function($scope)
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
     {
         $('#emailModal').modal();
-        $('#emailButton').html('<button type="button" class="btn btn-default" id="sendDataButton" onclick="downloadRainfallWeatherDataMobile();">Send Precipitation Data File</button>');
+        $('#emailModalHeader').show();
+        $('#emailModalBody').html('<div class="form-group"><input type="text" class="form-control" placeholder="Email Address" id="emailAddressValue" onchange="determineEmailValue()" ng-model="emailAddressValue"></div><div id="emailButton"></div>');
+        $('#emailButton').html('<button type="button" class="btn btn-default" id="sendDataButton" onclick="downloadRainfallWeatherDataMobile();">Send Precipitation/Evaporation Data File</button>');
     }
     else
     {

@@ -74,6 +74,6 @@ public class CaculateResource extends BaseResource {
     }
 
 
-    
-    
+
+
 }

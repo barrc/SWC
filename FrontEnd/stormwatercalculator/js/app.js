@@ -4318,16 +4318,22 @@ app.controller('precipitationCtrl', function($scope)
     }
   }
   $scope.yearsService = sessionStorage.yearsService ? parseInt(sessionStorage.yearsService) : 0;
-  $scope.basinsChkbox = sessionStorage.basinsChkbox ? JSON.parse(sessionStorage.basinsChkbox) : false;
+  $scope.basinsChkbox = sessionStorage.basinsChkbox ;
   $scope.yearsServiceFunc = function(yearsService) {
     sessionStorage.yearsService = yearsService;
   }
 
   $scope.selectBasinsChkbox = function(value) {
+    console.log("select basins bhkbox value: " + value);
+    console.log("sessionStorage.basinsChkbox before: " + sessionStorage.basinsChkbox);
+    sessionStorage.basinsChkbox = value;
+    console.log("sessionStorage.basinsChkbox after: " + sessionStorage.basinsChkbox);
+
     if(value) {
-      console.log('input field value: ');
-      console.log($("#yearsService").val());
-      $.ajax(
+        console.log('input field value: ');
+        console.log($("#yearsService").val());
+    }
+  /*  $.ajax(
       {
         type: 'GET',
         url: precipitationURLString,
@@ -4347,7 +4353,7 @@ app.controller('precipitationCtrl', function($scope)
     }
     else {
       sessionStorage.basinsChkbox = false;
-    }
+    }*/
   }
   $scope.selectRainGageDropdown = function()
   {
@@ -7137,6 +7143,7 @@ $scope.costSummaryTableData = [
       '<tbRegMultiplier>' + sessionStorage.costRegionValue + '</tbRegMultiplier>' + '\n' +
       '<precStationID>' + sessionStorage.rainGageID + '</precStationID>' + '\n' +
       '<evapStationID>' + sessionStorage.weatherStationID  + '</evapStationID>' + '\n' +
+      '<isHms>' + sessionStorage.basinsChkbox  + '</isHms>' + '\n' +
 
       '<lidData>' + '\n' +
 

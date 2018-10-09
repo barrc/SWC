@@ -54,6 +54,9 @@ public class CalculateServiceImpl implements CalculateService {
     @Autowired
     GeoDataService geoDataService;
 
+    @Autowired
+    private HmsService hmsService;
+
     @Override
     public int runSwmm(String inFile, String rptFile, String outFile) throws SWCException {
         int exitValue = -999;
@@ -138,9 +141,16 @@ public class CalculateServiceImpl implements CalculateService {
             if (rainFile == null) {
                 logger.error("CalculateServiceImpl.calculate(): Error trying to find rainfall data file for precStationID: " + siteData.getPrecStationID());
                 throw new SWCException("Could not retrieve rainfall data for this site.");
-            };
+            }
 
-            siteData.setRainFile(Constants.FILE_PATH_SWC_DATA + rainFile);
+          if (siteData.getIsHms()) {
+                System.out.println("***HMS SERVICE ");
+                hmsService.getHMSData(Constants.FILE_PATH_HMS_DATA + rainFile, siteData.getPrecStationID(), "2017", "2018");
+                siteData.setRainFile(Constants.FILE_PATH_HMS_DATA + rainFile);
+            } else {
+                siteData.setRainFile(Constants.FILE_PATH_SWC_DATA + rainFile);
+            }
+
               // Apply climate change adjustments
             climateService.updateAdjustments(siteData);
 

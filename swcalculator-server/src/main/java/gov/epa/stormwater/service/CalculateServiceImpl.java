@@ -145,9 +145,12 @@ public class CalculateServiceImpl implements CalculateService {
 
           if (siteData.getIsHms()) {
                 System.out.println("***HMS SERVICE ");
+                System.out.println(rainFile);
                 hmsService.getHMSData(Constants.FILE_PATH_HMS_DATA + rainFile, siteData.getPrecStationID(), "2017", "2018");
                 siteData.setRainFile(Constants.FILE_PATH_HMS_DATA + rainFile);
+                System.out.println(siteData.getRainFile());
             } else {
+                System.out.println("NORMAL SERVICE ");
                 siteData.setRainFile(Constants.FILE_PATH_SWC_DATA + rainFile);
             }
 
@@ -156,6 +159,7 @@ public class CalculateServiceImpl implements CalculateService {
 
             // Create a base SWMM input file for the site
             writeBaseInpFile(siteData);
+            System.out.println(siteData);
 
             // Modify the base input file for a long term simulation
             writeLongTermInpFile(siteData);

@@ -13,6 +13,8 @@ import gov.epa.stormwater.model.SiteData;
 import gov.epa.stormwater.model.SiteDataModel;
 import gov.epa.stormwater.model.XEventModel;
 import static gov.epa.stormwater.model.XEventModel.N_EVENTS;
+
+import gov.epa.stormwater.model.met.PrecStationLocationModel;
 import gov.epa.stormwater.service.common.Constants;
 import gov.epa.stormwater.service.common.SWCException;
 import gov.epa.stormwater.service.utils.Utils;
@@ -22,6 +24,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 
 import org.slf4j.Logger;
@@ -146,7 +149,34 @@ public class CalculateServiceImpl implements CalculateService {
           if (siteData.getIsHms()) {
                 System.out.println("***HMS SERVICE ");
                 System.out.println(rainFile);
-                hmsService.getHMSData(Constants.FILE_PATH_HMS_DATA + rainFile, siteData.getPrecStationID(), "2017", "2018");
+
+                List<PrecStationLocationModel> output = geoDataService.getPrecLocations();
+
+                double rainLatitude = 0;
+                double rainLongitude = 0;
+
+                for (PrecStationLocationModel p : output) {
+                    if (p.getStationId().equalsIgnoreCase(siteData.getPrecStationID())) {
+                        rainLatitude = p.getLat();
+                        rainLongitude = p.getLongitude();
+                    }
+                }
+
+                System.out.println("latitude");
+                System.out.println(rainLatitude);
+
+                System.out.println("longitude");
+                System.out.println(rainLongitude);
+
+                siteData.setStartYear(2017);
+                siteData.setEndYear(2018);
+
+
+                System.out.println("start year and end year: ");
+                System.out.println(siteData.getStartYear());
+                System.out.println(siteData.getEndYear());
+
+                hmsService.getHMSData(Constants.FILE_PATH_HMS_DATA + rainFile, siteData.getPrecStationID(), "2017", "2018", rainLatitude, rainLongitude);
                 siteData.setRainFile(Constants.FILE_PATH_HMS_DATA + rainFile);
                 System.out.println(siteData.getRainFile());
             } else {
@@ -410,6 +440,8 @@ public class CalculateServiceImpl implements CalculateService {
             Utils.writeLine(bw, "ROUTING_STEP  60");
             Utils.writeLine(bw, "START_TIME  0:00:00");
             Utils.writeLine(bw, "END_TIME  23:59:59");
+            System.out.println("START_DATE  01/01/" + siteData.getStartYear());
+            System.out.println("END_DATE  12/31/" + siteData.getEndYear());
             Utils.writeLine(bw, "START_DATE  01/01/" + siteData.getStartYear());
             Utils.writeLine(bw, "END_DATE  12/31/" + siteData.getEndYear());
             Utils.writeLine(bw, "TEMPDIR  \"" + Constants.FILE_PATH + "\"");

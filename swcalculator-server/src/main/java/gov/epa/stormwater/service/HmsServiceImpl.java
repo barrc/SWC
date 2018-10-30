@@ -33,18 +33,23 @@ public class HmsServiceImpl implements HmsService {
             .getLogger(gov.epa.stormwater.service.HmsServiceImpl.class);
 
     @Override
-    public boolean getHMSData(String filePath, String stationId, String startYear, String endYear) throws SWCException {
+    public boolean getHMSData(String filePath, String stationId, String startYear, String endYear, Double latitude, Double longitude) throws SWCException {
 
         try {
-//               String URL = "https://qedinternal.epa.gov/hms/rest/api/hydrology/precipitation";
-            String URL = "http://demo3101821.mockable.io/hms/rest/api/hydrology/precipitation";
+            String URL = "https://qedinternal.epa.gov/hms/rest/api/hydrology/precipitation";
+//            String URL = "http://demo3101821.mockable.io/hms/rest/api/hydrology/precipitation";
+
+            System.out.println("start year: ");
+            System.out.println(startYear);
+            System.out.println("end year: ");
+            System.out.println(endYear);
 
             HmsPostModel hmsPost = new HmsPostModel();
             hmsPost.setSource("nldas");
 
             HmsDateTimeSpan dateTimeSpan = new HmsDateTimeSpan();
-            dateTimeSpan.setStartDate("2015-01-01T00:00:00");
-            dateTimeSpan.setEndDate("2015-01-08T00:00:00");
+            dateTimeSpan.setStartDate("2017-03-10T00:00:00");
+            dateTimeSpan.setEndDate("2017-03-14T00:00:00");
             dateTimeSpan.setDateTimeFormat("yyyy-MM-dd HH");
             hmsPost.setDateTimeSpan(dateTimeSpan);
 
@@ -53,8 +58,10 @@ public class HmsServiceImpl implements HmsService {
             geometry.setComID(0L);
             geometry.setHucID(0L);
             HmsGeometryPoint point = new HmsGeometryPoint();
-            point.setLatitude(33.925673);
-            point.setLongitude(-83.355723);
+            // point.setLatitude(33.925673);
+            // point.setLongitude(-83.355723);
+            point.setLatitude(latitude);
+            point.setLongitude(longitude);
             geometry.setPoint(point);
             HmsGeometryMetadata geometryMetadata = new HmsGeometryMetadata();
             geometryMetadata.setCity("Athens");
@@ -71,16 +78,18 @@ public class HmsServiceImpl implements HmsService {
             hmsPost.setDataValueFormat("E3");
             hmsPost.setTemporalResolution("default");
             hmsPost.setTimeLocalized(true);
-            hmsPost.setUnits("default");
+            hmsPost.setUnits("imperial");
             hmsPost.setOutputFormat("json");
 
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = mapper.writeValueAsString(hmsPost);
             logger.info("jsonString: " + jsonString);
+            System.out.println("jsonString: " + jsonString);
 
             ClientConfig config = new DefaultClientConfig();
             Client client = Client.create(config);
             WebResource service = client.resource(URL);
+
 
             ClientResponse response = service.type("application/json")
                     .post(ClientResponse.class, jsonString);
@@ -91,6 +100,7 @@ public class HmsServiceImpl implements HmsService {
             }
             HmsResponseModel hmsResponse = response.getEntity(HmsResponseModel.class);
             logger.info("hmsResponse: " + hmsResponse);
+            System.out.println(hmsResponse);
 
             if(hmsResponse != null && MapUtils.isNotEmpty(hmsResponse.getData())) {
                 StringBuilder sb = new StringBuilder();
@@ -102,6 +112,12 @@ public class HmsServiceImpl implements HmsService {
 
                     Date date = new SimpleDateFormat("yyyy-MM-dd HH").parse(dataEntry.getKey());
                     String newDateFormat = new SimpleDateFormat("yyyy  M  d  H  m").format(date);
+
+                    System.out.println(dataEntry.getKey());
+                    System.out.println(date);
+                    System.out.println(newDateFormat);
+                    System.out.println("\n");
+
 
                     sb.append(String.format("%-17s", stationId));
                     sb.append(String.format("%-21s", newDateFormat));

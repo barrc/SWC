@@ -49,7 +49,6 @@ public class HmsResponseModel {
         return "HmsResponseModel{" +
                 "dataset='" + dataset + '\'' +
                 ", dataSource='" + dataSource + '\'' +
-                ", metadata=" + metadata +
                 ", data=" + data +
                 '}';
     }

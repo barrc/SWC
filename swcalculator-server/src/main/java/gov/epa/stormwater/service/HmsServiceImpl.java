@@ -48,8 +48,8 @@ public class HmsServiceImpl implements HmsService {
             hmsPost.setSource("nldas");
 
             HmsDateTimeSpan dateTimeSpan = new HmsDateTimeSpan();
-            dateTimeSpan.setStartDate("2017-03-10T00:00:00");
-            dateTimeSpan.setEndDate("2017-03-14T00:00:00");
+            dateTimeSpan.setStartDate(startYear + "-01-01T00:00:00");
+            dateTimeSpan.setEndDate(endYear + "-12-31T00:00:00");
             dateTimeSpan.setDateTimeFormat("yyyy-MM-dd HH");
             hmsPost.setDateTimeSpan(dateTimeSpan);
 
@@ -63,16 +63,16 @@ public class HmsServiceImpl implements HmsService {
             point.setLatitude(latitude);
             point.setLongitude(longitude);
             geometry.setPoint(point);
-            HmsGeometryMetadata geometryMetadata = new HmsGeometryMetadata();
-            geometryMetadata.setCity("Athens");
-            geometryMetadata.setState("Georgia");
-            geometryMetadata.setCountry("United States");
-            geometry.setGeometryMetadata(geometryMetadata);
-            HmsGeometryTimezone timezone = new HmsGeometryTimezone();
-            timezone.setName("EST");
-            timezone.setOffset(-5);
-            timezone.setDls(false);
-            geometry.setTimezone(timezone);
+//            HmsGeometryMetadata geometryMetadata = new HmsGeometryMetadata();
+//            geometryMetadata.setCity("Athens");
+//            geometryMetadata.setState("Georgia");
+//            geometryMetadata.setCountry("United States");
+//            geometry.setGeometryMetadata(geometryMetadata);
+//            HmsGeometryTimezone timezone = new HmsGeometryTimezone();
+//            timezone.setName("EST");
+//            timezone.setOffset(-5);
+//            timezone.setDls(false);
+//            geometry.setTimezone(timezone);
             hmsPost.setGeometry(geometry);
 
             hmsPost.setDataValueFormat("E3");
@@ -84,7 +84,7 @@ public class HmsServiceImpl implements HmsService {
             ObjectMapper mapper = new ObjectMapper();
             String jsonString = mapper.writeValueAsString(hmsPost);
             logger.info("jsonString: " + jsonString);
-            System.out.println("jsonString: " + jsonString);
+//            System.out.println("jsonString: " + jsonString);
 
             ClientConfig config = new DefaultClientConfig();
             Client client = Client.create(config);
@@ -100,7 +100,7 @@ public class HmsServiceImpl implements HmsService {
             }
             HmsResponseModel hmsResponse = response.getEntity(HmsResponseModel.class);
             logger.info("hmsResponse: " + hmsResponse);
-            System.out.println(hmsResponse);
+//            System.out.println(hmsResponse);
 
             if(hmsResponse != null && MapUtils.isNotEmpty(hmsResponse.getData())) {
                 StringBuilder sb = new StringBuilder();
@@ -113,16 +113,18 @@ public class HmsServiceImpl implements HmsService {
                     Date date = new SimpleDateFormat("yyyy-MM-dd HH").parse(dataEntry.getKey());
                     String newDateFormat = new SimpleDateFormat("yyyy  M  d  H  m").format(date);
 
-                    System.out.println(dataEntry.getKey());
-                    System.out.println(date);
-                    System.out.println(newDateFormat);
-                    System.out.println("\n");
+                    // TODO do this differently
+                    // skip hours that do not exist because of daylight saving time
+                    if (!(dataEntry.getKey().equals("2015-03-08 02"))
+                          && !(dataEntry.getKey().equals("2016-03-13 02"))
+                          && !(dataEntry.getKey().equals("2017-03-12 02")))
 
-
-                    sb.append(String.format("%-17s", stationId));
-                    sb.append(String.format("%-21s", newDateFormat));
-                    sb.append(String.format("%-10s", dataEntry.getValue().get(0)));
-                    sb.append("\n");
+                    {
+                        sb.append(String.format("%-17s", stationId));
+                        sb.append(String.format("%-21s", newDateFormat));
+                        sb.append(String.format("%-10s", dataEntry.getValue().get(0)));
+                        sb.append("\n");
+                    }
                 }
                 FileUtils.writeStringToFile(new File(filePath), sb.toString());
                 logger.info("Generated new hms data file: " + filePath);

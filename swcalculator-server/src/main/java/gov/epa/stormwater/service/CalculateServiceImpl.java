@@ -24,6 +24,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -162,21 +163,23 @@ public class CalculateServiceImpl implements CalculateService {
                     }
                 }
 
-                System.out.println("latitude");
-                System.out.println(rainLatitude);
+                // use most recent complete year (for statistics, but TODO ask Jason)
+                Calendar now = Calendar.getInstance();
+                Integer currentYear = now.get(Calendar.YEAR);
 
-                System.out.println("longitude");
-                System.out.println(rainLongitude);
+                Integer simulationStartYear = currentYear - siteData.getYearsAnalyzed() - 1;
+                Integer simulationEndYear = currentYear - 1;
 
-                siteData.setStartYear(2017);
-                siteData.setEndYear(2018);
-
+                siteData.setStartYear(simulationStartYear);
+                siteData.setEndYear(simulationEndYear);
 
                 System.out.println("start year and end year: ");
                 System.out.println(siteData.getStartYear());
                 System.out.println(siteData.getEndYear());
 
-                hmsService.getHMSData(Constants.FILE_PATH_HMS_DATA + rainFile, siteData.getPrecStationID(), "2017", "2018", rainLatitude, rainLongitude);
+                hmsService.getHMSData(Constants.FILE_PATH_HMS_DATA + rainFile,
+                        siteData.getPrecStationID(), Integer.toString(simulationStartYear),
+                        Integer.toString(simulationEndYear), rainLatitude, rainLongitude);
                 siteData.setRainFile(Constants.FILE_PATH_HMS_DATA + rainFile);
                 System.out.println(siteData.getRainFile());
             } else {
@@ -419,6 +422,7 @@ public class CalculateServiceImpl implements CalculateService {
         }
         siteData.setStartYear(siteData.getEndYear() - yrs + 1);
 
+        
     }
 
     public void writeBaseInpFile(SiteData siteData) throws SWCException {

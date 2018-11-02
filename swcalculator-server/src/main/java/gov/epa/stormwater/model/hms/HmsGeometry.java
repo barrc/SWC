@@ -9,9 +9,9 @@ public class HmsGeometry {
 
     private HmsGeometryPoint point;
 
-    private HmsGeometryMetadata geometryMetadata;
+//    private HmsGeometryMetadata geometryMetadata;
 
-    private HmsGeometryTimezone timezone;
+//    private HmsGeometryTimezone timezone;
 
     public String getDescription() {
         return description;
@@ -45,21 +45,21 @@ public class HmsGeometry {
         this.point = point;
     }
 
-    public HmsGeometryMetadata getGeometryMetadata() {
-        return geometryMetadata;
-    }
+//    public HmsGeometryMetadata getGeometryMetadata() {
+//        return geometryMetadata;
+//    }
 
-    public void setGeometryMetadata(HmsGeometryMetadata geometryMetadata) {
-        this.geometryMetadata = geometryMetadata;
-    }
+//    public void setGeometryMetadata(HmsGeometryMetadata geometryMetadata) {
+//        this.geometryMetadata = geometryMetadata;
+//    }
 
-    public HmsGeometryTimezone getTimezone() {
-        return timezone;
-    }
+//    public HmsGeometryTimezone getTimezone() {
+//        return timezone;
+//    }
 
-    public void setTimezone(HmsGeometryTimezone timezone) {
-        this.timezone = timezone;
-    }
+//    public void setTimezone(HmsGeometryTimezone timezone) {
+//        this.timezone = timezone;
+//    }
 
     @Override
     public String toString() {
@@ -68,8 +68,6 @@ public class HmsGeometry {
                 ", comID=" + comID +
                 ", hucID=" + hucID +
                 ", point=" + point +
-                ", geometryMetadata=" + geometryMetadata +
-                ", timezone=" + timezone +
                 '}';
     }
 }

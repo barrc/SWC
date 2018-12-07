@@ -799,7 +799,7 @@ public class CalculateServiceImpl implements CalculateService {
                     case "I":
                         rSeries = fillRainTimeSeries(siteData.getXEventModel().getRainfall()[i], siteData.getXEventModel().getScsI());  //rainfall[i], scsI, ref rSeries); 
                         break;
-                    case "Ia":
+                    case "IA":
                         rSeries = fillRainTimeSeries(siteData.getXEventModel().getRainfall()[i], siteData.getXEventModel().getScsIa());  //fillRainTimeSeries(rainfall[i], scsIa, ref rSeries); 
                         break;
                     case "II":

@@ -641,8 +641,8 @@ function loadXMLFile(e)
      */
      if (parsed.getElementsByTagName("customAreaLatitude")[0].childNodes.length == 0)
      {
-        siteRadius = sessionStorage.acres / 61.77625;
-        drawSiteRadius(sessionStorage.acres);
+        siteRadius = Math.sqrt(sessionStorage.acres * 0.00404686 / Math.PI)
+        drawSiteRadius(siteRadius);
      }
      else
      {
@@ -958,13 +958,13 @@ function CallRestService(request)
   document.body.appendChild(script);
 }
 
-function drawSiteRadius()
+function drawSiteRadius(siteRadius)
 {
   siteAreaMarkerArray = [];
   siteAreaMarkerLocationArray = [];
   siteAreaLineArray = [];
 
-  var earthRadius = 3185.5;
+  var earthRadius = 6371.0;
 
   var lat = (locationMarker.getLocation().latitude * Math.PI) / 180;
   var lon = (locationMarker.getLocation().longitude * Math.PI) / 180;
@@ -3965,8 +3965,8 @@ app.controller("navigationCtrl", function($scope, $location)
         /*
          * Draws site radius
          */
-        siteRadius = sessionStorage.acres / 61.77625;
-        drawSiteRadius(sessionStorage.acres);
+        siteRadius = Math.sqrt(sessionStorage.acres * 0.00404686 / Math.PI);
+        drawSiteRadius(siteRadius);
 
       $location.path('stormwatercalculator/location');
 
@@ -4023,8 +4023,8 @@ app.controller("locationCtrl", function($scope)
 
       if ($('#acreInput').val() < 13)
       {
-        siteRadius = radius / 61.77625;
-        drawSiteRadius(radius);
+        siteRadius = Math.sqrt(radius * 0.00404686 / Math.PI);
+        drawSiteRadius(siteRadius);
 
         sessionStorage.acres = radius;
       }

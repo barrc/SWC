@@ -1,0 +1,39 @@
+# Java Maven CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-java/ for more details
+#            command: curl -u '$username:$password' http://swcweb.erg.com/manager/text/undeploy?path=/swcalculator-server
+
+version: 2
+jobs:
+  develop-branch:
+    docker:
+      - image: circleci/openjdk:8-jdk
+   
+    steps:
+      - checkout
+      - run: 
+            name: build and deploy to development 
+            command: |
+              cd config
+              sudo chmod 755 deploy_to_development.sh
+              ./deploy_to_development.sh
+
+      - store_artifacts:
+            path: FrontEnd/stormwatercalculator.war
+            destination: stormwatercalculator.war
+
+      - store_artifacts:
+            path: swcalculator-server/target/swcalculator-server.war
+            destination: swcalculator-server.war
+            
+            
+workflows:
+    version: 2
+    main:
+        jobs:
+          - develop-branch:
+              filters:
+                branches:
+                  only: develop
+      
+

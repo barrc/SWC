@@ -1,3 +1,4 @@
+cd ..
 echo "> Deploy to swcweb.erg.com"
 curl -u $username:$password --upload-file swcalculator-server/target/swcalculator-server.war "http://swcweb.erg.com/manager/text/deploy?path=/swcalculator-server&update=true"
 echo "> Deploy stormwatercalculator.war"

@@ -7,17 +7,23 @@ version: 2
 jobs:
   develop-branch:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:8u171-jdk
    
     steps:
-      - checkout
+      - checkout 
       - run: 
-            name: build and deploy to development 
+            name: build develop 
             command: |
               cd config
               sudo chmod 755 *.sh
               ./build_development.sh
-              ./deploy_to_development.sh
+
+      - run: 
+            name: Deploy to development 
+            command: |
+              cd config
+              sudo chmod 755 *.sh
+              ./deploy_to_development.sh 
 
   master-branch:
     docker:

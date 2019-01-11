@@ -7,6 +7,26 @@ version: 2
 jobs:
   develop-branch:
     docker:
+      - image: circleci/openjdk:8u171-jdk
+   
+    steps:
+      - checkout 
+      - run: 
+            name: build develop 
+            command: |
+              cd config
+              sudo chmod 755 *.sh
+              ./build_development.sh
+
+      - run: 
+            name: Deploy to development 
+            command: |
+              cd config
+              sudo chmod 755 *.sh
+              ./deploy_to_development.sh 
+
+  master-branch:
+    docker:
       - image: circleci/openjdk:8-jdk
    
     steps:
@@ -15,18 +35,33 @@ jobs:
             name: build and deploy to development 
             command: |
               cd config
-              sudo chmod 755 deploy_to_development.sh
-              ./deploy_to_development.sh
-
+              sudo chmod 755 *.sh
+              ./build_production.sh
       - store_artifacts:
-            path: FrontEnd/stormwatercalculator.war
-            destination: stormwatercalculator.war
+            path: /tmp/artifacts
+            destination: ./
+      - persist_to_workspace:
+          root: /tmp/artifacts
+          paths:
+            - ./*
+            
+  publish-github-release:
+    docker:
+      - image: circleci/golang:1.8
+   
+    steps:
+      - attach_workspace:
+          at: /tmp/artifacts
 
-      - store_artifacts:
-            path: swcalculator-server/target/swcalculator-server.war
-            destination: swcalculator-server.war
-            
-            
+      - run:
+          name: "Publish Release on GitHub"
+          tag: /(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)/
+          command: |
+            go get github.com/tcnksm/ghr
+            VERSION=1.0.$CIRCLE_BUILD_NUM
+            RELEASE=Release1.0.$CIRCLE_BUILD_NUM
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -n $RELEASE $VERSION /tmp/artifacts
+           
 workflows:
     version: 2
     main:
@@ -35,5 +70,15 @@ workflows:
               filters:
                 branches:
                   only: develop
+                  
+          - master-branch:
+              filters:
+                branches:
+                  only: master
+          - publish-github-release:
+              requires:
+                - master-branch
+              filters:
+                branches:
+                  only: master
       
-

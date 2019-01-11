@@ -17,7 +17,7 @@ jobs:
               cd config
               sudo chmod 755 *.sh
               ./build_development.sh
-#              ./deploy_to_development.sh
+              ./deploy_to_development.sh
 
   master-branch:
     docker:

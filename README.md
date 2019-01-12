@@ -1,5 +1,11 @@
 # SWC
 
+
+## DevOps Status (by branch)
+
+* Develop branch: [![CircleCI](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/develop.svg?style=svg&circle-token=5ca173edab2cffa9b665ec20cfeb7ae9b91e760f)](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/develop)
+* Master branch: [![CircleCI](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/master.svg?style=svg&circle-token=5ca173edab2cffa9b665ec20cfeb7ae9b91e760f)](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/master)
+
 ## Requirements
 
 - Java JDK 1.8 

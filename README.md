@@ -34,7 +34,7 @@
 We currently use two Git based branches to support development.
 
 - develop = we use a feature branch strategy to submit code changes to this branch. Merges will be auto deployed to the Development environment.
-- master = Only a designated gatekeeper for the project should issue pull requests from develop against master. Once the merge to master completes, the automated build process will build, test and then place the files that should be provided to the data center (i.e. NCC) staff for deployment to the staging and production environments.
+- master = Its expected that this branch's content match the production deployment. Only a designated gatekeeper for the project should issue pull requests from develop against master. Once the merge to master completes, the automated build process will build, test and then place the files that should be provided to the data center (i.e. NCC) staff for deployment to the staging and production environments.
 
 **Instructions for contributing via Git:**
 

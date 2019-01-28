@@ -63,13 +63,22 @@ git push origin feature/your-branch-name
 - Then you can make a pull request by finding your branch on the
   [Github repository](https://github.com/Eastern-Research-Group/SWC/branches)
 
+# Deployments
 
-## Local Development and Testing Workflow (Manual process for MS Windows)
-	- Install Eclipse, IntelliJ, any other Java IDE or a command line runner
-	- Clone this repository to your computer: git clone https://github.com/Eastern-Research-Group/SWC_NT.git
-	- Navigate to  swcalculator-server
-	- Run mvn clean compile install
-	- copy .war file from swcalculator-server\target folder to {Tomcat8}\webapps folder
-	- Navigate to FrontEnd folder
-	- Run jar -cf stormwatercalculater.war -C stormwatercalculater .
-	- copy stormwatercalculater.war to {Tomcat8}\webapps folder
+## Local development and testing (Manual process for MS Windows)
+- Install Eclipse, IntelliJ, any other Java IDE or a command line runner
+- Clone this repository to your computer: git clone https://github.com/Eastern-Research-Group/SWC_NT.git
+- Navigate to  swcalculator-server
+- Run mvn clean compile install
+- copy .war file from swcalculator-server\target folder to {Tomcat8}\webapps folder
+- Navigate to FrontEnd folder
+- Run jar -cf stormwatercalculater.war -C stormwatercalculater .
+- copy stormwatercalculater.war to {Tomcat8}\webapps folder
+
+## Building a release for staging / production
+
+- Update the version number reference in the [pom.xml](https://github.com/Eastern-Research-Group/SWC/blob/develop/swcalculator-server/pom.xml) file
+- Commit and push the changes to the git repo 
+- Issue a pull request for development against master
+- After the continuous build process completes successfully, look for the new deployment files in [GitHub Releases]( https://github.com/Eastern-Research-Group/SWC/releases) under the version/tag referenced in the [pom.xml](https://github.com/Eastern-Research-Group/SWC/blob/develop/swcalculator-server/pom.xml) file
+

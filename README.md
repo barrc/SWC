@@ -15,7 +15,7 @@
 
 ### Pre-requistes (Windows)
 
-- Unzip k:\swc\swcalculator_home.zip to local C:\swcalculator_home
+- Download and unzip https://projects.erg.com/water/cooper/swcalculator/swcalculator_home.zip locally to C:\swcalculator_home
 
 - Install Java JDK 1.8
 	- set Enviroment variable JAVA_HOME="Java JDK installed directory"

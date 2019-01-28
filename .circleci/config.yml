@@ -15,7 +15,6 @@ jobs:
       - run: 
             name: build develop 
             command: |
-              echo $SWC_VERSION
               cd config
               sudo chmod 755 *.sh
               ./build_development.sh

@@ -1,14 +1,14 @@
 # SWC
 
 
-## DevOps Status (by branch)
+## Continuous Build Status (by branch)
 
 * Develop branch: [![CircleCI](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/develop.svg?style=svg&circle-token=5ca173edab2cffa9b665ec20cfeb7ae9b91e760f)](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/develop)
 * Master branch: [![CircleCI](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/master.svg?style=svg&circle-token=5ca173edab2cffa9b665ec20cfeb7ae9b91e760f)](https://circleci.com/gh/Eastern-Research-Group/SWC/tree/master)
 
 ## Requirements
 
-- Java JDK 1.8 
+- Java JDK 1.8
 - Maven 3.5.4+
 - Tomcat 8+
 
@@ -22,6 +22,7 @@
 	- set Enviroment variable JAVA_HOME="Java JDK installed directory"
 	- append %JAVA_HOME%\bin to PATH
 	- set Enviroment variable JAVA_OPTS=-Djava.library.path="C:\Apps\apache-tomcat-9.0.12\webapps\swcalculator-server\WEB-INF\classes" -DSWCALCULATOR_HOME="c:\swcalculator_home"
+	  *  Note: update the java.library.path value to your location.
 
 - Install Maven
 	- set Enviroment variable MVN_HOME="Maven installed directory"
@@ -31,7 +32,7 @@
 
 - ### Local Development Environment Setup (Windows)
 
-	- Install Eclipse or IntelliJ or any other Java IDE
+	- Install Eclipse, IntelliJ, any other Java IDE or a command line runner
 	- Clone this repository to your computer: git clone https://github.com/Eastern-Research-Group/SWC_NT.git
 	- Navigate to  swcalculator-server
 	- Run mvn clean compile install

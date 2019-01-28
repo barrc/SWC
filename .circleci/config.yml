@@ -10,7 +10,7 @@ jobs:
             name: Retrieve version number from pom.xml and put in CircleCI env var
             command: |
               cd swcalculator-server 
-              export SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
               echo $SWC_VERSION
       - run: 
             name: build develop 
@@ -33,18 +33,19 @@ jobs:
    
     steps:
       - checkout
-      - run:
-            name: Retrieve version number from pom.xml and put in CircleCI env var
-            command: |
-              cd swcalculator-server 
-              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-              echo $SWC_VERSION
       - run: 
             name: build production version
             command: |
               cd config
               sudo chmod 755 *.sh
-              ./build_production.sh
+              ./build_production.sh      
+      - run:
+            name: Retrieve version number from pom.xml and put in CircleCI env var
+            command: |
+              cd swcalculator-server 
+              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+              echo $SWC_VERSION >> /tmp/artifacts/release.txt
+              echo $SWC_VERSION
       - store_artifacts:
             path: /tmp/artifacts
             destination: ./
@@ -65,6 +66,7 @@ jobs:
           name: "Publish Release on GitHub"
           command: |
             go get github.com/tcnksm/ghr
+            SWC_VERSION=$(cat /tmp/artifacts/release.txt)
             VERSION=$SWC_VERSION
             RELEASE=$SWC_VERSION
             ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -n $RELEASE $VERSION /tmp/artifacts

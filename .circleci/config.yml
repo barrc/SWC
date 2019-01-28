@@ -10,6 +10,7 @@ jobs:
             name: Deploy to development 
             command: |
               cd config
+              echo cooper
 
   master-branch:
     docker:

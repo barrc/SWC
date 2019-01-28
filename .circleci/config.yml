@@ -9,7 +9,6 @@ jobs:
       - run:
             name: Deploy to development 
             command: |
-              cd config
               echo $(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
   master-branch:

@@ -6,10 +6,9 @@ jobs:
    
     steps:
       - checkout 
-      - run: 
-            name: Retrieve version number from POM
-            comand: |
-                echo Cooper
+            name: Deploy to development 
+            command: |
+              cd config
 
   master-branch:
     docker:

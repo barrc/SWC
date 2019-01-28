@@ -10,7 +10,7 @@ jobs:
             name: Deploy to development 
             command: |
               cd config
-              echo cooper
+              echo $(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
   master-branch:
     docker:

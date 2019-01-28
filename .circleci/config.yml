@@ -6,19 +6,11 @@ jobs:
    
     steps:
       - checkout 
-      - run: 
-            name: build develop 
-            command: |
-              cd config
-              sudo chmod 755 *.sh
-              ./build_development.sh
-
-      - run: 
-            name: Deploy to development 
-            command: |
-              cd config
-              sudo chmod 755 *.sh
-              ./deploy_to_development.sh 
+       - run: 
+            name: Retrieve version number from POM
+            comand: |
+                MVN_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+                echo MVN_VERSION
 
   master-branch:
     docker:

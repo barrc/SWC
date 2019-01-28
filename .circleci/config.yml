@@ -10,11 +10,12 @@ jobs:
             name: Retrieve version number from pom.xml and put in CircleCI env var
             command: |
               cd swcalculator-server 
-              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+              export SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
               echo $SWC_VERSION
       - run: 
             name: build develop 
             command: |
+              echo $SWC_VERSION
               cd config
               sudo chmod 755 *.sh
               ./build_development.sh

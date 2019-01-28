@@ -10,7 +10,8 @@ jobs:
             name: Deploy to development 
             command: |
               cd swcalculator-server 
-              echo $(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+              echo $SWC_VERSION
 
   master-branch:
     docker:

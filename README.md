@@ -13,18 +13,18 @@
 
 ## Installation
 
-### Pre-requistes (Windows)
+### Prerequisites (MS Windows based)
 
 - Download and unzip https://projects.erg.com/water/cooper/swcalculator/swcalculator_home.zip locally to C:\swcalculator_home
 
 - Install Java JDK 1.8
-	- set Enviroment variable JAVA_HOME="Java JDK installed directory"
+	- set Environment variable JAVA_HOME="Java JDK installed directory"
 	- append %JAVA_HOME%\bin to PATH
-	- set Enviroment variable JAVA_OPTS=-Djava.library.path="C:\Apps\apache-tomcat-9.0.12\webapps\swcalculator-server\WEB-INF\classes" -DSWCALCULATOR_HOME="c:\swcalculator_home"
-	  *  Note: update the java.library.path value to your location.
+	- set Environment variable JAVA_OPTS=-Djava.library.path="C:\Apps\apache-tomcat-9.0.12\webapps\swcalculator-server\WEB-INF\classes" -DSWCALCULATOR_HOME="c:\swcalculator_home"
+	  *  Note: update the java.library.path value with your local tomcat installation/application deployment location.
 
 - Install Maven
-	- set Enviroment variable MVN_HOME="Maven installed directory"
+	- set Environment variable MVN_HOME="Maven installed directory"
 	- append %MVN_HOME%\bin to PATH
 
 - Install Tomcat8
@@ -51,7 +51,8 @@ git checkout -b feature/your-branch-name
 ```
 
 - You will now be in your new branch where you are free to make changes.
-- To push those changes up, you'll need to add, commit, and push with the following commands:
+
+- After developing and testing locally, you can push the changes backup; you'll need to add, commit, and push with the following commands:
 
 ```
 git add .
@@ -62,7 +63,8 @@ git push origin feature/your-branch-name
 - Then you can make a pull request by finding your branch on the
   [Github repository](https://github.com/Eastern-Research-Group/SWC/branches)
 
-## Local Development Environment Flow (Windows)
+
+## Local Development and Testing Workflow (Manual process for MS Windows)
 	- Install Eclipse, IntelliJ, any other Java IDE or a command line runner
 	- Clone this repository to your computer: git clone https://github.com/Eastern-Research-Group/SWC_NT.git
 	- Navigate to  swcalculator-server

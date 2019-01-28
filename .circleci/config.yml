@@ -57,13 +57,6 @@ jobs:
       - image: circleci/golang:1.8
    
     steps:
-      - checkout
-      - run:
-            name: Retrieve version number from pom.xml and put in CircleCI env var
-            command: |
-              cd swcalculator-server 
-              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-              echo $SWC_VERSION
       - attach_workspace:
           at: /tmp/artifacts
 

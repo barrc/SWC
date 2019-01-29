@@ -65,20 +65,25 @@ git push origin feature/your-branch-name
 
 # Deployments
 
+## Continuous Integration, Test and Build Workflow
+
+![Continuous Integration, Test and Build Workflow](/docs/SWC%20DevOps.png?raw=true "Continuous Integration, Test and Build Workflow")
+
 ## Local development and testing (Manual process for MS Windows)
 - Install Eclipse, IntelliJ, any other Java IDE or a command line runner
 - Clone this repository to your computer: git clone https://github.com/Eastern-Research-Group/SWC_NT.git
-- Navigate to  swcalculator-server
-- Run mvn clean compile install
-- copy .war file from swcalculator-server\target folder to {Tomcat8}\webapps folder
-- Navigate to FrontEnd folder
-- Run jar -cf stormwatercalculater.war -C stormwatercalculater .
-- copy stormwatercalculater.war to {Tomcat8}\webapps folder
+- Change directory to swcalculator-server folder
+- Run “mvn clean compile install”
+- Copy swcalculator-server.war file from ./target folder to {Tomcat8}\webapps folder
+- Change directory to FrontEnd folder
+- Run “mvn clean install”
+- Copy stormwatercalculater.war from ./target folder to {Tomcat8}\webapps folder
+
 
 ## Building a release for staging / production
 
 - Update the version number reference in the [pom.xml](https://github.com/Eastern-Research-Group/SWC/blob/develop/swcalculator-server/pom.xml) file
 - Commit and push the changes to the git repo 
-- Issue a pull request for development against master
-- After the continuous build process completes successfully, look for the new deployment files in [GitHub Releases]( https://github.com/Eastern-Research-Group/SWC/releases) under the version/tag referenced in the [pom.xml](https://github.com/Eastern-Research-Group/SWC/blob/develop/swcalculator-server/pom.xml) file
+- Issue a pull request for the develop branch against the master branch (note: You must be an approved SWC GitHub Admin to do this)
+- After the continuous build process successfully completes, look for the new deployment files in [GitHub Releases]( https://github.com/Eastern-Research-Group/SWC/releases) under the version/tag referenced in the [pom.xml](https://github.com/Eastern-Research-Group/SWC/blob/develop/swcalculator-server/pom.xml) file
 

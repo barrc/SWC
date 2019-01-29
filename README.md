@@ -65,6 +65,10 @@ git push origin feature/your-branch-name
 
 # Deployments
 
+## Continuous Integration, Test and Build Workflow
+
+![Continuous Integration, Test and Build Workflow](/docs/SWC%20DevOps.png?raw=true "Continuous Integration, Test and Build Workflow")
+
 ## Local development and testing (Manual process for MS Windows)
 - Install Eclipse, IntelliJ, any other Java IDE or a command line runner
 - Clone this repository to your computer: git clone https://github.com/Eastern-Research-Group/SWC_NT.git

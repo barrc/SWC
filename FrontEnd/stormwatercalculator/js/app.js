@@ -5418,6 +5418,11 @@ app.controller('lidcontrolsCtrl', function($scope)
       $('.designStormButton').prop('disabled', false);
       sessionStorage.designStorm = $scope.designStormValue;
     }
+    else if ($scope.designStormValue == 0)
+    {
+      $('.designStormButton').prop('disabled', true);
+      sessionStorage.designStorm = $scope.designStormValue;
+    }
     else
     {
       $('.designStormButton').prop('disabled', true);

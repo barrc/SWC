@@ -1284,8 +1284,8 @@ function getSoilData(page)
               }
               if (sessionStorage.modal == 'soilDrainage')
               {
-                $('#soilDrainageBox').val(e.target.ksat.toFixed(2));
-                  sessionStorage.soilDrainage = e.target.ksat.toFixed(2);
+                $('#soilDrainageBox').val(e.target.ksat.toFixed(3));
+                  sessionStorage.soilDrainage = e.target.ksat.toFixed(3);
                   checkResultsGenerated();
               }
               if (sessionStorage.modal == 'topography')

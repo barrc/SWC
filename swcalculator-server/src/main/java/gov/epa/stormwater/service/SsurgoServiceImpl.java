@@ -256,9 +256,9 @@ public class SsurgoServiceImpl implements SsurgoService {
             }
 
             if (depthTotal > 0) {
-                slm2.setKSAT(ksatTotal / depthTotal);
+                soil.setKSAT(ksatTotal / depthTotal);
             } else {
-                slm2.setKSAT(new Double(-999));
+                soil.setKSAT(new Double(-999));
                 soil.setKSAT_Surface(new Double(-999));
             }
         }

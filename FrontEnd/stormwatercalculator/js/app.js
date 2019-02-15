@@ -113,6 +113,7 @@ var extremeEventRunoffDepthArray = [0, 0, 0, 0, 0, 0];
 var extremeEventRunoffPeakArray = [0, 0, 0, 0, 0, 0];
 var extremeEventRunoffDepthArrayBaseline = [0, 0, 0, 0, 0, 0];
 var extremeEventRunoffPeakArrayBaseline = [0, 0, 0, 0, 0, 0];
+var runoffDepthLabels = [];
 var simpleTotal = 0;
 var typicalTotal = 0;
 var complexTotal = 0;
@@ -2143,6 +2144,7 @@ function getResults()
       extremeEventRunoffDepthArray = [];
       extremeEventRainfallPeakArray = [];
       extremeEventRunoffPeakArray = [];
+      runoffDepthLabels = [];
 
       simpleTotal = 0;
       typicalTotal = 0;
@@ -2584,6 +2586,21 @@ function getResults()
         extremeEventRunoffPeakArray.push(response.xeventModel.peakRunoff[i].toFixed(2));
       }
 
+      runoffContributionLabels = [];
+      var initialRunoffContributionLabels = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '75%', '80%', '85%', '90%', '95%', '99%'];
+      if (response.runoffModel.runoffDepthLabels.length != 0)
+      {
+        for (var i = 0; i < response.runoffModel.runoffDepthLabels.length; i++)
+        {
+          runoffDepthLabels.push(response.runoffModel.runoffDepthLabels[i]);
+          runoffContributionLabels.push([initialRunoffContributionLabels[i], response.runoffModel.runoffDepthLabels[i]]);
+        }
+      }
+      else
+      {
+        runoffDepthLabels = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+      }
+
       $('#currentRainfall').html(summaryTableArray[0]);
 
       var scope = angular.element(document.getElementById("summaryResultsTable")).scope();
@@ -2637,6 +2654,7 @@ function getResults()
         scope.rainfallRunoffFrequencyData = [rainfallFrequencyArray, runoffFrequencyArray, rainfallFrequencyArrayBaseline, runoffFrequencyArrayBaseline];
         scope.rainfallRetentionData = [rainfallRetentionArray, rainfallRetentionArrayBaseline];
         scope.runoffContributionData = [runoffContributionArray, runoffContributionArrayBaseline];
+        scope.runoffContributionLabels = runoffContributionLabels;
         scope.extremeEventDepthData = [extremeEventRainfallDepthArray, extremeEventRunoffDepthArray, extremeEventRainfallDepthArrayBaseline, extremeEventRunoffDepthArrayBaseline];
         scope.extremeEventPeakData = [extremeEventRainfallPeakArray, extremeEventRunoffPeakArray, extremeEventRainfallPeakArrayBaseline, extremeEventRunoffPeakArrayBaseline];
 
@@ -6367,7 +6385,15 @@ if (sessionStorage.stationSelected == 'selected'){
   };
 
   $scope.runoffContributionSeries = ['Current Scenario', 'Baseline Scenario'];
-  $scope.runoffContributionLabels = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '75%', '80%', '85%', '90%', '95%', '99%'];
+  var contributionLabels = [];
+  var initialRunoffContributionLabels = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '75%', '80%', '85%', '90%', '95%', '99%'];
+
+  for (var i = 0; i < runoffDepthLabels.length; i++)
+  {
+    contributionLabels.push([initialRunoffContributionLabels[i], runoffDepthLabels[i]]);
+  }
+
+  $scope.runoffContributionLabels = contributionLabels;
   $scope.runoffContributionData = [runoffContributionArray, runoffContributionArrayBaseline];
   $scope.runoffContributionColors =
   [
@@ -6389,7 +6415,7 @@ if (sessionStorage.stationSelected == 'selected'){
         scaleLabel:
         {
           display: true,
-          labelString: 'Daily Rainfall Percentile'
+          labelString: 'Daily Rainfall Percentile / Daily Rainfall Depth (inches)'
         }
       }],
       yAxes: [
@@ -6421,7 +6447,7 @@ if (sessionStorage.stationSelected == 'selected'){
         scaleLabel:
         {
           display: true,
-          labelString: 'Daily Rainfall Percentile'
+          labelString: 'Daily Rainfall Percentile  / Daily Rainfall Depth (inches)'
         }
       }],
       yAxes: [

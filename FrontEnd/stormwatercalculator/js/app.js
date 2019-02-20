@@ -1992,6 +1992,9 @@ function restoreDefaults(category)
         $('#rainGardensMediaValue').val(10);
         $('#rainGardensCaptureValue').val(5);
 
+        $('#rainGardensPretreatment').prop('checked', false);
+        rainGardensPretreatment = 'No';
+
         $('.lidModalSlider:eq(4)').bootstrapSlider('setValue', 6);
         $('.lidModalSlider:eq(5)').bootstrapSlider('setValue', 12);
         $('.lidModalSlider:eq(6)').bootstrapSlider('setValue', 10);
@@ -2024,6 +2027,9 @@ function restoreDefaults(category)
         $('#infiltrationBasinsBasinValue').val(6);
         $('#infiltrationBasinsCaptureValue').val(5);
 
+        $('#infiltrationBasinsPretreatment').prop('checked', false);
+        infiltrationBasinsPretreatment = 'No';
+
         $('.lidModalSlider:eq(15)').bootstrapSlider('setValue', 6);
         $('.lidModalSlider:eq(16)').bootstrapSlider('setValue', 5);
     }
@@ -2032,6 +2038,9 @@ function restoreDefaults(category)
         $('#permeablePavementPavementValue').val(6);
         $('#permeablePavementGravelValue').val(18);
         $('#permeablePavementCaptureValue').val(100);
+
+        $('#permeablePavementPretreatment').prop('checked', false);
+        permeablePavementPretreatment = 'No';
 
         $('.lidModalSlider:eq(17)').bootstrapSlider('setValue', 6);
         $('.lidModalSlider:eq(18)').bootstrapSlider('setValue', 18);

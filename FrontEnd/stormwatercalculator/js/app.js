@@ -2166,7 +2166,7 @@ function getResults()
         typicalTotal++;
         complexTotal++;
       }
-      if (($('#rainGardensPretreatment').prop('checked') == true) || ($('#infiltrationBasinsPretreatment').prop('checked') == true) || ($('#permeablePavementsPretreatment').prop('checked') == true))
+      if (($('#rainGardensPretreatment').prop('checked') == true) || ($('#infiltrationBasinsPretreatment').prop('checked') == true) || ($('#permeablePavementPretreatment').prop('checked') == true))
       {
         typicalTotal++;
         complexTotal++;

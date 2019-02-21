@@ -4369,6 +4369,7 @@ app.controller('precipitationCtrl', function($scope)
         sessionStorage.rainStartDate = rainGageNames[i].startDate;
         sessionStorage.rainEndDate = rainGageNames[i].endDate;
         sessionStorage.rainRainfall = rainGageNames[i].rainfall;
+        sessionStorage.rainGageID = rainGageNames[i].stationID;
 
         sessionStorage.stationSelected = 'selected';
 
@@ -4471,6 +4472,7 @@ app.controller('precipitationCtrl', function($scope)
         sessionStorage.weatherStartDate = $scope.weatherStartDate;
         sessionStorage.weatherEndDate = $scope.weatherEndDate;
         sessionStorage.weatherRate = $scope.weatherRate;
+        sessionStorage.weatherStationID = weatherStationNames[i].stationID;
       }
 
     }

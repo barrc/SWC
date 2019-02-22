@@ -1742,7 +1742,14 @@ function selectSameStationMarker(e)
     });
 
     sessionStorage.rainGageID = e.target.stationID;
-    sessionStorage.weatherStationID = e.target.stationID;
+    if (e.target.stationID[0] == '0')
+    {
+      sessionStorage.weatherStationID = e.target.stationID.substring(1);
+    }
+    else
+    {
+      sessionStorage.weatherStationID = e.target.stationID;
+    }
     sessionStorage.rainGageName = e.target.name;
     sessionStorage.weatherStationName = e.target.name;
 

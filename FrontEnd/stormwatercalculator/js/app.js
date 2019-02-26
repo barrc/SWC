@@ -43,6 +43,14 @@ sessionStorage.setItem('baselineActive', false);
 sessionStorage.setItem('printToPDF', false);
 sessionStorage.setItem('costCriteria', 'capital');
 
+sessionStorage.setItem("disconnectionText", "");
+sessionStorage.setItem("rainHarvestingText", "");
+sessionStorage.setItem("rainGardensText", "");
+sessionStorage.setItem("greenRoofsText", "");
+sessionStorage.setItem("streetPlantersText", "");
+sessionStorage.setItem("infiltrationBasinsText", "");
+sessionStorage.setItem("permeablePavementText", "");
+
 var map;
 var locationMarker;
 
@@ -206,6 +214,13 @@ var rainGardensPretreatmentBaseline = 'NA';
 var infiltrationBasinsPretreatmentBaseline = 'NA';
 var permeablePavementPretreatmentBaseline = 'NA';
 
+var baselineDisconnectionText = "";
+var baselineRainHarvestingText = "";
+var baselineRainGardensText = "";
+var baselineGreenRoofsText = "";
+var baselineStreetPlantersText = "";
+var baselineInfiltrationBasinsText = "";
+var baselinePermeablePavementText = "";
 
 var baselineDevType = 'NA';
 var baselineSiteSuitability = 'NA';
@@ -5767,34 +5782,72 @@ if (sessionStorage.stationSelected == 'selected'){
         "Current" : sessionStorage.impervious
       }];
 
+      sessionStorage.setItem("disconnectionText", sessionStorage.disconnection);
+      sessionStorage.setItem("rainHarvestingText", sessionStorage.rainHarvesting);
+      sessionStorage.setItem("rainGardensText", sessionStorage.rainGardens);
+      sessionStorage.setItem("greenRoofsText", sessionStorage.greenRoofs);
+      sessionStorage.setItem("streetPlantersText", sessionStorage.streetPlanters);
+      sessionStorage.setItem("infiltrationBasinsText", sessionStorage.infiltrationBasins);
+      sessionStorage.setItem("permeablePavementText", sessionStorage.permeablePavement);
+
+      if (sessionStorage.disconnectionText != "0")
+      {
+        sessionStorage.disconnectionText += " / " + $('#disconnectionCaptureValue').val()
+      }
+      if (sessionStorage.rainHarvestingText != "0")
+      {
+        sessionStorage.rainHarvestingText += " / " + $('#rainHarvestingFeetValue').val()
+      }
+      if (sessionStorage.rainGardensText != "0")
+      {
+        sessionStorage.rainGardensText += " / " + $('#rainGardensCaptureValue').val()
+      }
+      if (sessionStorage.greenRoofsText != "0")
+      {
+        sessionStorage.greenRoofsText += " / 100"
+      }
+      if (sessionStorage.streetPlantersText != "0")
+      {
+        sessionStorage.streetPlantersText += " / " + $('#streetPlantersCaptureValue').val()
+      }
+      if (sessionStorage.infiltrationBasinsText != "0")
+      {
+        sessionStorage.infiltrationBasinsText += " / " + $('#infiltrationBasinsCaptureValue').val()
+      }
+      if (sessionStorage.permeablePavementText != "0")
+      {
+        sessionStorage.permeablePavementText += " / " + $('#permeablePavementCaptureValue').val()
+      }
+
+
       $scope.siteDescriptionLIDControls = [
       {
         "Name": 'Disconnection',
-        "Current" : sessionStorage.disconnection
+        "Current" : sessionStorage.disconnectionText
       },
       {
         "Name": 'Rain Harvesting',
-        "Current" : sessionStorage.rainHarvesting
+        "Current" : sessionStorage.rainHarvestingText
       },
       {
         "Name": 'Rain Gardens',
-        "Current" : sessionStorage.rainGardens
+        "Current" : sessionStorage.rainGardensText
       },
       {
         "Name": 'Green Roofs',
-        "Current" : sessionStorage.greenRoofs
+        "Current" : sessionStorage.greenRoofsText
       },
       {
         "Name": 'Street Planters',
-        "Current" : sessionStorage.streetPlanters
+        "Current" : sessionStorage.streetPlantersText
       },
       {
         "Name": 'Infiltration Basins',
-        "Current" : sessionStorage.infiltrationBasins
+        "Current" : sessionStorage.infiltrationBasinsText
       },
       {
         "Name": 'Porous Pavement',
-        "Current" : sessionStorage.permeablePavement
+        "Current" : sessionStorage.permeablePavementText
       }];
 
       $scope.siteDescriptionOptions = [
@@ -5918,41 +5971,78 @@ if (sessionStorage.stationSelected == 'selected'){
           "Baseline": baselineImpervious
         }];
 
+        sessionStorage.disconnectionText = sessionStorage.disconnection;
+        sessionStorage.rainHarvestingText = sessionStorage.rainHarvesting;
+        sessionStorage.rainGardensText = sessionStorage.rainGardens;
+        sessionStorage.greenRoofsText = sessionStorage.greenRoofs;
+        sessionStorage.streetPlantersText = sessionStorage.streetPlanters;
+        sessionStorage.infiltrationBasinsText = sessionStorage.infiltrationBasins;
+        sessionStorage.permeablePavementText = sessionStorage.permeablePavement;
+
+        if (sessionStorage.disconnectionText != "0")
+        {
+          sessionStorage.disconnectionText += " / " + $('#disconnectionCaptureValue').val()
+        }
+        if (sessionStorage.rainHarvestingText != "0")
+        {
+          sessionStorage.rainHarvestingText += " / " + $('#rainHarvestingFeetValue').val()
+        }
+        if (sessionStorage.rainGardensText != "0")
+        {
+          sessionStorage.rainGardensText += " / " + $('#rainGardensCaptureValue').val()
+        }
+        if (sessionStorage.greenRoofsText != "0")
+        {
+          sessionStorage.greenRoofsText += " / 100"
+        }
+        if (sessionStorage.streetPlantersText != "0")
+        {
+          sessionStorage.streetPlantersText += " / " + $('#streetPlantersCaptureValue').val()
+        }
+        if (sessionStorage.infiltrationBasinsText != "0")
+        {
+          sessionStorage.infiltrationBasinsText += " / " + $('#infiltrationBasinsCaptureValue').val()
+        }
+        if (sessionStorage.permeablePavementText != "0")
+        {
+          sessionStorage.permeablePavementText += " / " + $('#permeablePavementCaptureValue').val()
+        }
+
         $scope.siteDescriptionLIDControls = [
         {
           "Name": 'Disconnection',
-          "Current" : sessionStorage.disconnection,
-          "Baseline": baselineDisconnection
+          "Current" : sessionStorage.disconnectionText,
+          "Baseline": baselineDisconnectionText
         },
         {
           "Name": 'Rain Harvesting',
-          "Current" : sessionStorage.rainHarvesting,
-          "Baseline": baselineRainHarvesting
+          "Current" : sessionStorage.rainHarvestingText,
+          "Baseline": baselineRainHarvestingText
         },
         {
           "Name": 'Rain Gardens',
-          "Current" : sessionStorage.rainGardens,
-          "Baseline": baselineRainGardens
+          "Current" : sessionStorage.rainGardensText,
+          "Baseline": baselineRainGardensText
         },
         {
           "Name": 'Green Roofs',
-          "Current" : sessionStorage.greenRoofs,
-          "Baseline": baselineGreenRoofs
+          "Current" : sessionStorage.greenRoofsText,
+          "Baseline": baselineGreenRoofsText
         },
         {
           "Name": 'Street Planters',
-          "Current" : sessionStorage.streetPlanters,
-          "Baseline": baselineStreetPlanters
+          "Current" : sessionStorage.streetPlantersText,
+          "Baseline": baselineStreetPlantersText
         },
         {
           "Name": 'Infiltration Basins',
-          "Current" : sessionStorage.infiltrationBasins,
-          "Baseline": baselineInfiltrationBasins
+          "Current" : sessionStorage.infiltrationBasinsText,
+          "Baseline": baselineInfiltrationBasinsText
         },
         {
           "Name": 'Porous Pavement',
-          "Current" : sessionStorage.permeablePavement,
-          "Baseline": baselinePermeablePavement
+          "Current" : sessionStorage.permeablePavementText,
+          "Baseline": baselinePermeablePavementText
         }];
 
         $scope.siteDescriptionOptions = [
@@ -7214,6 +7304,14 @@ $scope.costSummaryTableData = [
     baselineIgnoreWetDays = sessionStorage.ignoreDays.charAt(0).toUpperCase() + sessionStorage.ignoreDays.slice(1);
     baselineWetDayThreshold = sessionStorage.eventThreshold;
 
+    baselineDisconnectionText = sessionStorage.disconnectionText;
+    baselineRainHarvestingText = sessionStorage.rainHarvestingText;
+    baselineRainGardensText = sessionStorage.rainGardensText;
+    baselineGreenRoofsText = sessionStorage.greenRoofsText;
+    baselineStreetPlantersText = sessionStorage.streetPlantersText;
+    baselineInfiltrationBasinsText = sessionStorage.infiltrationBasinsText;
+    baselinePermeablePavementText = sessionStorage.permeablePavementText;
+
     baselineDisconnectionLowCapital = currentDisconnectionLowCapital;
     baselineDisconnectionHighCapital = currentDisconnectionHighCapital;
     baselineRainHarvestingLowCapital = currentRainHarvestingLowCapital;
@@ -7360,38 +7458,38 @@ $scope.costSummaryTableData = [
     $scope.siteDescriptionLIDControls = [
     {
       "Name": 'Disconnection',
-      "Current" : sessionStorage.disconnection,
-      "Baseline": baselineDisconnection
+      "Current" : sessionStorage.disconnectionText,
+      "Baseline": baselineDisconnectionText
     },
     {
       "Name": 'Rain Harvesting',
-      "Current" : sessionStorage.rainHarvesting,
-      "Baseline": baselineRainHarvesting
+      "Current" : sessionStorage.rainHarvestingText,
+      "Baseline": baselineRainHarvestingText
     },
     {
       "Name": 'Rain Gardens',
-      "Current" : sessionStorage.rainGardens,
-      "Baseline": baselineRainGardens
+      "Current" : sessionStorage.rainGardensText,
+      "Baseline": baselineRainGardensText
     },
     {
       "Name": 'Green Roofs',
-      "Current" : sessionStorage.greenRoofs,
-      "Baseline": baselineGreenRoofs
+      "Current" : sessionStorage.greenRoofsText,
+      "Baseline": baselineGreenRoofsText
     },
     {
       "Name": 'Street Planters',
-      "Current" : sessionStorage.streetPlanters,
-      "Baseline": baselineStreetPlanters
+      "Current" : sessionStorage.streetPlantersText,
+      "Baseline": baselineStreetPlantersText
     },
     {
       "Name": 'Infiltration Basins',
-      "Current" : sessionStorage.infiltrationBasins,
-      "Baseline": baselineInfiltrationBasins
+      "Current" : sessionStorage.infiltrationBasinsText,
+      "Baseline": baselineInfiltrationBasinsText
     },
     {
       "Name": 'Porous Pavement',
-      "Current" : sessionStorage.permeablePavement,
-      "Baseline": baselinePermeablePavement
+      "Current" : sessionStorage.permeablePavementText,
+      "Baseline": baselinePermeablePavementText
     }];
 
     $scope.siteDescriptionOptions = [
@@ -8600,13 +8698,13 @@ $scope.costSummaryTableData = [
             ['% Desert', sessionStorage.desert],
             ['% Impervious', sessionStorage.impervious],
             ['LID Controls'],
-            ['% Disconnection', sessionStorage.disconnection],
-            ['% Rain Harvesting', sessionStorage.rainHarvesting],
-            ['% Rain Gardens', sessionStorage.rainGardens],
-            ['% Green Roofs', sessionStorage.greenRoofs],
-            ['% Street Planters', sessionStorage.streetPlanters],
-            ['% Infiltration Basins', sessionStorage.infiltrationBasins],
-            ['% Permeable Pavement', sessionStorage.permeablePavement],
+            ['% Disconnection', sessionStorage.disconnectionText],
+            ['% Rain Harvesting', sessionStorage.rainHarvestingText],
+            ['% Rain Gardens', sessionStorage.rainGardensText],
+            ['% Green Roofs', sessionStorage.greenRoofsText],
+            ['% Street Planters', sessionStorage.streetPlantersText],
+            ['% Infiltration Basins', sessionStorage.infiltrationBasinsText],
+            ['% Permeable Pavement', sessionStorage.permeablePavementText],
             ['Analysis Options'],
             ['Years Analyzed', sessionStorage.yearsToAnalyze],
             ['Ignore Consecutive Wet Days', sessionStorage.ignoreDays.charAt(0).toUpperCase() + sessionStorage.ignoreDays.slice(1)],
@@ -8662,13 +8760,13 @@ $scope.costSummaryTableData = [
             ['% Desert', sessionStorage.desert, baselineDesert],
             ['% Impervious', sessionStorage.impervious, baselineImpervious],
             ['LID Controls'],
-            ['% Disconnection', sessionStorage.disconnection, baselineDisconnection],
-            ['% Rain Harvesting', sessionStorage.rainHarvesting, baselineRainHarvesting],
-            ['% Rain Gardens', sessionStorage.rainGardens, baselineRainGardens],
-            ['% Green Roofs', sessionStorage.greenRoofs, baselineGreenRoofs],
-            ['% Street Planters', sessionStorage.streetPlanters, baselineStreetPlanters],
-            ['% Infiltration Basins', sessionStorage.infiltrationBasins, baselineInfiltrationBasins],
-            ['% Permeable Pavement', sessionStorage.permeablePavement, baselinePermeablePavement],
+            ['% Disconnection', sessionStorage.disconnectionText, baselineDisconnectionText],
+            ['% Rain Harvesting', sessionStorage.rainHarvestingText, baselineRainHarvestingText],
+            ['% Rain Gardens', sessionStorage.rainGardensText, baselineRainGardensText],
+            ['% Green Roofs', sessionStorage.greenRoofsText, baselineGreenRoofsText],
+            ['% Street Planters', sessionStorage.streetPlantersText, baselineStreetPlantersText],
+            ['% Infiltration Basins', sessionStorage.infiltrationBasinsText, baselineInfiltrationBasinsText],
+            ['% Permeable Pavement', sessionStorage.permeablePavementText, baselinePermeablePavementText],
             ['Analysis Options'],
             ['Years Analyzed', sessionStorage.yearsToAnalyze, baselineYearsToAnalyze],
             ['Ignore Consecutive Wet Days', sessionStorage.ignoreDays.charAt(0).toUpperCase() + sessionStorage.ignoreDays.slice(1), baselineIgnoreWetDays],

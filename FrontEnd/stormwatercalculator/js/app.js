@@ -8847,7 +8847,7 @@ $scope.costSummaryTableData = [
 
     doc.addImage(extremeEventDepthChartImage[0], 'png', 25, 150, 550, 275);
 
-    centeredText("Runoff Contribution by Rainfall Percentile", 465);
+    centeredText("Extreme Event Peak Rainfall / Runoff", 465);
 
     doc.addImage(extremeEventPeakChartImage[0], 'png', 25, 475, 550, 275);
 

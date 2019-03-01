@@ -59,7 +59,7 @@ public class CostRegionalizationServiceImpl implements CostRegionalizationServic
     //user is given the option to select the nearest 3 bls regions
     private static final int SHORT_LIST_COUNT = 3;
     //    private static final String REGISTRATION_KEY = "cecffbde84de416dbe4d198437f7c03e";
-    private static final String REGISTRATION_KEY = "408c86477d784c4abf2b179a79d5e79f";
+    private static final String REGISTRATION_KEY = "03ee11d0a8e54c08b09a34263273be15";
 
     //default National index computed for 2015 used as the basis for normalizing regional indexes
     private static final Double DEFAULT_2017_NATIONAL_INDEX = 208.09;

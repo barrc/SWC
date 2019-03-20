@@ -568,8 +568,8 @@ public class SiteDataModel {
         return ppPretreatment;
     }
 
-    public void setPpPretreatment(Boolean isHms) {
-        this.isHms = isHms;
+    public void setPpPretreatment(Boolean ppPretreatment) {
+        this.ppPretreatment = ppPretreatment;
     }
 
     public Boolean getIsHms() {

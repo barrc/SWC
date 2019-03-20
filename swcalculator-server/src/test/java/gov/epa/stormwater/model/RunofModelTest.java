@@ -210,7 +210,7 @@ public class RunofModelTest {
 	@Test
 	public void retentionPcntListListTest() {
 		RunoffModel rm = new RunoffModel();
-		rm.setRetentionPcntListList(testXYPairModelArray);
+		rm.setRetentionPcntList(testXYPairModelArray);
 		assertArrayEquals(testXYPairModelArray.toArray(), rm.getRetentionPcntList().toArray());
 	}
 

@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RunofModelTest {
+public class RunoffModelTest {
 
 	private Double testDouble;
 	private Long testLong;

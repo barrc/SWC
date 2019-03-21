@@ -502,11 +502,7 @@ public class SiteDataModel {
         return lidModel;
     }
 
-    public void setLidModel(LidModel lidModel) {
-
-        this.lidModel = lidModel;
-        System.out.println("Site Data Model " + lidModel.getGrSoilHeight());
-    }
+    public void setLidModel(LidModel lidModel) { this.lidModel = lidModel; }
 
     public Boolean getIsNewDevelopment() {
         return isNewDevelopment;

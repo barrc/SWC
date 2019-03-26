@@ -9,7 +9,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-public class RunofModelTest {
+public class RunoffModelTest {
 
 	private Double testDouble;
 	private Long testLong;
@@ -210,7 +210,7 @@ public class RunofModelTest {
 	@Test
 	public void retentionPcntListListTest() {
 		RunoffModel rm = new RunoffModel();
-		rm.setRetentionPcntListList(testXYPairModelArray);
+		rm.setRetentionPcntList(testXYPairModelArray);
 		assertArrayEquals(testXYPairModelArray.toArray(), rm.getRetentionPcntList().toArray());
 	}
 

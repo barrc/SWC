@@ -18,6 +18,8 @@ public class SiteDataModelTest {
 		testInteger = 1;
 		testDouble = 1.0;
 		testString = "ERG SWC String";
+
+		lidModel = new LidModel();
 	}
 
 	@Test

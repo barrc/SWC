@@ -1218,19 +1218,19 @@ function getSoilData(page)
 
           if (page == 'topography')
           {
-            if (response[i].slope < 5.0)
+            if (response[i].slope <= 2.0)
             {
               soilDataFillColor = 'rgba(255, 235, 59, 0.6)';
             }
-            if ((response[i].slope >= 5.0) && (response[i].slope < 10.0))
+            else if (response[i].slope <= 7.0)
             {
               soilDataFillColor = 'rgba(255, 128, 171, 0.6)';
             }
-            if ((response[i].slope >= 10.0) && (response[i].slope < 15.0))
+            else if (response[i].slope <= 15.0)
             {
               soilDataFillColor = 'rgba(126, 87, 194, 0.6)';
             }
-            if (response[i].slope >= 15.0)
+            else
             {
               soilDataFillColor= 'rgba(1, 87, 155, 0.6)';
             }
@@ -1300,13 +1300,13 @@ function getSoilData(page)
               }
               if (sessionStorage.modal == 'soilDrainage')
               {
-                $('#soilDrainageBox').val(e.target.ksat.toFixed(2));
-                  sessionStorage.soilDrainage = e.target.ksat.toFixed(2);
+                $('#soilDrainageBox').val(e.target.ksat.toFixed(3));
+                  sessionStorage.soilDrainage = e.target.ksat.toFixed(3);
                   checkResultsGenerated();
               }
               if (sessionStorage.modal == 'topography')
               {
-                  if (e.target.slope < 5.0)
+                  if (e.target.slope <= 2.0)
                   {
                     $("#flatRadio").prop("checked", true);
 
@@ -1314,7 +1314,7 @@ function getSoilData(page)
 
                     checkResultsGenerated();
                   }
-                  if ((e.target.slope >= 5.0) && (e.target.slope < 10.0))
+                  else if (e.target.slope <= 7.0)
                   {
                     $("#moderatelyFlatRadio").prop("checked", true);
 
@@ -1322,7 +1322,7 @@ function getSoilData(page)
 
                     checkResultsGenerated();
                   }
-                  if ((e.target.slope >= 10.0) && (e.target.slope < 15.0))
+                  else if (e.target.slope <= 15.0)
                   {
                     $("#moderatelySteepRadio").prop("checked", true);
 
@@ -1330,7 +1330,7 @@ function getSoilData(page)
 
                     checkResultsGenerated();
                   }
-                  if (e.target.slope >= 15.0)
+                  else
                   {
                     $("#steepRadio").prop("checked", true);
 
@@ -3513,28 +3513,28 @@ app.config(function($routeProvider, $locationProvider)
         {
           for (var i = 0; i < soilDataPolygonsArray.length; i++)
           {
-            if (soilDataPolygonsArray[i].slope < 5.0)
+            if (soilDataPolygonsArray[i].slope <= 2.0)
             {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 235, 59, 0.6)'
               });
             }
-            if ((soilDataPolygonsArray[i].slope >= 5.0) && (soilDataPolygonsArray[i].slope < 10.0))
+            else if (soilDataPolygonsArray[i].slope <= 7.0)
             {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 128, 171, 0.6)'
               });
             }
-            if ((soilDataPolygonsArray[i].slope >= 10.0) && (soilDataPolygonsArray[i].slope < 15.0))
+            else if (soilDataPolygonsArray[i].slope <= 15.0)
             {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(126, 87, 194, 0.6)'
               });
             }
-            if (soilDataPolygonsArray[i].slope >= 15.0)
+            else
             {
               soilDataPolygonsArray[i].setOptions(
               {

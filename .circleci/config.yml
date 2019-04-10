@@ -1,0 +1,91 @@
+version: 2
+jobs:
+  develop-branch:
+    docker:
+      - image: circleci/openjdk:8u171-jdk
+   
+    steps:
+      - checkout
+      - run:
+            name: Retrieve version number from pom.xml and put in CircleCI env var
+            command: |
+              cd swcalculator-server 
+              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+              echo $SWC_VERSION
+      - run: 
+            name: build develop 
+            command: |
+              cd config
+              sudo chmod 755 *.sh
+              ./build_development.sh
+
+      - run: 
+            name: Deploy to development 
+            command: |
+              cd config
+              sudo chmod 755 *.sh
+              ./deploy_to_development.sh 
+  
+  master-branch:
+    docker:
+      - image: circleci/openjdk:8-jdk
+   
+    steps:
+      - checkout
+      - run: 
+            name: build production version
+            command: |
+              cd config
+              sudo chmod 755 *.sh
+              ./build_production.sh      
+      - run:
+            name: Retrieve version number from pom.xml and put in CircleCI env var
+            command: |
+              cd swcalculator-server 
+              SWC_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+              echo $SWC_VERSION >> /tmp/artifacts/release.txt
+              echo $SWC_VERSION
+      - store_artifacts:
+            path: /tmp/artifacts
+            destination: ./
+      - persist_to_workspace:
+          root: /tmp/artifacts
+          paths:
+            - ./*
+            
+  publish-github-release:
+    docker:
+      - image: circleci/golang:1.8
+   
+    steps:
+      - attach_workspace:
+          at: /tmp/artifacts
+
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            go get github.com/tcnksm/ghr
+            SWC_VERSION=$(cat /tmp/artifacts/release.txt)
+            VERSION=$SWC_VERSION
+            RELEASE=$SWC_VERSION
+            ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 -n $RELEASE $VERSION /tmp/artifacts
+           
+workflows:
+    version: 2
+    main:
+        jobs:
+          - develop-branch:
+              filters:
+                branches:
+                  only: develop
+                  
+          - master-branch:
+              filters:
+                branches:
+                  only: master
+          - publish-github-release:
+              requires:
+                - master-branch
+              filters:
+                branches:
+                  only: master

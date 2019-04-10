@@ -9,6 +9,7 @@ npm-debug.log
 
 #COMMON SERVER SIDE IGNORE
 swcalculator-server/target/
+FrontEnd/target
 
 
 #INTELIJ
@@ -23,3 +24,10 @@ swcalculator-server/dist/
 swcalculator-server/nbdist/
 swcalculator-server/.nb-gradle/
 swcalculator-server/nb-configuration.xml
+
+../.project
+../.settings/
+.classpath
+.project
+.settings/
+*.war

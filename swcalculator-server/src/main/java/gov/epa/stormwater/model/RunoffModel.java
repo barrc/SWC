@@ -367,7 +367,7 @@ public class RunoffModel {
         return retentionPcntList;
     }
 
-    public void setRetentionPcntListList(List<XYPairModel> runoffPcntList) {
+    public void setRetentionPcntList(List<XYPairModel> retentionPcntList) {
         this.retentionPcntList = retentionPcntList;
     } 
     

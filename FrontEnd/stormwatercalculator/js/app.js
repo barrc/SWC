@@ -43,6 +43,14 @@ sessionStorage.setItem('baselineActive', false);
 sessionStorage.setItem('printToPDF', false);
 sessionStorage.setItem('costCriteria', 'capital');
 
+sessionStorage.setItem("disconnectionText", "");
+sessionStorage.setItem("rainHarvestingText", "");
+sessionStorage.setItem("rainGardensText", "");
+sessionStorage.setItem("greenRoofsText", "");
+sessionStorage.setItem("streetPlantersText", "");
+sessionStorage.setItem("infiltrationBasinsText", "");
+sessionStorage.setItem("permeablePavementText", "");
+
 var map;
 var locationMarker;
 
@@ -113,6 +121,7 @@ var extremeEventRunoffDepthArray = [0, 0, 0, 0, 0, 0];
 var extremeEventRunoffPeakArray = [0, 0, 0, 0, 0, 0];
 var extremeEventRunoffDepthArrayBaseline = [0, 0, 0, 0, 0, 0];
 var extremeEventRunoffPeakArrayBaseline = [0, 0, 0, 0, 0, 0];
+var runoffDepthLabels = [];
 var simpleTotal = 0;
 var typicalTotal = 0;
 var complexTotal = 0;
@@ -206,6 +215,13 @@ var rainGardensPretreatmentBaseline = 'NA';
 var infiltrationBasinsPretreatmentBaseline = 'NA';
 var permeablePavementPretreatmentBaseline = 'NA';
 
+var baselineDisconnectionText = "";
+var baselineRainHarvestingText = "";
+var baselineRainGardensText = "";
+var baselineGreenRoofsText = "";
+var baselineStreetPlantersText = "";
+var baselineInfiltrationBasinsText = "";
+var baselinePermeablePavementText = "";
 
 var baselineDevType = 'NA';
 var baselineSiteSuitability = 'NA';
@@ -1202,19 +1218,19 @@ function getSoilData(page)
 
           if (page == 'topography')
           {
-            if (response[i].slope < 5.0)
+            if (response[i].slope <= 2.0)
             {
               soilDataFillColor = 'rgba(255, 235, 59, 0.6)';
             }
-            if ((response[i].slope >= 5.0) && (response[i].slope < 10.0))
+            else if (response[i].slope <= 7.0)
             {
               soilDataFillColor = 'rgba(255, 128, 171, 0.6)';
             }
-            if ((response[i].slope >= 10.0) && (response[i].slope < 15.0))
+            else if (response[i].slope <= 15.0)
             {
               soilDataFillColor = 'rgba(126, 87, 194, 0.6)';
             }
-            if (response[i].slope >= 15.0)
+            else
             {
               soilDataFillColor= 'rgba(1, 87, 155, 0.6)';
             }
@@ -1284,13 +1300,13 @@ function getSoilData(page)
               }
               if (sessionStorage.modal == 'soilDrainage')
               {
-                $('#soilDrainageBox').val(e.target.ksat.toFixed(2));
-                  sessionStorage.soilDrainage = e.target.ksat.toFixed(2);
+                $('#soilDrainageBox').val(e.target.ksat.toFixed(3));
+                  sessionStorage.soilDrainage = e.target.ksat.toFixed(3);
                   checkResultsGenerated();
               }
               if (sessionStorage.modal == 'topography')
               {
-                  if (e.target.slope < 5.0)
+                  if (e.target.slope <= 2.0)
                   {
                     $("#flatRadio").prop("checked", true);
 
@@ -1298,7 +1314,7 @@ function getSoilData(page)
 
                     checkResultsGenerated();
                   }
-                  if ((e.target.slope >= 5.0) && (e.target.slope < 10.0))
+                  else if (e.target.slope <= 7.0)
                   {
                     $("#moderatelyFlatRadio").prop("checked", true);
 
@@ -1306,7 +1322,7 @@ function getSoilData(page)
 
                     checkResultsGenerated();
                   }
-                  if ((e.target.slope >= 10.0) && (e.target.slope < 15.0))
+                  else if (e.target.slope <= 15.0)
                   {
                     $("#moderatelySteepRadio").prop("checked", true);
 
@@ -1314,7 +1330,7 @@ function getSoilData(page)
 
                     checkResultsGenerated();
                   }
-                  if (e.target.slope >= 15.0)
+                  else
                   {
                     $("#steepRadio").prop("checked", true);
 
@@ -1742,7 +1758,14 @@ function selectSameStationMarker(e)
     });
 
     sessionStorage.rainGageID = e.target.stationID;
-    sessionStorage.weatherStationID = e.target.stationID;
+    if (e.target.stationID[0] == '0')
+    {
+      sessionStorage.weatherStationID = e.target.stationID.substring(1);
+    }
+    else
+    {
+      sessionStorage.weatherStationID = e.target.stationID;
+    }
     sessionStorage.rainGageName = e.target.name;
     sessionStorage.weatherStationName = e.target.name;
 
@@ -1992,6 +2015,9 @@ function restoreDefaults(category)
         $('#rainGardensMediaValue').val(10);
         $('#rainGardensCaptureValue').val(5);
 
+        $('#rainGardensPretreatment').prop('checked', false);
+        rainGardensPretreatment = 'No';
+
         $('.lidModalSlider:eq(4)').bootstrapSlider('setValue', 6);
         $('.lidModalSlider:eq(5)').bootstrapSlider('setValue', 12);
         $('.lidModalSlider:eq(6)').bootstrapSlider('setValue', 10);
@@ -2024,6 +2050,9 @@ function restoreDefaults(category)
         $('#infiltrationBasinsBasinValue').val(6);
         $('#infiltrationBasinsCaptureValue').val(5);
 
+        $('#infiltrationBasinsPretreatment').prop('checked', false);
+        infiltrationBasinsPretreatment = 'No';
+
         $('.lidModalSlider:eq(15)').bootstrapSlider('setValue', 6);
         $('.lidModalSlider:eq(16)').bootstrapSlider('setValue', 5);
     }
@@ -2032,6 +2061,9 @@ function restoreDefaults(category)
         $('#permeablePavementPavementValue').val(6);
         $('#permeablePavementGravelValue').val(18);
         $('#permeablePavementCaptureValue').val(100);
+
+        $('#permeablePavementPretreatment').prop('checked', false);
+        permeablePavementPretreatment = 'No';
 
         $('.lidModalSlider:eq(17)').bootstrapSlider('setValue', 6);
         $('.lidModalSlider:eq(18)').bootstrapSlider('setValue', 18);
@@ -2143,6 +2175,7 @@ function getResults()
       extremeEventRunoffDepthArray = [];
       extremeEventRainfallPeakArray = [];
       extremeEventRunoffPeakArray = [];
+      runoffDepthLabels = [];
 
       simpleTotal = 0;
       typicalTotal = 0;
@@ -2157,7 +2190,7 @@ function getResults()
         typicalTotal++;
         complexTotal++;
       }
-      if (($('#rainGardensPretreatment').prop('checked') == true) || ($('#infiltrationBasinsPretreatment').prop('checked') == true) || ($('#permeablePavementsPretreatment').prop('checked') == true))
+      if (($('#rainGardensPretreatment').prop('checked') == true) || ($('#infiltrationBasinsPretreatment').prop('checked') == true) || ($('#permeablePavementPretreatment').prop('checked') == true))
       {
         typicalTotal++;
         complexTotal++;
@@ -2584,6 +2617,21 @@ function getResults()
         extremeEventRunoffPeakArray.push(response.xeventModel.peakRunoff[i].toFixed(2));
       }
 
+      runoffContributionLabels = [];
+      var initialRunoffContributionLabels = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '75%', '80%', '85%', '90%', '95%', '99%'];
+      if (response.runoffModel.runoffDepthLabels.length != 0)
+      {
+        for (var i = 0; i < response.runoffModel.runoffDepthLabels.length; i++)
+        {
+          runoffDepthLabels.push(response.runoffModel.runoffDepthLabels[i]);
+          runoffContributionLabels.push([initialRunoffContributionLabels[i], response.runoffModel.runoffDepthLabels[i]]);
+        }
+      }
+      else
+      {
+        runoffDepthLabels = ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
+      }
+
       $('#currentRainfall').html(summaryTableArray[0]);
 
       var scope = angular.element(document.getElementById("summaryResultsTable")).scope();
@@ -2637,6 +2685,7 @@ function getResults()
         scope.rainfallRunoffFrequencyData = [rainfallFrequencyArray, runoffFrequencyArray, rainfallFrequencyArrayBaseline, runoffFrequencyArrayBaseline];
         scope.rainfallRetentionData = [rainfallRetentionArray, rainfallRetentionArrayBaseline];
         scope.runoffContributionData = [runoffContributionArray, runoffContributionArrayBaseline];
+        scope.runoffContributionLabels = runoffContributionLabels;
         scope.extremeEventDepthData = [extremeEventRainfallDepthArray, extremeEventRunoffDepthArray, extremeEventRainfallDepthArrayBaseline, extremeEventRunoffDepthArrayBaseline];
         scope.extremeEventPeakData = [extremeEventRainfallPeakArray, extremeEventRunoffPeakArray, extremeEventRainfallPeakArrayBaseline, extremeEventRunoffPeakArrayBaseline];
 
@@ -3464,28 +3513,28 @@ app.config(function($routeProvider, $locationProvider)
         {
           for (var i = 0; i < soilDataPolygonsArray.length; i++)
           {
-            if (soilDataPolygonsArray[i].slope < 5.0)
+            if (soilDataPolygonsArray[i].slope <= 2.0)
             {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 235, 59, 0.6)'
               });
             }
-            if ((soilDataPolygonsArray[i].slope >= 5.0) && (soilDataPolygonsArray[i].slope < 10.0))
+            else if (soilDataPolygonsArray[i].slope <= 7.0)
             {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(255, 128, 171, 0.6)'
               });
             }
-            if ((soilDataPolygonsArray[i].slope >= 10.0) && (soilDataPolygonsArray[i].slope < 15.0))
+            else if (soilDataPolygonsArray[i].slope <= 15.0)
             {
               soilDataPolygonsArray[i].setOptions(
               {
                 fillColor: 'rgba(126, 87, 194, 0.6)'
               });
             }
-            if (soilDataPolygonsArray[i].slope >= 15.0)
+            else
             {
               soilDataPolygonsArray[i].setOptions(
               {
@@ -4369,6 +4418,7 @@ app.controller('precipitationCtrl', function($scope)
         sessionStorage.rainStartDate = rainGageNames[i].startDate;
         sessionStorage.rainEndDate = rainGageNames[i].endDate;
         sessionStorage.rainRainfall = rainGageNames[i].rainfall;
+        sessionStorage.rainGageID = rainGageNames[i].stationID;
 
         sessionStorage.stationSelected = 'selected';
 
@@ -4471,6 +4521,7 @@ app.controller('precipitationCtrl', function($scope)
         sessionStorage.weatherStartDate = $scope.weatherStartDate;
         sessionStorage.weatherEndDate = $scope.weatherEndDate;
         sessionStorage.weatherRate = $scope.weatherRate;
+        sessionStorage.weatherStationID = weatherStationNames[i].stationID;
       }
 
     }
@@ -5418,6 +5469,11 @@ app.controller('lidcontrolsCtrl', function($scope)
       $('.designStormButton').prop('disabled', false);
       sessionStorage.designStorm = $scope.designStormValue;
     }
+    else if ($scope.designStormValue == 0)
+    {
+      $('.designStormButton').prop('disabled', true);
+      sessionStorage.designStorm = $scope.designStormValue;
+    }
     else
     {
       $('.designStormButton').prop('disabled', true);
@@ -5762,34 +5818,72 @@ if (sessionStorage.stationSelected == 'selected'){
         "Current" : sessionStorage.impervious
       }];
 
+      sessionStorage.setItem("disconnectionText", sessionStorage.disconnection);
+      sessionStorage.setItem("rainHarvestingText", sessionStorage.rainHarvesting);
+      sessionStorage.setItem("rainGardensText", sessionStorage.rainGardens);
+      sessionStorage.setItem("greenRoofsText", sessionStorage.greenRoofs);
+      sessionStorage.setItem("streetPlantersText", sessionStorage.streetPlanters);
+      sessionStorage.setItem("infiltrationBasinsText", sessionStorage.infiltrationBasins);
+      sessionStorage.setItem("permeablePavementText", sessionStorage.permeablePavement);
+
+      if (sessionStorage.disconnectionText != "0")
+      {
+        sessionStorage.disconnectionText += " / " + $('#disconnectionCaptureValue').val()
+      }
+      if (sessionStorage.rainHarvestingText != "0")
+      {
+        sessionStorage.rainHarvestingText += " / " + $('#rainHarvestingFeetValue').val()
+      }
+      if (sessionStorage.rainGardensText != "0")
+      {
+        sessionStorage.rainGardensText += " / " + $('#rainGardensCaptureValue').val()
+      }
+      if (sessionStorage.greenRoofsText != "0")
+      {
+        sessionStorage.greenRoofsText += " / 100"
+      }
+      if (sessionStorage.streetPlantersText != "0")
+      {
+        sessionStorage.streetPlantersText += " / " + $('#streetPlantersCaptureValue').val()
+      }
+      if (sessionStorage.infiltrationBasinsText != "0")
+      {
+        sessionStorage.infiltrationBasinsText += " / " + $('#infiltrationBasinsCaptureValue').val()
+      }
+      if (sessionStorage.permeablePavementText != "0")
+      {
+        sessionStorage.permeablePavementText += " / " + $('#permeablePavementCaptureValue').val()
+      }
+
+
       $scope.siteDescriptionLIDControls = [
       {
         "Name": 'Disconnection',
-        "Current" : sessionStorage.disconnection
+        "Current" : sessionStorage.disconnectionText
       },
       {
         "Name": 'Rain Harvesting',
-        "Current" : sessionStorage.rainHarvesting
+        "Current" : sessionStorage.rainHarvestingText
       },
       {
         "Name": 'Rain Gardens',
-        "Current" : sessionStorage.rainGardens
+        "Current" : sessionStorage.rainGardensText
       },
       {
         "Name": 'Green Roofs',
-        "Current" : sessionStorage.greenRoofs
+        "Current" : sessionStorage.greenRoofsText
       },
       {
         "Name": 'Street Planters',
-        "Current" : sessionStorage.streetPlanters
+        "Current" : sessionStorage.streetPlantersText
       },
       {
         "Name": 'Infiltration Basins',
-        "Current" : sessionStorage.infiltrationBasins
+        "Current" : sessionStorage.infiltrationBasinsText
       },
       {
         "Name": 'Porous Pavement',
-        "Current" : sessionStorage.permeablePavement
+        "Current" : sessionStorage.permeablePavementText
       }];
 
       $scope.siteDescriptionOptions = [
@@ -5913,41 +6007,78 @@ if (sessionStorage.stationSelected == 'selected'){
           "Baseline": baselineImpervious
         }];
 
+        sessionStorage.disconnectionText = sessionStorage.disconnection;
+        sessionStorage.rainHarvestingText = sessionStorage.rainHarvesting;
+        sessionStorage.rainGardensText = sessionStorage.rainGardens;
+        sessionStorage.greenRoofsText = sessionStorage.greenRoofs;
+        sessionStorage.streetPlantersText = sessionStorage.streetPlanters;
+        sessionStorage.infiltrationBasinsText = sessionStorage.infiltrationBasins;
+        sessionStorage.permeablePavementText = sessionStorage.permeablePavement;
+
+        if (sessionStorage.disconnectionText != "0")
+        {
+          sessionStorage.disconnectionText += " / " + $('#disconnectionCaptureValue').val()
+        }
+        if (sessionStorage.rainHarvestingText != "0")
+        {
+          sessionStorage.rainHarvestingText += " / " + $('#rainHarvestingFeetValue').val()
+        }
+        if (sessionStorage.rainGardensText != "0")
+        {
+          sessionStorage.rainGardensText += " / " + $('#rainGardensCaptureValue').val()
+        }
+        if (sessionStorage.greenRoofsText != "0")
+        {
+          sessionStorage.greenRoofsText += " / 100"
+        }
+        if (sessionStorage.streetPlantersText != "0")
+        {
+          sessionStorage.streetPlantersText += " / " + $('#streetPlantersCaptureValue').val()
+        }
+        if (sessionStorage.infiltrationBasinsText != "0")
+        {
+          sessionStorage.infiltrationBasinsText += " / " + $('#infiltrationBasinsCaptureValue').val()
+        }
+        if (sessionStorage.permeablePavementText != "0")
+        {
+          sessionStorage.permeablePavementText += " / " + $('#permeablePavementCaptureValue').val()
+        }
+
         $scope.siteDescriptionLIDControls = [
         {
           "Name": 'Disconnection',
-          "Current" : sessionStorage.disconnection,
-          "Baseline": baselineDisconnection
+          "Current" : sessionStorage.disconnectionText,
+          "Baseline": baselineDisconnectionText
         },
         {
           "Name": 'Rain Harvesting',
-          "Current" : sessionStorage.rainHarvesting,
-          "Baseline": baselineRainHarvesting
+          "Current" : sessionStorage.rainHarvestingText,
+          "Baseline": baselineRainHarvestingText
         },
         {
           "Name": 'Rain Gardens',
-          "Current" : sessionStorage.rainGardens,
-          "Baseline": baselineRainGardens
+          "Current" : sessionStorage.rainGardensText,
+          "Baseline": baselineRainGardensText
         },
         {
           "Name": 'Green Roofs',
-          "Current" : sessionStorage.greenRoofs,
-          "Baseline": baselineGreenRoofs
+          "Current" : sessionStorage.greenRoofsText,
+          "Baseline": baselineGreenRoofsText
         },
         {
           "Name": 'Street Planters',
-          "Current" : sessionStorage.streetPlanters,
-          "Baseline": baselineStreetPlanters
+          "Current" : sessionStorage.streetPlantersText,
+          "Baseline": baselineStreetPlantersText
         },
         {
           "Name": 'Infiltration Basins',
-          "Current" : sessionStorage.infiltrationBasins,
-          "Baseline": baselineInfiltrationBasins
+          "Current" : sessionStorage.infiltrationBasinsText,
+          "Baseline": baselineInfiltrationBasinsText
         },
         {
           "Name": 'Porous Pavement',
-          "Current" : sessionStorage.permeablePavement,
-          "Baseline": baselinePermeablePavement
+          "Current" : sessionStorage.permeablePavementText,
+          "Baseline": baselinePermeablePavementText
         }];
 
         $scope.siteDescriptionOptions = [
@@ -6362,7 +6493,15 @@ if (sessionStorage.stationSelected == 'selected'){
   };
 
   $scope.runoffContributionSeries = ['Current Scenario', 'Baseline Scenario'];
-  $scope.runoffContributionLabels = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '75%', '80%', '85%', '90%', '95%', '99%'];
+  var contributionLabels = [];
+  var initialRunoffContributionLabels = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '75%', '80%', '85%', '90%', '95%', '99%'];
+
+  for (var i = 0; i < runoffDepthLabels.length; i++)
+  {
+    contributionLabels.push([initialRunoffContributionLabels[i], runoffDepthLabels[i]]);
+  }
+
+  $scope.runoffContributionLabels = contributionLabels;
   $scope.runoffContributionData = [runoffContributionArray, runoffContributionArrayBaseline];
   $scope.runoffContributionColors =
   [
@@ -6384,7 +6523,7 @@ if (sessionStorage.stationSelected == 'selected'){
         scaleLabel:
         {
           display: true,
-          labelString: 'Daily Rainfall Percentile'
+          labelString: 'Daily Rainfall Percentile / Daily Rainfall Depth (inches)'
         }
       }],
       yAxes: [
@@ -6416,7 +6555,7 @@ if (sessionStorage.stationSelected == 'selected'){
         scaleLabel:
         {
           display: true,
-          labelString: 'Daily Rainfall Percentile'
+          labelString: 'Daily Rainfall Percentile  / Daily Rainfall Depth (inches)'
         }
       }],
       yAxes: [
@@ -7209,6 +7348,14 @@ $scope.costSummaryTableData = [
     baselineIgnoreWetDays = sessionStorage.ignoreDays.charAt(0).toUpperCase() + sessionStorage.ignoreDays.slice(1);
     baselineWetDayThreshold = sessionStorage.eventThreshold;
 
+    baselineDisconnectionText = sessionStorage.disconnectionText;
+    baselineRainHarvestingText = sessionStorage.rainHarvestingText;
+    baselineRainGardensText = sessionStorage.rainGardensText;
+    baselineGreenRoofsText = sessionStorage.greenRoofsText;
+    baselineStreetPlantersText = sessionStorage.streetPlantersText;
+    baselineInfiltrationBasinsText = sessionStorage.infiltrationBasinsText;
+    baselinePermeablePavementText = sessionStorage.permeablePavementText;
+
     baselineDisconnectionLowCapital = currentDisconnectionLowCapital;
     baselineDisconnectionHighCapital = currentDisconnectionHighCapital;
     baselineRainHarvestingLowCapital = currentRainHarvestingLowCapital;
@@ -7355,38 +7502,38 @@ $scope.costSummaryTableData = [
     $scope.siteDescriptionLIDControls = [
     {
       "Name": 'Disconnection',
-      "Current" : sessionStorage.disconnection,
-      "Baseline": baselineDisconnection
+      "Current" : sessionStorage.disconnectionText,
+      "Baseline": baselineDisconnectionText
     },
     {
       "Name": 'Rain Harvesting',
-      "Current" : sessionStorage.rainHarvesting,
-      "Baseline": baselineRainHarvesting
+      "Current" : sessionStorage.rainHarvestingText,
+      "Baseline": baselineRainHarvestingText
     },
     {
       "Name": 'Rain Gardens',
-      "Current" : sessionStorage.rainGardens,
-      "Baseline": baselineRainGardens
+      "Current" : sessionStorage.rainGardensText,
+      "Baseline": baselineRainGardensText
     },
     {
       "Name": 'Green Roofs',
-      "Current" : sessionStorage.greenRoofs,
-      "Baseline": baselineGreenRoofs
+      "Current" : sessionStorage.greenRoofsText,
+      "Baseline": baselineGreenRoofsText
     },
     {
       "Name": 'Street Planters',
-      "Current" : sessionStorage.streetPlanters,
-      "Baseline": baselineStreetPlanters
+      "Current" : sessionStorage.streetPlantersText,
+      "Baseline": baselineStreetPlantersText
     },
     {
       "Name": 'Infiltration Basins',
-      "Current" : sessionStorage.infiltrationBasins,
-      "Baseline": baselineInfiltrationBasins
+      "Current" : sessionStorage.infiltrationBasinsText,
+      "Baseline": baselineInfiltrationBasinsText
     },
     {
       "Name": 'Porous Pavement',
-      "Current" : sessionStorage.permeablePavement,
-      "Baseline": baselinePermeablePavement
+      "Current" : sessionStorage.permeablePavementText,
+      "Baseline": baselinePermeablePavementText
     }];
 
     $scope.siteDescriptionOptions = [
@@ -8595,13 +8742,13 @@ $scope.costSummaryTableData = [
             ['% Desert', sessionStorage.desert],
             ['% Impervious', sessionStorage.impervious],
             ['LID Controls'],
-            ['% Disconnection', sessionStorage.disconnection],
-            ['% Rain Harvesting', sessionStorage.rainHarvesting],
-            ['% Rain Gardens', sessionStorage.rainGardens],
-            ['% Green Roofs', sessionStorage.greenRoofs],
-            ['% Street Planters', sessionStorage.streetPlanters],
-            ['% Infiltration Basins', sessionStorage.infiltrationBasins],
-            ['% Permeable Pavement', sessionStorage.permeablePavement],
+            ['% Disconnection', sessionStorage.disconnectionText],
+            ['% Rain Harvesting', sessionStorage.rainHarvestingText],
+            ['% Rain Gardens', sessionStorage.rainGardensText],
+            ['% Green Roofs', sessionStorage.greenRoofsText],
+            ['% Street Planters', sessionStorage.streetPlantersText],
+            ['% Infiltration Basins', sessionStorage.infiltrationBasinsText],
+            ['% Permeable Pavement', sessionStorage.permeablePavementText],
             ['Analysis Options'],
             ['Years Analyzed', sessionStorage.yearsToAnalyze],
             ['Ignore Consecutive Wet Days', sessionStorage.ignoreDays.charAt(0).toUpperCase() + sessionStorage.ignoreDays.slice(1)],
@@ -8621,22 +8768,22 @@ $scope.costSummaryTableData = [
             ];
 
         costsCapitalRows = [
-        ["D", sessionStorage.disconnection  + ' (C)', "NA", '$' + currentDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  currentDisconnectionHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  currentDisconnectionHighCapital.toFixed(2) + ' (High)'],
-        ["RH", sessionStorage.rainHarvesting  + ' (C)', "NA", '$' + currentRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  currentRainHarvestingHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  currentRainHarvestingHighCapital.toFixed(2) + ' (High)'],
-        ["RG", sessionStorage.rainGardens  + ' (C)', "NA", '$' + currentRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  currentRainGardensHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  currentRainGardensHighCapital.toFixed(2) + ' (High)'],
-        ["GR", sessionStorage.greenRoofs  + ' (C)', "NA", '$' + currentGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  currentGreenRoofsHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  currentGreenRoofsHighCapital.toFixed(2) + ' (High)'],
-        ["SP", sessionStorage.streetPlanters + ' (C)', "NA", '$' + currentStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  currentStreetPlantersHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  currentStreetPlantersHighCapital.toFixed(2) + ' (High)'],
-        ["IB", sessionStorage.infiltrationBasins + ' (C)', "NA", '$' + currentInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsHighCapital.toFixed(2) + ' (High)'],
-        ["PP", sessionStorage.permeablePavement + ' (C)', "NA", '$' + currentPermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  currentPermeablePavementHighCapital.toFixed(2) + ' (High)', 'NA / NA', '$' + currentPermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  currentPermeablePavementHighCapital.toFixed(2) + ' (High)']];
+        ["D", sessionStorage.disconnection  + ' (C)', "NA", '$' + currentDisconnectionLowCapital.toFixed(2) + ' - $' +  currentDisconnectionHighCapital.toFixed(2), 'NA / NA', ''],
+        ["RH", sessionStorage.rainHarvesting  + ' (C)', "NA", '$' + currentRainHarvestingLowCapital.toFixed(2) + ' - $' +  currentRainHarvestingHighCapital.toFixed(2), 'NA / NA', ''],
+        ["RG", sessionStorage.rainGardens  + ' (C)', "NA", '$' + currentRainGardensLowCapital.toFixed(2) + ' - $' +  currentRainGardensHighCapital.toFixed(2), 'NA / NA', ''],
+        ["GR", sessionStorage.greenRoofs  + ' (C)', "NA", '$' + currentGreenRoofsLowCapital.toFixed(2) + ' - $' +  currentGreenRoofsHighCapital.toFixed(2), 'NA / NA', ''],
+        ["SP", sessionStorage.streetPlanters + ' (C)', "NA", '$' + currentStreetPlantersLowCapital.toFixed(2) + ' - $' +  currentStreetPlantersHighCapital.toFixed(2), 'NA / NA', ''],
+        ["IB", sessionStorage.infiltrationBasins + ' (C)', "NA", '$' + currentInfiltrationBasinsLowCapital.toFixed(2) + ' - $' +  currentInfiltrationBasinsHighCapital.toFixed(2), 'NA / NA', ''],
+        ["PP", sessionStorage.permeablePavement + ' (C)', "NA", '$' + currentPermeablePavementLowCapital.toFixed(2) + ' - $' +  currentPermeablePavementHighCapital.toFixed(2), 'NA / NA', '']];
         console.log(costsCapitalRows);
         costsMaintenanceRows = [
-        ["D", sessionStorage.disconnection  + ' (C)', "NA", '$' + currentDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentDisconnectionMaintenanceHigh.toFixed(2) + ' (High)'],
-        ["RH", sessionStorage.rainHarvesting  + ' (C)', "NA", '$' + currentRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)'],
-        ["RG", sessionStorage.rainGardens  + ' (C)', "NA", '$' + currentRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainGardensMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainGardensMaintenanceHigh.toFixed(2) + ' (High)'],
-        ["GR", sessionStorage.greenRoofs  + ' (C)', "NA", '$' + currentGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)'],
-        ["SP", sessionStorage.streetPlanters + ' (C)', "NA", '$' + currentStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)'],
-        ["IB", sessionStorage.infiltrationBasins + ' (C)', "NA", '$' + currentInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)'],
-        ["PP", sessionStorage.permeablePavement + ' (C)', "NA", '$' + currentPermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentPermeablePavementMaintenanceHigh.toFixed(2) + ' (High)', 'NA / NA', '$' + currentPermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentPermeablePavementMaintenanceHigh.toFixed(2) + ' (High)']];
+        ["D", sessionStorage.disconnection  + ' (C)', "NA", '$' + currentDisconnectionMaintenanceLow.toFixed(2) + ' - $' +  currentDisconnectionMaintenanceHigh.toFixed(2), 'NA / NA', ''],
+        ["RH", sessionStorage.rainHarvesting  + ' (C)', "NA", '$' + currentRainHarvestingMaintenanceLow.toFixed(2) + ' - $' +  currentRainHarvestingMaintenanceHigh.toFixed(2), 'NA / NA', ''],
+        ["RG", sessionStorage.rainGardens  + ' (C)', "NA", '$' + currentRainGardensMaintenanceLow.toFixed(2) + ' - $' +  currentRainGardensMaintenanceHigh.toFixed(2), 'NA / NA', ''],
+        ["GR", sessionStorage.greenRoofs  + ' (C)', "NA", '$' + currentGreenRoofsMaintenanceLow.toFixed(2) + ' - $' +  currentGreenRoofsMaintenanceHigh.toFixed(2), 'NA / NA', ''],
+        ["SP", sessionStorage.streetPlanters + ' (C)', "NA", '$' + currentStreetPlantersMaintenanceLow.toFixed(2) + ' - $' +  currentStreetPlantersMaintenanceHigh.toFixed(2), 'NA / NA', ''],
+        ["IB", sessionStorage.infiltrationBasins + ' (C)', "NA", '$' + currentInfiltrationBasinsMaintenanceLow.toFixed(2) + ' - $' +  currentInfiltrationBasinsMaintenanceHigh.toFixed(2), 'NA / NA', ''],
+        ["PP", sessionStorage.permeablePavement + ' (C)', "NA", '$' + currentPermeablePavementMaintenanceLow.toFixed(2) + ' - $' +  currentPermeablePavementMaintenanceHigh.toFixed(2), 'NA / NA', '']];
     }
     if (sessionStorage.baselineActive == 'true')
     {
@@ -8657,13 +8804,13 @@ $scope.costSummaryTableData = [
             ['% Desert', sessionStorage.desert, baselineDesert],
             ['% Impervious', sessionStorage.impervious, baselineImpervious],
             ['LID Controls'],
-            ['% Disconnection', sessionStorage.disconnection, baselineDisconnection],
-            ['% Rain Harvesting', sessionStorage.rainHarvesting, baselineRainHarvesting],
-            ['% Rain Gardens', sessionStorage.rainGardens, baselineRainGardens],
-            ['% Green Roofs', sessionStorage.greenRoofs, baselineGreenRoofs],
-            ['% Street Planters', sessionStorage.streetPlanters, baselineStreetPlanters],
-            ['% Infiltration Basins', sessionStorage.infiltrationBasins, baselineInfiltrationBasins],
-            ['% Permeable Pavement', sessionStorage.permeablePavement, baselinePermeablePavement],
+            ['% Disconnection', sessionStorage.disconnectionText, baselineDisconnectionText],
+            ['% Rain Harvesting', sessionStorage.rainHarvestingText, baselineRainHarvestingText],
+            ['% Rain Gardens', sessionStorage.rainGardensText, baselineRainGardensText],
+            ['% Green Roofs', sessionStorage.greenRoofsText, baselineGreenRoofsText],
+            ['% Street Planters', sessionStorage.streetPlantersText, baselineStreetPlantersText],
+            ['% Infiltration Basins', sessionStorage.infiltrationBasinsText, baselineInfiltrationBasinsText],
+            ['% Permeable Pavement', sessionStorage.permeablePavementText, baselinePermeablePavementText],
             ['Analysis Options'],
             ['Years Analyzed', sessionStorage.yearsToAnalyze, baselineYearsToAnalyze],
             ['Ignore Consecutive Wet Days', sessionStorage.ignoreDays.charAt(0).toUpperCase() + sessionStorage.ignoreDays.slice(1), baselineIgnoreWetDays],
@@ -8684,22 +8831,22 @@ $scope.costSummaryTableData = [
             ];
 
         costsCapitalRows = [
-        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  currentDisconnectionHighCapital.toFixed(2) + ' (High)', '$' +baselineDisconnectionLowCapital.toFixed(2) + ' (Low) / $' +  baselineDisconnectionHighCapital.toFixed(2) + ' (High)', '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital).toFixed(2) + ' (Low) / $' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital).toFixed(2) + ' (High)'],
-        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  currentRainHarvestingHighCapital.toFixed(2) + ' (High)', '$' +baselineRainHarvestingLowCapital.toFixed(2) + ' (Low) / $' +  baselineRainHarvestingHighCapital.toFixed(2) + ' (High)', '$' + (currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital).toFixed(2) + ' (Low) / $' + (currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital).toFixed(2) + ' (High)'],
-        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  currentRainGardensHighCapital.toFixed(2) + ' (High)', '$' +baselineRainGardensLowCapital.toFixed(2) + ' (Low) / $' +  baselineRainGardensHighCapital.toFixed(2) + ' (High)', '$' + (currentRainGardensLowCapital - baselineRainGardensLowCapital).toFixed(2) + ' (Low) / $' + (currentRainGardensHighCapital - baselineRainGardensHighCapital).toFixed(2) + ' (High)'],
-        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  currentGreenRoofsHighCapital.toFixed(2) + ' (High)', '$' +baselineGreenRoofsLowCapital.toFixed(2) + ' (Low) / $' +  baselineGreenRoofsHighCapital.toFixed(2) + ' (High)', '$' + (currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital).toFixed(2) + ' (Low) / $' + (currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital).toFixed(2) + ' (High)'],
-        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  currentStreetPlantersHighCapital.toFixed(2) + ' (High)', '$' +baselineStreetPlantersLowCapital.toFixed(2) + ' (Low) / $' +  baselineStreetPlantersHighCapital.toFixed(2) + ' (High)', '$' + (currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital).toFixed(2) + ' (Low) / $' + (currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital).toFixed(2) + ' (High)'],
-        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', '$' +baselineInfiltrationBasinsLowCapital.toFixed(2) + ' (Low) / $' +  baselineInfiltrationBasinsHighCapital.toFixed(2) + ' (High)', '$' + (currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital).toFixed(2) + ' (Low) / $' + (currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital).toFixed(2) + ' (High)'],
-        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  currentPermeablePavementHighCapital.toFixed(2) + ' (High)', '$' +baselinePermeablePavementLowCapital.toFixed(2) + ' (Low) / $' +  baselinePermeablePavementHighCapital.toFixed(2) + ' (High)', '$' + (currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2) + ' (Low) / $' + (currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2) + ' (High)']];
+        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionLowCapital.toFixed(2) + ' - $' +  currentDisconnectionHighCapital.toFixed(2), '$' +baselineDisconnectionLowCapital.toFixed(2) + ' - $' +  baselineDisconnectionHighCapital.toFixed(2), '$' + (currentDisconnectionLowCapital - baselineDisconnectionLowCapital).toFixed(2) + ' - $' + (currentDisconnectionHighCapital - baselineDisconnectionHighCapital).toFixed(2)],
+        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingLowCapital.toFixed(2) + ' - $' +  currentRainHarvestingHighCapital.toFixed(2), '$' +baselineRainHarvestingLowCapital.toFixed(2) + ' - $' +  baselineRainHarvestingHighCapital.toFixed(2), '$' + (currentRainHarvestingLowCapital - baselineRainHarvestingLowCapital).toFixed(2) + ' - $' + (currentRainHarvestingHighCapital - baselineRainHarvestingHighCapital).toFixed(2)],
+        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensLowCapital.toFixed(2) + ' - $' +  currentRainGardensHighCapital.toFixed(2), '$' +baselineRainGardensLowCapital.toFixed(2) + ' - $' +  baselineRainGardensHighCapital.toFixed(2), '$' + (currentRainGardensLowCapital - baselineRainGardensLowCapital).toFixed(2) + ' - $' + (currentRainGardensHighCapital - baselineRainGardensHighCapital).toFixed(2)],
+        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsLowCapital.toFixed(2) + ' - $' +  currentGreenRoofsHighCapital.toFixed(2), '$' +baselineGreenRoofsLowCapital.toFixed(2) + ' - $' +  baselineGreenRoofsHighCapital.toFixed(2), '$' + (currentGreenRoofsLowCapital - baselineGreenRoofsLowCapital).toFixed(2) + ' - $' + (currentGreenRoofsHighCapital - baselineGreenRoofsHighCapital).toFixed(2)],
+        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersLowCapital.toFixed(2) + ' - $' +  currentStreetPlantersHighCapital.toFixed(2), '$' +baselineStreetPlantersLowCapital.toFixed(2) + ' - $' +  baselineStreetPlantersHighCapital.toFixed(2), '$' + (currentStreetPlantersLowCapital - baselineStreetPlantersLowCapital).toFixed(2) + ' - $' + (currentStreetPlantersHighCapital - baselineStreetPlantersHighCapital).toFixed(2)],
+        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsLowCapital.toFixed(2) + ' - $' +  currentInfiltrationBasinsHighCapital.toFixed(2), '$' +baselineInfiltrationBasinsLowCapital.toFixed(2) + ' - $' +  baselineInfiltrationBasinsHighCapital.toFixed(2), '$' + (currentInfiltrationBasinsLowCapital - baselineInfiltrationBasinsLowCapital).toFixed(2) + ' - $' + (currentInfiltrationBasinsHighCapital - baselineInfiltrationBasinsHighCapital).toFixed(2)],
+        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementLowCapital.toFixed(2) + ' - $' +  currentPermeablePavementHighCapital.toFixed(2), '$' +baselinePermeablePavementLowCapital.toFixed(2) + ' - $' +  baselinePermeablePavementHighCapital.toFixed(2), '$' + (currentPermeablePavementLowCapital - baselinePermeablePavementLowCapital).toFixed(2) + ' - $' + (currentPermeablePavementHighCapital - baselinePermeablePavementHighCapital).toFixed(2)]];
 
         costsMaintenanceRows = [
-        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineDisconnectionMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineDisconnectionMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh).toFixed(2) + ' (High)'],
-        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineRainHarvestingMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineRainHarvestingMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh).toFixed(2) + ' (High)'],
-        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentRainGardensMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineRainGardensMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineRainGardensMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh).toFixed(2) + ' (High)'],
-        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineGreenRoofsMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineGreenRoofsMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh).toFixed(2) + ' (High)'],
-        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineStreetPlantersMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineStreetPlantersMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh).toFixed(2) + ' (High)'],
-        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselineInfiltrationBasinsMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselineInfiltrationBasinsMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh).toFixed(2) + ' (High)'],
-        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  currentPermeablePavementMaintenanceHigh.toFixed(2) + ' (High)', '$' +baselinePermeablePavementMaintenanceLow.toFixed(2) + ' (Low) / $' +  baselinePermeablePavementMaintenanceHigh.toFixed(2) + ' (High)', '$' + (currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2) + ' (Low) / $' + (currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2) + ' (High)']];
+        ["D", sessionStorage.disconnection  + ' (C) / ' + baselineDisconnection + ' (B)', "NA (C) / NA (B)", '$' +currentDisconnectionMaintenanceLow.toFixed(2) + ' - $' +  currentDisconnectionMaintenanceHigh.toFixed(2), '$' +baselineDisconnectionMaintenanceLow.toFixed(2) + ' - $' +  baselineDisconnectionMaintenanceHigh.toFixed(2), '$' + (currentDisconnectionMaintenanceLow - baselineDisconnectionMaintenanceLow).toFixed(2) + ' - $' + (currentDisconnectionMaintenanceHigh - baselineDisconnectionMaintenanceHigh).toFixed(2)],
+        ["RH", sessionStorage.rainHarvesting  + ' (C) / ' + baselineRainHarvesting + ' (B)', "NA (C) / NA (B)", '$' +currentRainHarvestingMaintenanceLow.toFixed(2) + ' - $' +  currentRainHarvestingMaintenanceHigh.toFixed(2), '$' +baselineRainHarvestingMaintenanceLow.toFixed(2) + ' - $' +  baselineRainHarvestingMaintenanceHigh.toFixed(2), '$' + (currentRainHarvestingMaintenanceLow - baselineRainHarvestingMaintenanceLow).toFixed(2) + ' - $' + (currentRainHarvestingMaintenanceHigh - baselineRainHarvestingMaintenanceHigh).toFixed(2)],
+        ["RG", sessionStorage.rainGardens + ' (C) / ' + baselineRainGardens + ' (B)', "NA (C) / NA (B)", '$' +currentRainGardensMaintenanceLow.toFixed(2) + ' - $' +  currentRainGardensMaintenanceHigh.toFixed(2), '$' +baselineRainGardensMaintenanceLow.toFixed(2) + ' - $' +  baselineRainGardensMaintenanceHigh.toFixed(2), '$' + (currentRainGardensMaintenanceLow - baselineRainGardensMaintenanceLow).toFixed(2) + ' - $' + (currentRainGardensMaintenanceHigh - baselineRainGardensMaintenanceHigh).toFixed(2)],
+        ["GR", sessionStorage.greenRoofs + ' (C) / ' + baselineGreenRoofs + ' (B)', "NA (C) / NA (B)", '$' +currentGreenRoofsMaintenanceLow.toFixed(2) + ' - $' +  currentGreenRoofsMaintenanceHigh.toFixed(2), '$' +baselineGreenRoofsMaintenanceLow.toFixed(2) + ' - $' +  baselineGreenRoofsMaintenanceHigh.toFixed(2), '$' + (currentGreenRoofsMaintenanceLow - baselineGreenRoofsMaintenanceLow).toFixed(2) + ' - $' + (currentGreenRoofsMaintenanceHigh - baselineGreenRoofsMaintenanceHigh).toFixed(2)],
+        ["SP", sessionStorage.streetPlanters + ' (C) / ' + baselineStreetPlanters + ' (B)', "NA (C) / NA (B)", '$' +currentStreetPlantersMaintenanceLow.toFixed(2) + ' - $' +  currentStreetPlantersMaintenanceHigh.toFixed(2), '$' +baselineStreetPlantersMaintenanceLow.toFixed(2) + ' - $' +  baselineStreetPlantersMaintenanceHigh.toFixed(2), '$' + (currentStreetPlantersMaintenanceLow - baselineStreetPlantersMaintenanceLow).toFixed(2) + ' - $' + (currentStreetPlantersMaintenanceHigh - baselineStreetPlantersMaintenanceHigh).toFixed(2)],
+        ["IB", sessionStorage.infiltrationBasins + ' (C) / ' + baselineInfiltrationBasins + ' (B)', "NA (C) / NA (B)", '$' +currentInfiltrationBasinsMaintenanceLow.toFixed(2) + ' - $' +  currentInfiltrationBasinsMaintenanceHigh.toFixed(2), '$' +baselineInfiltrationBasinsMaintenanceLow.toFixed(2) + ' - $' +  baselineInfiltrationBasinsMaintenanceHigh.toFixed(2), '$' + (currentInfiltrationBasinsMaintenanceLow - baselineInfiltrationBasinsMaintenanceLow).toFixed(2) + ' - $' + (currentInfiltrationBasinsMaintenanceHigh - baselineInfiltrationBasinsMaintenanceHigh).toFixed(2)],
+        ["PP", sessionStorage.permeablePavement + ' (C) / ' + baselinePermeablePavement + ' (B)', "NA (C) / NA (B)", '$' +currentPermeablePavementMaintenanceLow.toFixed(2) + ' - $' +  currentPermeablePavementMaintenanceHigh.toFixed(2), '$' +baselinePermeablePavementMaintenanceLow.toFixed(2) + ' - $' +  baselinePermeablePavementMaintenanceHigh.toFixed(2), '$' + (currentPermeablePavementMaintenanceLow - baselinePermeablePavementMaintenanceLow).toFixed(2) + ' - $' + (currentPermeablePavementMaintenanceHigh - baselinePermeablePavementMaintenanceHigh).toFixed(2)]];
     }
 
     costsColumns = ["", "Drainage Area %", "Has Pre-Treatment?", "Area Treated (C)", "Area Treated (B)", "Difference (C-B)"]
@@ -8842,7 +8989,7 @@ $scope.costSummaryTableData = [
 
     doc.addImage(extremeEventDepthChartImage[0], 'png', 25, 150, 550, 275);
 
-    centeredText("Runoff Contribution by Rainfall Percentile", 465);
+    centeredText("Extreme Event Peak Rainfall / Runoff", 465);
 
     doc.addImage(extremeEventPeakChartImage[0], 'png', 25, 475, 550, 275);
 
